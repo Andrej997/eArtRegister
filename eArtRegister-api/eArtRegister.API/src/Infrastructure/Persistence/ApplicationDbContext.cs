@@ -31,7 +31,9 @@ namespace eArtRegister.API.Infrastructure.Persistence
             _dateTime = dateTime;
         }
 
-        public DbSet<JobSpecification> JobSpecifications { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

@@ -8,7 +8,9 @@ namespace eArtRegister.API.Application.Common.Interfaces
     public interface IApplicationDbContext
     {
 
-        DbSet<eArtRegister.API.Domain.Entities.JobSpecification> JobSpecifications { get; set; }
+        DbSet<User> Users { get; set; }
+        DbSet<UserRole> UserRoles { get; set; }
+        DbSet<Role> Roles { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
