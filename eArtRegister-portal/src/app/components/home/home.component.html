@@ -1,1 +1,16 @@
-<p>home works!</p>
+<div class='container'>
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" (change)="changeSearch()" [(ngModel)]="searchInput">
+</div>
+
+<div class="card-deck" style="margin-top: 2%; cursor: pointer;">
+    <div class="card" *ngFor='let user of users' (click)='openUser(user.username)'>
+        <div class="card-header">
+            <h1 class="card-title" style='margin-top: 4px; margin-bottom: 0px;'>{{user.username}}</h1>
+        </div>
+        <div class="card-body">
+        </div>
+        <div class="card-footer">
+            <h6 class="card-title" style='margin-top: 4px; margin-bottom: 0px;'>{{user.name}} {{user.surname}}</h6>
+        </div>
+    </div>
+</div>
