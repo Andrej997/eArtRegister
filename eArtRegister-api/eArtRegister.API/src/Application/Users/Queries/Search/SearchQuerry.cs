@@ -18,6 +18,7 @@ namespace eArtRegister.API.Application.Users.Queries.Search
 
     public class SearchQuerryHandler : IRequestHandler<SearchQuerry, List<UserDto>>
     {
+        private static Random rng = new Random();
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
@@ -46,7 +47,7 @@ namespace eArtRegister.API.Application.Users.Queries.Search
                     })
                     .ToList();
 
-                return user;
+                return user.OrderBy(a => rng.Next()).ToList();
             }
             catch (Exception)
             {

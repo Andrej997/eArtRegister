@@ -1,0 +1,32 @@
+=============== Feb 8, 2022 (CET) ===============
+09:36:08.562200 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+09:36:08.566197 db@open opening
+09:36:08.566197 version@stat F·[] S·0B[] Sc·[]
+09:36:08.568216 db@janitor F·2 G·0
+09:36:08.568216 db@open done T·2.0194ms
+09:36:08.586200 db@close closing
+09:36:08.587202 db@close done T·1.0022ms
+=============== Feb 8, 2022 (CET) ===============
+09:58:00.929277 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+09:58:00.929277 version@stat F·[] S·0B[] Sc·[]
+09:58:00.929277 db@open opening
+09:58:00.929277 journal@recovery F·1
+09:58:00.929277 journal@recovery recovering @1
+09:58:00.934280 memdb@flush created L0@2 N·2369 S·209KiB "\x00^\x1a..\xde~-,v1558":"\xff\xfaO..;\xc6\x0f,v1173"
+09:58:00.935278 version@stat F·[1] S·209KiB[209KiB] Sc·[0.25]
+09:58:00.941279 db@janitor F·3 G·0
+09:58:00.941279 db@open done T·12.002ms
+09:58:00.957277 db@close closing
+09:58:00.957277 db@close done T·0s
+=============== Feb 8, 2022 (CET) ===============
+16:19:17.372890 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:19:17.378891 version@stat F·[1] S·209KiB[209KiB] Sc·[0.25]
+16:19:17.378891 db@open opening
+16:19:17.378891 journal@recovery F·1
+16:19:17.378891 journal@recovery recovering @3
+16:19:17.384892 memdb@flush created L0@5 N·1 S·436B "eth..\x83\x96\xbd,v2371":"eth..\x83\x96\xbd,v2371"
+16:19:17.385894 version@stat F·[2] S·209KiB[209KiB] Sc·[0.50]
+16:19:17.393893 db@janitor F·4 G·0
+16:19:17.393893 db@open done T·15.0017ms
+16:19:17.420893 db@close closing
+16:19:17.421841 db@close done T·884.2µs
