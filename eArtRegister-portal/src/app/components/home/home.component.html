@@ -2,15 +2,19 @@
     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" (change)="changeSearch()" [(ngModel)]="searchInput">
 </div>
 
-<div class="card-deck" style="margin-top: 2%; cursor: pointer;">
-    <div class="card" *ngFor='let user of users' (click)='openUser(user.username)'>
-        <div class="card-header">
-            <h1 class="card-title" style='margin-top: 4px; margin-bottom: 0px;'>{{user.username}}</h1>
-        </div>
-        <div class="card-body">
-        </div>
-        <div class="card-footer">
-            <h6 class="card-title" style='margin-top: 4px; margin-bottom: 0px;'>{{user.name}} {{user.surname}}</h6>
+<br/>
+
+<div>
+    <div class="row" style='margin-left: 4px; margin-right: 4px;'>
+        <div class="col-md-3 col-xs-6" *ngFor='let user of users' (click)='openUser(user.username)' style='margin-top: 4px;'>
+            <div class="card">
+                <img class="card-img-top img-fluid" src="//placehold.it/500x200" alt="Card image cap">
+                <div class="card-block">
+                    <h4 class="card-title">{{user.username}}</h4>
+                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">{{user.name}} {{user.surname}}</small></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

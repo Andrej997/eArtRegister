@@ -10,6 +10,8 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HeaderComponent implements OnInit {
 
+  userId: string = 'admin';
+
   constructor(public authGuard: AuthGuard, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {

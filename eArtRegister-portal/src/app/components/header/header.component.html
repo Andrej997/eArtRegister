@@ -11,14 +11,25 @@
           
         </li>
       </ul>
+      <div class="dropdown" *ngIf='authGuard.isLoggedIn()'>
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2" >
+          <a href="profile" class="dropdown-item">
+            Profile
+          </a>
+          <a href="collections/{{userId}}" class="dropdown-item">
+            Collections
+          </a>
+          <a (click)='logout()' class="dropdown-item" >
+            Sign out
+          </a>
+        </div>
+      </div>
       <span class="navbar-text" *ngIf='!authGuard.isLoggedIn()'>
         <a class="nav-link" href="login">
           Sign in
-        </a>
-      </span>
-      <span class="navbar-text" *ngIf='authGuard.isLoggedIn()'>
-        <a class="nav-link" (click)='logout()' style='cursor: pointer'>
-          Sign out
         </a>
       </span>
     </div>

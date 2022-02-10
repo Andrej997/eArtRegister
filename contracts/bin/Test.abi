@@ -1,1 +1,1 @@
-[{"inputs":[],"name":"get","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]
+[{""inputs"":[{""internalType"":""int256"",""name"":""multiplier"",""type"":""int256""}],""stateMutability"":""nonpayable"",""type"":""constructor""},{""inputs"":[{""internalType"":""int256"",""name"":""val"",""type"":""int256""}],""name"":""multiply"",""outputs"":[{""internalType"":""int256"",""name"":""d"",""type"":""int256""}],""stateMutability"":""nonpayable"",""type"":""function""}]

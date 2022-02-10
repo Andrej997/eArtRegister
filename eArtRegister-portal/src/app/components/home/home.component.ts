@@ -38,7 +38,7 @@ export class HomeComponent implements OnInit {
 
   openUser(username: string) {
     console.log(username);
-    this.router.navigate([`/user/${username}`]);
+    this.router.navigate([`/collections/${username}`]);
   }
 
 }

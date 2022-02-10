@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{17AABD3C-DB3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "eArtRegister.API\src\WebApi\WebApi.csproj", "{AEDA9DCF-6E0B-496D-A3BF-B04A9A380F6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NethereumAccess", "eArtRegister.API\src\NethereumAccess\NethereumAccess.csproj", "{EA0B8CE0-FE73-43C8-9BBD-44D8E4AA49AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{AEDA9DCF-6E0B-496D-A3BF-B04A9A380F6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEDA9DCF-6E0B-496D-A3BF-B04A9A380F6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEDA9DCF-6E0B-496D-A3BF-B04A9A380F6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA0B8CE0-FE73-43C8-9BBD-44D8E4AA49AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA0B8CE0-FE73-43C8-9BBD-44D8E4AA49AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA0B8CE0-FE73-43C8-9BBD-44D8E4AA49AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA0B8CE0-FE73-43C8-9BBD-44D8E4AA49AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{4309AD36-2852-4923-8BF1-80B10A94E6A3} = {17AABD3C-DB39-4063-842F-2FBDFF8B47BD}
 		{717A3C20-EC12-4C42-BCA8-BA3BE8DCBC7D} = {17AABD3C-DB39-4063-842F-2FBDFF8B47BD}
 		{AEDA9DCF-6E0B-496D-A3BF-B04A9A380F6F} = {17AABD3C-DB39-4063-842F-2FBDFF8B47BD}
+		{EA0B8CE0-FE73-43C8-9BBD-44D8E4AA49AB} = {17AABD3C-DB39-4063-842F-2FBDFF8B47BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BCDD2D5-C5A1-4341-A729-34F05C6449A3}

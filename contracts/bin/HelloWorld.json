@@ -1,0 +1,170 @@
+{
+    "contractName": "HelloWorld",
+    "abi": [
+        {
+            "inputs": [],
+            "name": "get",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ],
+    "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"d:/MASTER/Pravna informatika/eArtRegister/contracts/hello_world.sol\":\"HelloWorld\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"d:/MASTER/Pravna informatika/eArtRegister/contracts/hello_world.sol\":{\"keccak256\":\"0xd692f72811f0c16571bb48e06478b2a340adfacc2522556f127a26cd54ae6202\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2836ad74f780e33a7abd66db9c3623329f1348b002a50780814f7b6591535f98\",\"dweb:/ipfs/QmSfc4zcNrRabBaFDGMhx3tUkUPX2vf1M8YCz7gZQQgjHQ\"]}},\"version\":1}",
+    "bytecode": "6080604052348015600f57600080fd5b50607780601d6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80636d4ce63c14602d575b600080fd5b600860405190815260200160405180910390f3fea2646970667358221220b6a1c108d074d90caa46e08a97a8a5e6655fc03352d7c8b25f3fe63342bdaa3964736f6c634300080b0033",
+    "deployedBytecode": "6080604052348015600f57600080fd5b506004361060285760003560e01c80636d4ce63c14602d575b600080fd5b600860405190815260200160405180910390f3fea2646970667358221220b6a1c108d074d90caa46e08a97a8a5e6655fc03352d7c8b25f3fe63342bdaa3964736f6c634300080b0033",
+    "sourceMap": "142:146:0:-:0;;;;;;;;;;;;;;;;;;;",
+    "deployedSourceMap": "142:146:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;216:69;276:1;216:69;;160:25:1;;;148:2;133:18;216:69:0;;;;;;",
+    "sourcePath": "d:/MASTER/Pravna informatika/eArtRegister/contracts/hello_world.sol",
+    "compiler": {
+        "name": "solc",
+        "version": "0.8.11+commit.d7f03943"
+    },
+    "ast": {
+        "absolutePath": "d:/MASTER/Pravna informatika/eArtRegister/contracts/hello_world.sol",
+        "exportedSymbols": {
+            "HelloWorld": [
+                10
+            ]
+        },
+        "id": 11,
+        "license": "MIT",
+        "nodeType": "SourceUnit",
+        "nodes": [
+            {
+                "id": 1,
+                "literals": [
+                    "solidity",
+                    "^",
+                    "0.8",
+                    ".10"
+                ],
+                "nodeType": "PragmaDirective",
+                "src": "114:24:0"
+            },
+            {
+                "abstract": false,
+                "baseContracts": [],
+                "canonicalName": "HelloWorld",
+                "contractDependencies": [],
+                "contractKind": "contract",
+                "fullyImplemented": true,
+                "id": 10,
+                "linearizedBaseContracts": [
+                    10
+                ],
+                "name": "HelloWorld",
+                "nameLocation": "151:10:0",
+                "nodeType": "ContractDefinition",
+                "nodes": [
+                    {
+                        "body": {
+                            "id": 8,
+                            "nodeType": "Block",
+                            "src": "258:27:0",
+                            "statements": [
+                                {
+                                    "expression": {
+                                        "hexValue": "38",
+                                        "id": 6,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": true,
+                                        "kind": "number",
+                                        "lValueRequested": false,
+                                        "nodeType": "Literal",
+                                        "src": "276:1:0",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_rational_8_by_1",
+                                            "typeString": "int_const 8"
+                                        },
+                                        "value": "8"
+                                    },
+                                    "functionReturnParameters": 5,
+                                    "id": 7,
+                                    "nodeType": "Return",
+                                    "src": "269:8:0"
+                                }
+                            ]
+                        },
+                        "functionSelector": "6d4ce63c",
+                        "id": 9,
+                        "implemented": true,
+                        "kind": "function",
+                        "modifiers": [],
+                        "name": "get",
+                        "nameLocation": "225:3:0",
+                        "nodeType": "FunctionDefinition",
+                        "parameters": {
+                            "id": 2,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "228:2:0"
+                        },
+                        "returnParameters": {
+                            "id": 5,
+                            "nodeType": "ParameterList",
+                            "parameters": [
+                                {
+                                    "constant": false,
+                                    "id": 4,
+                                    "mutability": "mutable",
+                                    "name": "",
+                                    "nameLocation": "-1:-1:-1",
+                                    "nodeType": "VariableDeclaration",
+                                    "scope": 9,
+                                    "src": "252:4:0",
+                                    "stateVariable": false,
+                                    "storageLocation": "default",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_uint256",
+                                        "typeString": "uint256"
+                                    },
+                                    "typeName": {
+                                        "id": 3,
+                                        "name": "uint",
+                                        "nodeType": "ElementaryTypeName",
+                                        "src": "252:4:0",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_uint256",
+                                            "typeString": "uint256"
+                                        }
+                                    },
+                                    "visibility": "internal"
+                                }
+                            ],
+                            "src": "251:6:0"
+                        },
+                        "scope": 10,
+                        "src": "216:69:0",
+                        "stateMutability": "view",
+                        "virtual": false,
+                        "visibility": "public"
+                    }
+                ],
+                "scope": 11,
+                "src": "142:146:0",
+                "usedErrors": []
+            }
+        ],
+        "src": "114:176:0"
+    },
+    "functionHashes": {
+        "get()": "6d4ce63c"
+    },
+    "gasEstimates": {
+        "creation": {
+            "codeDepositCost": "23800",
+            "executionCost": "75",
+            "totalCost": "23875"
+        },
+        "external": {
+            "get()": "146"
+        }
+    }
+}
