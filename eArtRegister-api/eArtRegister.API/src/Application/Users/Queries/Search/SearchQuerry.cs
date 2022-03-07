@@ -5,7 +5,6 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +34,7 @@ namespace eArtRegister.API.Application.Users.Queries.Search
             try
             {
                 var user = _context.Users
-                    .Where(user => user.Username.Contains(request.InputSearch) 
+                    .Where(user => user.Username.Contains(request.InputSearch)
                         && _context.Roles.Any(role => _context.UserRoles.Any(ur => ur.UserId == user.Id && role.Name != "user" && role.Id == ur.RoleId)))
                     .Select(user => new UserDto
                     {

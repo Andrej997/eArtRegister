@@ -18,9 +18,12 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "@walletconnect/web3-provider": "^1.7.1",
     "ngx-toastr": "^14.2.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
+    "web3": "^1.7.0",
+    "web3modal": "^1.9.5",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NethereumAccess;
 
 namespace eArtRegister.API.WebApi
 {
@@ -50,6 +51,9 @@ namespace eArtRegister.API.WebApi
                 options.SuppressModelStateInvalidFilter = true;
             });
             //
+
+            services.Configure<NethereumAccess.Common.NethereumConfig>(Configuration.GetSection("NethereumConfig"));
+            services.AddNethereumBlockchain();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
