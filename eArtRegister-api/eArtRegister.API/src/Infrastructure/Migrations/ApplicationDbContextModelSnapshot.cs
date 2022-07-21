@@ -15,6 +15,10 @@ namespace eArtRegister.API.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasPostgresExtension("dblink")
+                .HasPostgresExtension("postgis")
+                .HasPostgresExtension("uuid-ossp")
+                .HasAnnotation("Relational:Collation", "C.UTF-8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -264,7 +268,8 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("role_pkey");
 
                     b.ToTable("roles", "eart");
                 });
@@ -276,6 +281,19 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text")
@@ -293,9 +311,10 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("username");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("user_pkey");
 
-                    b.ToTable("users", "eart");
+                    b.ToTable("user", "eart");
                 });
 
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.UserRole", b =>
@@ -309,6 +328,8 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnName("role_id");
 
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("user_roles", "eart");
                 });
@@ -426,6 +447,30 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("eArtRegister.API.Domain.Entities.UserRole", b =>
+                {
+                    b.HasOne("eArtRegister.API.Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("eArtRegister.API.Domain.Entities.User", "User")
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("eArtRegister.API.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

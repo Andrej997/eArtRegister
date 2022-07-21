@@ -34,7 +34,7 @@ namespace eArtRegister.API.Application.Users.Commands.Login
             {
                 var passwordHash = _context.Users
                     .Where(user => user.Username == request.Username)
-                    .Select(user => user.PasswordHash)
+                    .Select(user => user.Password)
                     .FirstOrDefault();
 
                 if (passwordHash == null || passwordHash == "") throw new Exception("Unknown username or password");

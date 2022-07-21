@@ -42,13 +42,14 @@ namespace eArtRegister.API.Infrastructure.Persistence
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = _currentUserService.UserId;
-                        entry.Entity.Created = _dateTime.Now;
+                        entry.Entity.ModifiedBy = _currentUserService.UserId;
+                        entry.Entity.ModifiedOn = _dateTime.UtcNow;
+                        entry.Entity.IsDeleted = false;
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = _currentUserService.UserId;
-                        entry.Entity.LastModified = _dateTime.Now;
+                        entry.Entity.ModifiedBy = _currentUserService.UserId;
+                        entry.Entity.ModifiedOn = _dateTime.UtcNow;
                         break;
                 }
             }
@@ -62,6 +63,11 @@ namespace eArtRegister.API.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.HasPostgresExtension("uuid-ossp")
+                .HasPostgresExtension("postgis")
+                .HasPostgresExtension("dblink")
+                .HasAnnotation("Relational:Collation", "C.UTF-8");
+
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(builder);

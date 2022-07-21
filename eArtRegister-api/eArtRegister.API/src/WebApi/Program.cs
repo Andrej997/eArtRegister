@@ -1,13 +1,11 @@
+using eArtRegister.API.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using eArtRegister.API.Infrastructure.Identity;
-using eArtRegister.API.Infrastructure.Persistence;
 
 
 namespace eArtRegister.API.WebApi
@@ -26,7 +24,7 @@ namespace eArtRegister.API.WebApi
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
 
-                    if (context.Database.IsSqlServer())
+                    if (context.Database.IsNpgsql())
                     {
                         context.Database.Migrate();
                     }

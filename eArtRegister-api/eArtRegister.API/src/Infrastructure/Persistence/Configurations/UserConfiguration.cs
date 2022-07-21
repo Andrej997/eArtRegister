@@ -8,7 +8,10 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("users", "eart");
+            builder.ToTable("user", "eart");
+
+            builder.HasKey(t => t.Id)
+                .HasName("user_pkey");
 
             builder.Property(e => e.Id)
                 .HasColumnName("id")
@@ -19,8 +22,11 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.Username)
                 .HasColumnName("username");
 
-            builder.Property(e => e.PasswordHash)
-                .HasColumnName("password_hash");
+            builder.Property(e => e.Password)
+                .HasColumnName("password");
+
+            builder.Property(e => e.Email)
+                .HasColumnName("email");
 
             builder.Property(e => e.Name)
                 .HasColumnName("name");

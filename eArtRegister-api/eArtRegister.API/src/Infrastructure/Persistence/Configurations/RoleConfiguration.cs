@@ -10,11 +10,8 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("roles", "eart");
 
-            builder.Property(e => e.Id)
-                .HasColumnName("id")
-                .HasColumnType("uuid")
-                .HasDefaultValueSql("uuid_generate_v4()")
-                .IsRequired();
+            builder.HasKey(t => t.Id)
+                .HasName("role_pkey");
 
             builder.Property(e => e.Name)
                 .HasColumnName("name");

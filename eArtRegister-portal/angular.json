@@ -102,5 +102,8 @@
       }
     }
   },
-  "defaultProject": "eArtRegister-portal"
+  "defaultProject": "eArtRegister-portal",
+  "cli": {
+    "analytics": false
+  }
 }

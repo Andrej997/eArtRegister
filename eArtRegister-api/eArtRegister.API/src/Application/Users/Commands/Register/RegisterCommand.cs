@@ -51,7 +51,7 @@ namespace eArtRegister.API.Application.Users.Commands.Register
                         Username = request.Username,
                         Name = request.Name,
                         Surname = request.Surname,
-                        PasswordHash = passwordHash
+                        Password = passwordHash
                     });
 
                 await _context.SaveChangesAsync(cancellationToken);
