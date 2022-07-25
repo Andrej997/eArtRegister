@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace eArtRegister.API.Domain.Entities
+﻿namespace eArtRegister.API.Domain.Entities
 {
     public class NFTStatus
     {
+        public string Id { get; set; }
     }
 }

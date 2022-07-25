@@ -1,12 +1,11 @@
 ﻿namespace eArtRegister.API.Domain.Enums
 {
-    public enum NFTStatus : long
+    public static class NFTStatus
     {
-        Minted = 1,
-        OnSale = 2,
-        NotOnSale = 3,
-        Pending = 4,
-        Sold = 5,
-        Discount = 6,
+        public static string Minted { get => "MINTED"; }
+        public static string OnSale { get => "ON_SALE"; }
+        public static string NotOnSale { get => "NOT_ON_SALE"; }
+        public static string Pending { get => "PENDING"; }
+        public static string Sold { get => "SOLD"; }
     }
 }

@@ -13,29 +13,39 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.HasKey(t => t.Id)
                 .HasName("nft_pkey");
 
-            builder.Property(e => e.OwnerId)
-                .HasColumnName("owner_id");
+            builder.Property(e => e.Name)
+                .HasColumnName("name");
+
+            builder.Property(e => e.Description)
+                .HasColumnName("description");
+
+            builder.Property(e => e.Order)
+                .HasColumnName("order");
 
             builder.Property(e => e.StatusId)
                .HasColumnName("status_id");
 
-            builder.Property(e => e.CurrentPrice)
-                .HasColumnName("current_price");
+            builder.Property(e => e.BundleId)
+               .HasColumnName("bundle_id");
 
             builder.Property(e => e.CreatorId)
                 .HasColumnName("creator_id");
 
-            builder.Property(e => e.CreatorRoyality)
-                .HasColumnName("creator_royality");
+            builder.Property(e => e.MintedAt)
+               .HasColumnName("minted_at");
 
             builder.Property(e => e.CurrentPrice)
                 .HasColumnName("current_price");
 
-            builder.Property(e => e.MintedAt)
-                .HasColumnName("minted_at");
+            builder.Property(e => e.CurrentPriceDate)
+                .HasColumnName("current_price_date");
 
-            builder.Property(e => e.MintedPrice)
-                .HasColumnName("minted_price");
+            builder.Property(e => e.CreatorRoyalty)
+                .HasColumnName("creator_royality")
+                .HasDefaultValue(0);
+
+            builder.Property(e => e.OwnerId)
+               .HasColumnName("owner_id");
 
             builder.HasOne(d => d.Status)
                 .WithMany()
