@@ -4,7 +4,7 @@
     {
         Administrator = 1,
         Observer = 2,
-        Seller = 3,
-        Buyer = 4,
+        Buyer = 3,
+        Seller = 4,
     }
 }

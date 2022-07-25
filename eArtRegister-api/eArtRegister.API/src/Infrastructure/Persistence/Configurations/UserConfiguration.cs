@@ -33,6 +33,16 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.Surname)
                 .HasColumnName("surname");
+
+            builder.Property(e => e.MetamaskWallet)
+                .HasColumnName("metamask_wallet");
+
+            builder.Property(e => e.DateAddedWallet)
+                .HasColumnName("date_added_wallet");
+
+            builder.Property(e => e.EmailNotification)
+                .HasColumnName("email_notification")
+                .HasDefaultValue(false);
         }
     }
 }
