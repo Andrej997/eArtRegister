@@ -63,10 +63,9 @@ namespace eArtRegister.API.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.HasPostgresExtension("uuid-ossp")
-                .HasPostgresExtension("postgis")
-                .HasPostgresExtension("dblink")
-                .HasAnnotation("Relational:Collation", "C.UTF-8");
+            builder.HasPostgresExtension("uuid-ossp");
+                //.HasPostgresExtension("postgis")
+                //.HasPostgresExtension("dblink");
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace eArtRegister.API.Domain.Entities
 {
@@ -21,5 +22,6 @@ namespace eArtRegister.API.Domain.Entities
         public virtual Bundle Bundle { get; set; }
         public virtual User Creator { get; set; }
         public virtual User Owner { get; set; }
+        public virtual ICollection<NFTCategory> Categories { get; set; }
     }
 }

@@ -15,6 +15,28 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.Name)
                 .HasColumnName("name");
+
+            builder.HasData(
+                new Role { 
+                    Id = 1, 
+                    Name = "Administrator"
+                },
+                new Role
+                {
+                    Id = 2,
+                    Name = "Observer"
+                },
+                new Role
+                {
+                    Id = 3,
+                    Name = "Buyer"
+                },
+                new Role
+                {
+                    Id = 4,
+                    Name = "Seller"
+                }
+                );
         }
     }
 }

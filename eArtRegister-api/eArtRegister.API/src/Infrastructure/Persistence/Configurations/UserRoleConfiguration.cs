@@ -27,6 +27,13 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasData(
+                new UserRole
+                {
+                    UserId = System.Guid.Parse("09ff8406-6775-4bf9-a5b1-d37510cc65e6"),
+                    RoleId = 1
+                });
         }
     }
 }
