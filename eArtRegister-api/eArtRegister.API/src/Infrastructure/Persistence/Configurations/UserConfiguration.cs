@@ -44,14 +44,14 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasColumnName("email_notification")
                 .HasDefaultValue(false);
 
-            //builder.Property(e => e.ModifiedBy)
-            //    .HasColumnName("modified_by");
+            builder.Property(e => e.ModifiedBy)
+                .HasColumnName("modified_by");
 
-            //builder.Property(e => e.ModifiedOn)
-            //    .HasColumnName("modified_on");
+            builder.Property(e => e.ModifiedOn)
+                .HasColumnName("modified_on");
 
-            //builder.Property(e => e.IsDeleted)
-            //    .HasColumnName("is_deleted");
+            builder.Property(e => e.IsDeleted)
+                .HasColumnName("is_deleted");
 
             builder.HasData(
                 new User { 
