@@ -19,5 +19,10 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<UserRole> Roles { get; set; }
         public virtual ICollection<NFT> OwnedNFTs { get; set; }
         public virtual ICollection<NFT> MintedNFTs { get; set; }
+        public virtual ICollection<FollowBundle> FollowingBundles { get; set; }
+        public virtual ICollection<FollowNFT> FollowingNFTs { get; set; }
+        public virtual ICollection<FollowUser> FollowingUsers { get; set; }
+        public virtual ICollection<FollowUser> Followers { get; set; }
+        public virtual ICollection<NFTLike> Liked { get; set; }
     }
 }

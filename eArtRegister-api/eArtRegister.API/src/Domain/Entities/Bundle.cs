@@ -11,5 +11,6 @@ namespace eArtRegister.API.Domain.Entities
         public string Description { get; set; }
 
         public virtual ICollection<NFT> NFTs { get; set; }
+        public virtual ICollection<FollowBundle> Followers { get; set; }
     }
 }
