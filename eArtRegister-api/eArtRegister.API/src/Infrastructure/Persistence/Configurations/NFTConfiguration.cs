@@ -1,4 +1,5 @@
 ﻿using eArtRegister.API.Domain.Entities;
+using Laraue.EfCoreTriggers.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -66,6 +67,16 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .WithMany(p => p.MintedNFTs)
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.AfterUpdate(trigger => trigger
+                .Action(action => action
+                .Condition((transactionBeforeUpdate, transactionAfterUpdate) => transactionBeforeUpdate.CurrentPrice != transactionAfterUpdate.CurrentPrice)
+                .Insert((oldValues, newValues) => new NFTPriceHistory()
+                {
+                    ParentId = oldValues.Id,
+                    Price = oldValues.CurrentPrice,
+                    DateOfPrice = oldValues.CurrentPriceDate
+                })));
         }
     }
 }
