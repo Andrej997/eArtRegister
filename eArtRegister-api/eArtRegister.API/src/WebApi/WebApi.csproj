@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\DunavNET.KeyCloak\KeyCloak.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\NethereumAccess\NethereumAccess.csproj" />
   </ItemGroup>
