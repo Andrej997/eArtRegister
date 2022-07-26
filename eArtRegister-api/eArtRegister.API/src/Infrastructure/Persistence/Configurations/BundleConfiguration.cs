@@ -19,11 +19,17 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
+            builder.Property(e => e.Name)
+                .HasColumnName("name");
+
             builder.Property(e => e.Description)
                 .HasColumnName("description");
 
-            builder.Property(e => e.Name)
-                .HasColumnName("name");
+            builder.Property(e => e.Order)
+                .HasColumnName("order");
+
+            builder.Property(e => e.IsObservable)
+                .HasColumnName("is_observable");
 
             builder.Property(e => e.ModifiedBy)
                 .HasColumnName("modified_by");
