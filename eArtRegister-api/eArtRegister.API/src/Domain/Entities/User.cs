@@ -24,5 +24,6 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<FollowUser> FollowingUsers { get; set; }
         public virtual ICollection<FollowUser> Followers { get; set; }
         public virtual ICollection<NFTLike> Liked { get; set; }
+        public virtual ICollection<UserPortalNotification> Notifications { get; set; }
     }
 }
