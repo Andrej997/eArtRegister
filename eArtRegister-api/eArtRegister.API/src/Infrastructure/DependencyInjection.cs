@@ -5,6 +5,7 @@ using eArtRegister.API.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Laraue.EfCoreTriggers.PostgreSql.Extensions;
 
 namespace eArtRegister.API.Infrastructure
 {
@@ -20,13 +21,16 @@ namespace eArtRegister.API.Infrastructure
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
+                {
                     options.UseNpgsql(
-                        configuration.GetConnectionString("DefaultConnection"),
-                        b =>
-                        {
-                            b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
-                            b.UseNetTopologySuite();
-                        }));
+                            configuration.GetConnectionString("DefaultConnection"),
+                            b =>
+                            {
+                                b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                                b.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                            }).UseSnakeCaseNamingConvention();
+                    options.UsePostgreSqlTriggers();
+                });
             }
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
