@@ -1,4 +1,5 @@
-﻿using eArtRegister.API.Application.Bundle.Commands.CreateBundle;
+﻿using eArtRegister.API.Application.Bundles.Commands.AddNFT;
+using eArtRegister.API.Application.Bundles.Commands.CreateBundle;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -15,6 +16,22 @@ namespace eArtRegister.API.WebApi.Controllers
             try
             {
                 return await Mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("addNFT")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<ActionResult<Guid>> AddNFT(AddNFTCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
             }
             catch (Exception ex)
             {
