@@ -8,6 +8,6 @@ namespace eArtRegister.API.Domain.Entities
         public double Price { get; set; }
         public DateTime DateOfPrice { get; set; }
 
-        public virtual NFT NFT { get; set; }
+        //public virtual NFT NFT { get; set; }
     }
 }

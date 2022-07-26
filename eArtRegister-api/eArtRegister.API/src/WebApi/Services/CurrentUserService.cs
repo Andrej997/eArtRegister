@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using eArtRegister.API.Application.Common.Interfaces;
+using System;
 
 namespace eArtRegister.API.WebApi.Services
 {
@@ -13,6 +14,6 @@ namespace eArtRegister.API.WebApi.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string UserId => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        public Guid UserId => Guid.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier));
     }
 }

@@ -21,10 +21,10 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.DateOfPrice)
                 .HasColumnName("date_of_price");
 
-            builder.HasOne(d => d.NFT)
-                .WithMany(p => p.PriceHistory)
-                .HasForeignKey(d => d.ParentId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(d => d.NFT)
+            //    .WithMany(p => p.PriceHistory)
+            //    .HasForeignKey(d => d.ParentId)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

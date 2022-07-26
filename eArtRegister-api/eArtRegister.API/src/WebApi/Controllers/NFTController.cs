@@ -9,9 +9,9 @@ namespace eArtRegister.API.WebApi.Controllers
 {
     public class NFTController : ApiControllerBase
     {
-        [ApiExplorerSettings(GroupName = "asset")]
+        [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("add")]
-        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, AddNFTCommand command)
+        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, string name, string description, Guid bundleId, double price, double royality)
         {
             if (file == null)
             {
@@ -20,15 +20,20 @@ namespace eArtRegister.API.WebApi.Controllers
 
             try
             {
-                command.File = file.GetUploadFileModel();
-                return await Mediator.Send(command);
+                return await Mediator.Send(new AddNFTCommand
+                {
+                    Name = name,
+                    Description = description,
+                    BundleId = bundleId,
+                    Price = price,
+                    Royality = royality,
+                    File = file.GetUploadFileModel()
+                });
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-
-
         }
     }
 }

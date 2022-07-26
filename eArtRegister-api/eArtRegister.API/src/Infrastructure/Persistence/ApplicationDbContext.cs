@@ -1,8 +1,8 @@
-﻿using eArtRegister.API.Application.Common.Interfaces;
+﻿using Duende.IdentityServer.EntityFramework.Options;
+using eArtRegister.API.Application.Common.Interfaces;
 using eArtRegister.API.Domain.Common;
 using eArtRegister.API.Domain.Entities;
 using eArtRegister.API.Infrastructure.Identity;
-using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -53,13 +53,13 @@ namespace eArtRegister.API.Infrastructure.Persistence
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.ModifiedBy = _currentUserService.UserId;
+                        entry.Entity.ModifiedBy = _currentUserService.UserId.ToString();
                         entry.Entity.ModifiedOn = _dateTime.UtcNow;
                         entry.Entity.IsDeleted = false;
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.ModifiedBy = _currentUserService.UserId;
+                        entry.Entity.ModifiedBy = _currentUserService.UserId.ToString();
                         entry.Entity.ModifiedOn = _dateTime.UtcNow;
                         break;
                 }

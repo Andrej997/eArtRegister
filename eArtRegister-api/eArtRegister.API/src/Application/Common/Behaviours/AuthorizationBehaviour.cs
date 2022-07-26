@@ -45,7 +45,7 @@ namespace eArtRegister.API.Application.Common.Behaviours
                         var authorized = false;
                         foreach (var role in roles)
                         {
-                            var isInRole = await _identityService.IsInRoleAsync(_currentUserService.UserId, role.Trim());
+                            var isInRole = await _identityService.IsInRoleAsync(_currentUserService.UserId.ToString(), role.Trim());
                             if (isInRole)
                             {
                                 authorized = true;
@@ -67,7 +67,7 @@ namespace eArtRegister.API.Application.Common.Behaviours
                 {
                     foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
                     {
-                        var authorized = await _identityService.AuthorizeAsync(_currentUserService.UserId, policy);
+                        var authorized = await _identityService.AuthorizeAsync(_currentUserService.UserId.ToString(), policy);
 
                         if (!authorized)
                         {
