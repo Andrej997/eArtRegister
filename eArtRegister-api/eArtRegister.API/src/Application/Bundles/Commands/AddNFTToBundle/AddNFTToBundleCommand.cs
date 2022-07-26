@@ -5,23 +5,23 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.Bundles.Commands.AddNFT
+namespace eArtRegister.API.Application.Bundles.Commands.AddNFTToBundle
 {
-    public class AddNFTCommand : IRequest
+    public class AddNFTToBundleCommand : IRequest
     {
-        public string NFTId { get; set; }
+        public Guid NFTId { get; set; }
         public Guid BundleId { get; set; }
     }
-    public class AddNFTCommandHandler : IRequestHandler<AddNFTCommand>
+    public class AddNFTToBundleCommandHandler : IRequestHandler<AddNFTToBundleCommand>
     {
         private readonly IApplicationDbContext _context;
 
-        public AddNFTCommandHandler(IApplicationDbContext context)
+        public AddNFTToBundleCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Unit> Handle(AddNFTCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AddNFTToBundleCommand request, CancellationToken cancellationToken)
         {
             try
             {

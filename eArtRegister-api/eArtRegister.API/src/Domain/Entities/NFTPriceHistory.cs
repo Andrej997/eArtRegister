@@ -4,7 +4,7 @@ namespace eArtRegister.API.Domain.Entities
 {
     public class NFTPriceHistory
     {
-        public string ParentId { get; set; }
+        public Guid ParentId { get; set; }
         public double Price { get; set; }
         public DateTime DateOfPrice { get; set; }
 

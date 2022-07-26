@@ -14,6 +14,15 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.HasKey(t => t.Id)
                 .HasName("nft_pkey");
 
+            builder.Property(e => e.Id)
+                .HasColumnName("id")
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .IsRequired();
+
+            builder.Property(e => e.IPFSId)
+                .HasColumnName("ipfs_id");
+
             builder.Property(e => e.Name)
                 .HasColumnName("name");
 

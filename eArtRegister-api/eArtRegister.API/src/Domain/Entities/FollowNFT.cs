@@ -5,7 +5,7 @@ namespace eArtRegister.API.Domain.Entities
     public class FollowNFT
     {
         public Guid UserId { get; set; }
-        public string NFTId { get; set; }
+        public Guid NFTId { get; set; }
         public DateTime FollowDate { get; set; }
 
         public virtual User User { get; set; }

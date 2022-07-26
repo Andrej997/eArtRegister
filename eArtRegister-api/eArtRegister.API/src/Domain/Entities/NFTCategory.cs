@@ -4,7 +4,7 @@ namespace eArtRegister.API.Domain.Entities
 {
     public class NFTCategory
     {
-        public string NFTId { get; set; }
+        public Guid NFTId { get; set; }
         public string CategoryId { get; set; }
 
         public virtual NFT NFT { get; set; }

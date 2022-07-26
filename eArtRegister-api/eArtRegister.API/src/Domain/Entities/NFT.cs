@@ -5,7 +5,8 @@ namespace eArtRegister.API.Domain.Entities
 {
     public class NFT
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
+        public string IPFSId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public long Order { get; set; }
