@@ -38,12 +38,6 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
-            //var ipfs = new IpfsClient("http://127.0.0.1:5001");
-            //var retVal = await ipfs.UploadAsync("add", cancellationToken, request.File.Content, request.Name);
-
-            //var json = JObject.Parse(retVal);
-            //var ipfsId = json["Hash"].ToString();
-
             var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
 
             var entry = new NFT

@@ -3,27 +3,42 @@ using IPFS.Common;
 using IPFS.Interfaces;
 using IPFS.Models;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace IPFS.Services
 {
     public class IPFSFile : IIPFSFile
     {
-        private readonly IPFSConfig config;
+        private readonly IPFSConfig _config;
+        private readonly IpfsClient _ipfsRead;
+        private readonly IpfsClient _ipfsStore;
 
         public IPFSFile(IOptions<IPFSConfig> settings)
         {
-            config = settings.Value;
+            _config = settings.Value;
+            _ipfsRead = new IpfsClient(_config.UrlRead);
+            _ipfsStore = new IpfsClient(_config.UrlStore);
+        }
+
+        public async Task<byte[]> DownloadAsync(string hash, CancellationToken cancellationToken)
+        {
+            using (var stream = await _ipfsRead.FileSystem.ReadFileAsync(hash, cancellationToken))
+            {
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    return ms.ToArray();
+                }
+            }
         }
 
         public async Task<RetVal> UploadAsync(string name, Stream data, CancellationToken cancellationToken)
         {
-            var ipfs = new IpfsClient(config.Url);
-            var retVal = await ipfs.UploadAsync("add", cancellationToken, data, name);
+            var retVal = await _ipfsStore.UploadAsync("add", cancellationToken, data, name);
 
-            var json = JObject.Parse(retVal);
+            var result = JsonConvert.DeserializeObject<RetVal>(retVal);
 
-            return null;
+            return result;
         }
     }
 }
