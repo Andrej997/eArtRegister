@@ -1,13 +1,11 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
 using eArtRegister.API.Application.Common.Models;
 using eArtRegister.API.Domain.Entities;
-using Ipfs.Http;
+using IPFS.Interfaces;
 using MediatR;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,27 +26,29 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         private readonly IApplicationDbContext _context;
         private readonly IDateTime _dateTime;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IIPFSFile _ipfs;
 
-        public AddNFTCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService)
+        public AddNFTCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService, IIPFSFile ipfs)
         {
             _context = context;
             _dateTime = dateTime;
             _currentUserService = currentUserService;
+            _ipfs = ipfs;
         }
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
-            var client = new HttpClient();
+            //var ipfs = new IpfsClient("http://127.0.0.1:5001");
+            //var retVal = await ipfs.UploadAsync("add", cancellationToken, request.File.Content, request.Name);
 
-            var ipfs = new IpfsClient("http://127.0.0.1:5001");
-            var retVal = await ipfs.UploadAsync("add", cancellationToken, request.File.Content, request.Name);
+            //var json = JObject.Parse(retVal);
+            //var ipfsId = json["Hash"].ToString();
 
-            var json = JObject.Parse(retVal);
-            var ipfsId = json["Hash"].ToString();
+            var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
 
             var entry = new NFT
             {
-                IPFSId = ipfsId,
+                IPFSId = retVal.Hash,
                 Name = request.Name,
                 Description = request.Description,
                 OwnerId = _currentUserService.UserId,
