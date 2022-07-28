@@ -2,6 +2,7 @@
 {
     public class IPFSConfig
     {
-        public string Url { get; set; }
+        public string UrlStore { get; set; }
+        public string UrlRead { get; set; }
     }
 }
