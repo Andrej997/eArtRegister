@@ -18,6 +18,8 @@ namespace eArtRegister.API.Domain.Entities
         public DateTime CurrentPriceDate { get; set; }
         public double CreatorRoyalty { get; set; }
         public Guid OwnerId { get; set; }
+        public bool FixedPrice { get; set; }
+        public double MinBidPrice { get; set; }
 
         public virtual NFTStatus Status { get; set; }
         public virtual Bundle Bundle { get; set; }

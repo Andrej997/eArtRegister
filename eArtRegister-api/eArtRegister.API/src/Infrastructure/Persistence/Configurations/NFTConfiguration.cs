@@ -57,6 +57,17 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.OwnerId)
                .HasColumnName("owner_id");
 
+            builder.Property(e => e.FixedPrice)
+               .HasColumnName("fixed_price")
+               .HasDefaultValue(false);
+
+            builder.Property(e => e.MinBidPrice)
+               .HasColumnName("min_bid_price")
+               .HasDefaultValue(0);
+
+            builder.Property(e => e.OwnerId)
+               .HasColumnName("owner_id");
+
             builder.HasOne(d => d.Status)
                 .WithMany()
                 .HasForeignKey(d => d.StatusId)
