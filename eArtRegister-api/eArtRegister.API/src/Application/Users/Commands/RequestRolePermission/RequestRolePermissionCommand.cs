@@ -1,6 +1,7 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,6 +30,9 @@ namespace eArtRegister.API.Application.Users.Commands.RequestRolePermission
 
             if (request.RoleId < 1)
                 throw new Exception("Unknown role");
+
+            if (_context.UserRoles.Any(t => t.UserId == _currentUserService.UserId && t.RoleId == request.RoleId))
+                throw new Exception("You already have that role");
 
             if (request.RoleId == (long)Domain.Enums.Role.Administrator)
                 throw new Exception("Only administrator can add you as administrator");
