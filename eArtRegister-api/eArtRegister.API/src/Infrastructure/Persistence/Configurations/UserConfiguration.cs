@@ -19,21 +19,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
-            builder.Property(e => e.Username)
-                .HasColumnName("username");
-
-            builder.Property(e => e.Password)
-                .HasColumnName("password");
-
-            builder.Property(e => e.Email)
-                .HasColumnName("email");
-
-            builder.Property(e => e.Name)
-                .HasColumnName("name");
-
-            builder.Property(e => e.Surname)
-                .HasColumnName("surname");
-
             builder.Property(e => e.MetamaskWallet)
                 .HasColumnName("metamask_wallet");
 
@@ -52,18 +37,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.IsDeleted)
                 .HasColumnName("is_deleted");
-
-            builder.HasData(
-                new User { 
-                    Id = System.Guid.Parse("09ff8406-6775-4bf9-a5b1-d37510cc65e6"), 
-                    Username = "admin",
-                    Password = "$2a$11$T0F92aa6MyQHNYJERrUzge4Teh5QsO9GljSREDDuW/Y8p3YHX02Ra",
-                    Name = "Admin",
-                    Surname = "Admin",
-                    Email = "andrej.km997@gmail.com",
-                    EmailNotification = true,
-                    IsDeleted = false
-                });
         }
     }
 }

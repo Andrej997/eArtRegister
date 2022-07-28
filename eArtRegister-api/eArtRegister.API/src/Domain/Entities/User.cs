@@ -7,11 +7,6 @@ namespace eArtRegister.API.Domain.Entities
     public class User : AuditableEntity
     {
         public Guid Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
         public string MetamaskWallet { get; set; }
         public DateTime? DateAddedWallet { get; set; }
         public bool EmailNotification { get; set; }
@@ -25,5 +20,9 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<FollowUser> Followers { get; set; }
         public virtual ICollection<NFTLike> Liked { get; set; }
         public virtual ICollection<UserPortalNotification> Notifications { get; set; }
+        public virtual ICollection<BundleRate> RatedBundles { get; set; }
+        public virtual ICollection<NFTRate> RatedNFTs { get; set; }
+        public virtual ICollection<BidPrice> Bids { get; set; }
+        public virtual ICollection<PriceOffer> Offers { get; set; }
     }
 }
