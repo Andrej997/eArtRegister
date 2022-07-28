@@ -1,9 +1,10 @@
-﻿using System;
+﻿using eArtRegister.API.Domain.Common;
+using System;
 using System.Collections.Generic;
 
 namespace eArtRegister.API.Domain.Entities
 {
-    public class NFT
+    public class NFT : AuditableEntity
     {
         public Guid Id { get; set; }
         public string IPFSId { get; set; }

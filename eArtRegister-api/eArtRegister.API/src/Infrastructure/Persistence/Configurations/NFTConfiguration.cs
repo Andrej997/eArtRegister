@@ -65,8 +65,14 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                .HasColumnName("min_bid_price")
                .HasDefaultValue(0);
 
-            builder.Property(e => e.OwnerId)
-               .HasColumnName("owner_id");
+            builder.Property(e => e.ModifiedBy)
+                .HasColumnName("modified_by");
+
+            builder.Property(e => e.ModifiedOn)
+                .HasColumnName("modified_on");
+
+            builder.Property(e => e.IsDeleted)
+                .HasColumnName("is_deleted");
 
             builder.HasOne(d => d.Status)
                 .WithMany()

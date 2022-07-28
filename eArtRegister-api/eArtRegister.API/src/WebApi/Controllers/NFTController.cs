@@ -1,4 +1,5 @@
 ﻿using eArtRegister.API.Application.NFTs.Commands.AddNFT;
+using eArtRegister.API.Application.NFTs.Commands.ChangeStatus;
 using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
 using eArtRegister.API.WebApi.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -48,6 +49,21 @@ namespace eArtRegister.API.WebApi.Controllers
                     Royality = royality,
                     File = file.GetUploadFileModel()
                 });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPut("changeStatus")]
+        public async Task<IActionResult> ChangeStatus(ChangeStatusCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
             }
             catch (Exception e)
             {
