@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "bDbH5YG9Kl+MwcQYFPIXHHiET9UQ9iw94ttwSZAT7WUTVwGRRLX4LFK26bR0YBrHP2UViRzSFr96y7lErQErvg==",
+  "dgSpecHash": "HWm5cbiJIs6RdPE9CM0bRMKhIWmtku8zVBzQYOGud5k3KfIP+bhmX/hRzYUOUJHh6eJteh6hHCU99S0o7QI/SA==",
   "success": true,
   "projectFilePath": "C:\\Users\\digit\\eArtRegister\\eart_keycloak_microservice\\eart_keycloak_microservice\\eart_keycloak_microservice.csproj",
   "expectedPackageFiles": [
@@ -30,6 +30,7 @@
     "C:\\Users\\digit\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\6.0.0\\microsoft.extensions.options.configurationextensions.6.0.0.nupkg.sha512",
     "C:\\Users\\digit\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
     "C:\\Users\\digit\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.15.1\\microsoft.visualstudio.azure.containers.tools.targets.1.15.1.nupkg.sha512",
+    "C:\\Users\\digit\\.nuget\\packages\\restsharp\\106.11.7\\restsharp.106.11.7.nupkg.sha512",
     "C:\\Users\\digit\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0\\system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
     "C:\\Users\\digit\\.nuget\\packages\\system.diagnostics.eventlog\\6.0.0\\system.diagnostics.eventlog.6.0.0.nupkg.sha512",
     "C:\\Users\\digit\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",

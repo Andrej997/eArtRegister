@@ -44,3 +44,4 @@ C:\Users\digit\eArtRegister\eart_keycloak_microservice\eart_keycloak_microservic
 C:\Users\digit\eArtRegister\eart_keycloak_microservice\eart_keycloak_microservice\obj\Debug\net6.0\eart_keycloak_microservice.pdb
 C:\Users\digit\eArtRegister\eart_keycloak_microservice\eart_keycloak_microservice\obj\Debug\net6.0\eart_keycloak_microservice.genruntimeconfig.cache
 C:\Users\digit\eArtRegister\eart_keycloak_microservice\eart_keycloak_microservice\obj\Debug\net6.0\ref\eart_keycloak_microservice.dll
+C:\Users\digit\eArtRegister\eart_keycloak_microservice\eart_keycloak_microservice\bin\Debug\net6.0\RestSharp.dll
