@@ -6,19 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 namespace eArtRegister.API.WebApi.Controllers
 {
     [ApiKey]
-    public class UsersController : ApiControllerBase
+    public class UserWorkerController : ApiControllerBase
     {
-        [HttpPost("requestRolePermission")]
+        [HttpGet("ids")]
         [ApiExplorerSettings(GroupName = "v1")]
-        public async Task<IActionResult> RequestRolePermission(RequestRolePermissionCommand command)
+        public async Task<ActionResult<List<Guid>>> GetUserIds()
         {
             try
             {
-                await Mediator.Send(command);
-                return Ok();
+                return await Mediator.Send(new GetUserIdsQuery());
             }
             catch (Exception ex)
             {

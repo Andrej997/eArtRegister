@@ -4,5 +4,6 @@
     {
         public string EArtUrl { get; set; }
         public string KeyCloakUrl { get; set; }
+        public string ApiKey { get; set; }
     }
 }
