@@ -4,8 +4,8 @@ namespace eart_keycloak_microservice.Interfaces
 {
     public interface IRESTServices
     {
-        Task<IRestResponse> GetDBIds(string bearer, CancellationToken cancellationToken);
+        Task<IRestResponse> GetDBIds(CancellationToken cancellationToken);
 
-        Task<IRestResponse> GetKeyCloakIds(string bearer, CancellationToken cancellationToken);
+        Task<IRestResponse> GetKeyCloakIds(CancellationToken cancellationToken);
     }
 }
