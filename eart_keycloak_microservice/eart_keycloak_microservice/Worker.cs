@@ -10,18 +10,18 @@ namespace eart_keycloak_microservice
         public Worker(ILogger<Worker> logger, IRESTServices rest)
         {
             _logger = logger;
-            _rest = rest;   
+            _rest = rest;
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var dbIds = await _rest.GetDBIds("", cancellationToken);
-                var keyCloakIds = await _rest.GetKeyCloakIds("", cancellationToken);
+                var dbIds = await _rest.GetDBIds(cancellationToken);
+                var keyCloakIds = await _rest.GetKeyCloakIds(cancellationToken);
 
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, cancellationToken);
+                await Task.Delay(10000, cancellationToken);
             }
         }
     }
