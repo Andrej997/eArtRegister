@@ -23,7 +23,7 @@ namespace eart_keycloak_microservice.Services
 
         private string GetToken()
         {
-            var request = new RestRequest($"/auth/realms/{_config.Realm}/protocol/openid-connect/token", Method.POST);
+            var request = new RestRequest($"/realms/{_config.Realm}/protocol/openid-connect/token", Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request.AddParameter("grant_type", "client_credentials");
             request.AddParameter("client_id", _config.Client);
@@ -55,10 +55,21 @@ namespace eart_keycloak_microservice.Services
         public async Task<IRestResponse> GetKeyCloakIds(CancellationToken cancellationToken)
         {
             var token = GetToken();
-            var request = new RestRequest($"/auth/admin/realms/{_config.Realm}/users", Method.GET);
+            var request = new RestRequest($"/admin/realms/{_config.Realm}/users?briefRepresentation=true", Method.GET);
             request.AddHeader("Authorization", $"Bearer {token}");
             request.AddHeader("Content-Type", "application/json");
             return await _keyCloakHTTPClient.ExecuteAsync(request, cancellationToken);
+        }
+
+        public async Task<IRestResponse> RegisterUser(object body, CancellationToken cancellationToken)
+        {
+            var token = GetToken();
+            var request = new RestRequest("/api/UserWorker/register", Method.POST);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("ApiKey", _config.ApiKey);
+            request.AddJsonBody(body);
+            return await _eArtHTTPClient.ExecuteAsync(request, cancellationToken);
         }
     }
 }

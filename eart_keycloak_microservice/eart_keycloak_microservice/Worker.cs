@@ -1,4 +1,6 @@
 using eart_keycloak_microservice.Interfaces;
+using eart_keycloak_microservice.Models;
+using Newtonsoft.Json;
 
 namespace eart_keycloak_microservice
 {
@@ -17,8 +19,17 @@ namespace eart_keycloak_microservice
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var dbIds = await _rest.GetDBIds(cancellationToken);
-                var keyCloakIds = await _rest.GetKeyCloakIds(cancellationToken);
+                var dbIds = JsonConvert.DeserializeObject<List<Guid>>((await _rest.GetDBIds(cancellationToken)).Content);
+                var keyCloakIds = JsonConvert.DeserializeObject<List<UserKeyCloak>>((await _rest.GetKeyCloakIds(cancellationToken)).Content).Select(x => x.Id).ToList();
+
+                var newUsers = keyCloakIds.Except(dbIds).ToList();
+
+                if (newUsers != null && newUsers.Any())
+                {
+                    await _rest.RegisterUser(new RegisterUser(newUsers), cancellationToken);
+                    _logger.LogInformation($"New users are added as observers: {String.Join(",", newUsers)}");
+                }
+                
 
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(10000, cancellationToken);
