@@ -1,0 +1,8 @@
+
+  .wallet{
+    position: absolute;
+    right: 0;
+    height: calc(100% - 72px);
+    box-shadow: -3px 0px 5px -3px #000000;
+    border-radius: 5px;
+}

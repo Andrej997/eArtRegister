@@ -1,0 +1,12 @@
+<div class="wallet-div">
+    <img src="../../../assets/images/metamask.png" alt="MetaMask" width="100%">
+    <header class="header"  *ngIf="!user">
+        <div class="banner">
+          <a href="#" class='butn butn__new' (click)="signInWithMetaMask()"><span>Login</span></a>
+        </div>
+    </header>
+
+    <div *ngIf="user" class="logged-div">
+      <p>Logged user: </p><span> {{ user }}</span>
+    </div>
+</div>

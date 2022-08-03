@@ -13,6 +13,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { CollectionsComponent } from './components/collections/collections.component';
 import { CollectionComponent } from './components/collections/collection/collection.component';
+import { WalletComponent } from './components/wallet/wallet.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { CollectionComponent } from './components/collections/collection/collect
     RegisterComponent,
     ProfileComponent,
     CollectionsComponent,
-    CollectionComponent
+    CollectionComponent,
+    WalletComponent
   ],
   imports: [
     BrowserModule,
