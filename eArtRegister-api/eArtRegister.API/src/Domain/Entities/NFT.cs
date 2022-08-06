@@ -21,6 +21,16 @@ namespace eArtRegister.API.Domain.Entities
         public Guid OwnerId { get; set; }
         public bool FixedPrice { get; set; }
         public double MinBidPrice { get; set; }
+        public string TransactionHash { get; set; }
+        public long TransactionIndex { get; set; }
+        public string BlockHash { get; set; }
+        public long BlockNumber { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
+        public long CumulativeGasUsed { get; set; }
+        public long GasUsed { get; set; }
+        public long EffectiveGasPrice { get; set; }
+        public long MintStatus { get; set; }
 
         public virtual NFTStatus Status { get; set; }
         public virtual Bundle Bundle { get; set; }

@@ -74,6 +74,36 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.IsDeleted)
                 .HasColumnName("is_deleted");
 
+            builder.Property(e => e.TransactionHash)
+                .HasColumnName("transaction_hash");
+
+            builder.Property(e => e.TransactionIndex)
+                .HasColumnName("transaction_index");
+
+            builder.Property(e => e.BlockHash)
+                .HasColumnName("block_hash");
+
+            builder.Property(e => e.BlockNumber)
+                .HasColumnName("block_number");
+
+            builder.Property(e => e.From)
+                .HasColumnName("from");
+
+            builder.Property(e => e.To)
+                .HasColumnName("to");
+
+            builder.Property(e => e.CumulativeGasUsed)
+                .HasColumnName("cumulative_gas_used");
+
+            builder.Property(e => e.GasUsed)
+                .HasColumnName("gas_used");
+
+            builder.Property(e => e.EffectiveGasPrice)
+                .HasColumnName("effective_gas_price");
+
+            builder.Property(e => e.MintStatus)
+                .HasColumnName("mint_status");
+
             builder.HasOne(d => d.Status)
                 .WithMany()
                 .HasForeignKey(d => d.StatusId)

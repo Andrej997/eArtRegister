@@ -47,7 +47,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
 
             var ret = await _context.NFTs
                     .AsNoTracking()
-                    .Where(t => t.BundleId == request.BundleId && ipfsIds.Contains(t.IPFSId))
+                    .Where(t => t.BundleId == request.BundleId && ipfsIds.Contains("ipfs://" + t.IPFSId))
                     .OrderBy(t => t.Order)
                     .ProjectTo<NFTDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);

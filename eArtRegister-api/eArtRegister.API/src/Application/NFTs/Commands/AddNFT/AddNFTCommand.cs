@@ -21,6 +21,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         public double Price { get; set; }
         public double Royality { get; set; }
         public List<string> Categories { get; set; }
+        public string Wallet { get; set; }
     }
     public class AddNFTCommandHandler : IRequestHandler<AddNFTCommand, Guid>
     {
@@ -41,13 +42,13 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
+            var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
+
             var minted = await _nethereum.SafeMint(
                 _context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.ContractAddress).First(),
-                "0xDd0b94bc78346A9DD38af2ec8e10013364cE6622",
-                "ipfs://QmQgjzLxvXryjPGjDrtYEsGqHLeYUUBKqu4Rs7vrH7CxQe"
+                request.Wallet,
+                "ipfs://" + retVal.Hash
                 );
-
-            var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
 
             var entry = new NFT
             {
@@ -63,6 +64,16 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 CurrentPrice = request.Price,
                 CurrentPriceDate = _dateTime.UtcNow,
                 CreatorRoyalty = request.Royality,
+                TransactionHash = minted.TransactionHash,
+                To = minted.To,
+                TransactionIndex = Convert.ToInt64(minted.TransactionIndex.ToString(), 16),
+                From = minted.From,
+                CumulativeGasUsed = Convert.ToInt64(minted.CumulativeGasUsed.ToString(), 16),
+                MintStatus = Convert.ToInt64(minted.Status.ToString(), 16),
+                BlockHash = minted.BlockHash,
+                BlockNumber = Convert.ToInt64(minted.BlockNumber.ToString(), 16),
+                GasUsed = Convert.ToInt64(minted.GasUsed.ToString(), 16),
+                EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16)
             };
 
             _context.NFTs.Add(entry);

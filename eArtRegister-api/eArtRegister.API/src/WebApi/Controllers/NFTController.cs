@@ -31,7 +31,7 @@ namespace eArtRegister.API.WebApi.Controllers
 
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("add")]
-        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, string name, string description, Guid bundleId, double price, double royality)
+        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, string name, string description, Guid bundleId, double price, double royality, string wallet)
         {
             if (file == null)
             {
@@ -47,6 +47,7 @@ namespace eArtRegister.API.WebApi.Controllers
                     BundleId = bundleId,
                     Price = price,
                     Royality = royality,
+                    Wallet = wallet,
                     File = file.GetUploadFileModel()
                 });
             }

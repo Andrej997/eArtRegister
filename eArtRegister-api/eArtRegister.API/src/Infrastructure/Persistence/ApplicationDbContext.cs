@@ -45,6 +45,7 @@ namespace eArtRegister.API.Infrastructure.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<UserPortalNotification> UserPortalNotifications { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
