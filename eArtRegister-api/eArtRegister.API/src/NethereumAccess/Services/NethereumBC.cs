@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
-using Nethereum.Hex.HexTypes;
+using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
 using NethereumAccess.Common;
+using NethereumAccess.Definitions;
 using NethereumAccess.Interfaces;
+using NethereumAccess.Util;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NethereumAccess.Services
@@ -18,36 +20,43 @@ namespace NethereumAccess.Services
             config = settings.Value;
         }
 
-        public async Task TestContract()
+        public async Task<TransactionReceipt> SafeMint(string contractAddress, string to, string uri)
         {
-            var abi = @"[{""inputs"":[],""name"":""get"",""outputs"":[{""internalType"":""uint256"",""name"":"""",""type"":""uint256""}],""stateMutability"":""view"",""type"":""function""}]";
-            var byteCode = "0x6080604052348015600f57600080fd5b50607780601d6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80636d4ce63c14602d575b600080fd5b600860405190815260200160405180910390f3fea2646970667358221220b82df5e4c342f8f5343cf0594fde4d13b0f0bfdc39969c4cdf65e402b21ff24164736f6c634300080b0033";
-            var web3 = new Web3();
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
             try
             {
-                var unlockAccountResult = await web3.Personal.UnlockAccount.SendRequestAsync(config.SenderAddress, config.SenderPassword, 120);
-                if (!unlockAccountResult) throw new Exception();
-                var trasactionHash = await web3.Eth.DeployContract.SendRequestAsync(abi, byteCode, config.SenderAddress, gas: new HexBigInteger(100000));
-                var receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(trasactionHash);
-                while (receipt == null)
-                {
-                    Thread.Sleep(5000);
-                    receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(trasactionHash);
-                }
-                var contractAddress = receipt.ContractAddress;
-
-                var contract = web3.Eth.GetContract(abi, contractAddress);
-
-                var callFunction = contract.GetFunction("get");
-
-                var result = await callFunction.CallAsync<int>();
-
-                if (result != 8) throw new Exception();
+                var erc721Service = new ERC721Service(web3, contractAddress);
+                return await erc721Service.SafeMintRequestAndWaitForReceiptAsync(to, uri);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                throw new Exception(e.Message);
+            }
+        }
 
-                throw;
+        public async Task<TransactionReceipt> CreateContact(string name)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var erc721Deployment = new ERC721Deployment()
+                {
+                    Gas = config.Gass,
+                    Name = name,
+                    Symbol = config.Symbol
+                };
+
+                return await ERC721Service.DeployContractAndWaitForReceiptAsync(web3, erc721Deployment);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

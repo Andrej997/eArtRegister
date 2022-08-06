@@ -12,6 +12,10 @@ namespace eArtRegister.API.Domain.Entities
         public long Order { get; set; }
         public bool IsObservable { get; set; }
         public Guid OwnerId { get; set; }
+        public string ContractAddress { get; set; }
+        public string From { get; set; }
+        public string TransactionHash { get; set; }
+        public string BlockHash { get; set; }
 
         public virtual User Owner { get; set; }
         public virtual ICollection<NFT> NFTs { get; set; }

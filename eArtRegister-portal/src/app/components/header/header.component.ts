@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { AuthService } from 'src/app/services/auth.service';
@@ -9,8 +9,9 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
+  
   userId: string = 'admin';
+  @Output() toggleWallet: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(public authGuard: AuthGuard, private authService: AuthService, private router: Router) { }
 
@@ -22,4 +23,7 @@ export class HeaderComponent implements OnInit {
     this.authService.logout();
   }
 
+  toggleWalletDiv(){
+    this.toggleWallet.emit();
+  }
 }

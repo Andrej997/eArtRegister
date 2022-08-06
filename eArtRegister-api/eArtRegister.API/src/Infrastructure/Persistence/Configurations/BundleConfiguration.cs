@@ -39,6 +39,18 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.IsDeleted)
                 .HasColumnName("is_deleted");
+
+            builder.Property(e => e.ContractAddress)
+                .HasColumnName("contract_address");
+
+            builder.Property(e => e.From)
+                .HasColumnName("from");
+
+            builder.Property(e => e.TransactionHash)
+                .HasColumnName("transaction_hash");
+
+            builder.Property(e => e.BlockHash)
+                .HasColumnName("block_hash");
         }
     }
 }

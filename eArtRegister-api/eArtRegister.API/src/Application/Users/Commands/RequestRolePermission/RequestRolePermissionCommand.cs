@@ -38,12 +38,12 @@ namespace eArtRegister.API.Application.Users.Commands.RequestRolePermission
                 throw new Exception("Only administrator can add you as administrator");
             else if (request.RoleId == (long)Domain.Enums.Role.Buyer)
             {
-                if (string.IsNullOrEmpty(user.MetamaskWallet))
+                if (user.Wallets != null && user.Wallets.Any())
                     throw new Exception("You need to register a wallet to be a buyer");
             }
             else if (request.RoleId == (long)Domain.Enums.Role.Seller)
             {
-                if (string.IsNullOrEmpty(user.MetamaskWallet))
+                if (user.Wallets != null && user.Wallets.Any())
                     throw new Exception("You need to register a wallet to be a seller");
             }
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eArtRegister.API.Infrastructure.Persistence;
@@ -11,9 +12,10 @@ using eArtRegister.API.Infrastructure.Persistence;
 namespace eArtRegister.API.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220806161539_Wallets")]
+    partial class Wallets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,21 +238,9 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<string>("BlockHash")
-                        .HasColumnType("text")
-                        .HasColumnName("block_hash");
-
-                    b.Property<string>("ContractAddress")
-                        .HasColumnType("text")
-                        .HasColumnName("contract_address");
-
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
-
-                    b.Property<string>("From")
-                        .HasColumnType("text")
-                        .HasColumnName("from");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -279,10 +269,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid")
                         .HasColumnName("owner_id");
-
-                    b.Property<string>("TransactionHash")
-                        .HasColumnType("text")
-                        .HasColumnName("transaction_hash");
 
                     b.HasKey("Id")
                         .HasName("bundle_pkey");

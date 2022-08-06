@@ -1,5 +1,5 @@
-import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ToastrModule } from 'ngx-toastr';
@@ -13,6 +13,10 @@ import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { CollectionsComponent } from './components/collections/collections.component';
 import { CollectionComponent } from './components/collections/collection/collection.component';
+import { WalletComponent } from './components/wallet/wallet.component';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { initializer } from 'src/appInit';
+import { AuthService } from './authService';
 
 @NgModule({
   declarations: [
@@ -23,7 +27,8 @@ import { CollectionComponent } from './components/collections/collection/collect
     RegisterComponent,
     ProfileComponent,
     CollectionsComponent,
-    CollectionComponent
+    CollectionComponent,
+    WalletComponent
   ],
   imports: [
     BrowserModule,
@@ -32,9 +37,19 @@ import { CollectionComponent } from './components/collections/collection/collect
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    KeycloakAngularModule,
     ToastrModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    KeycloakService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializer,
+      multi: true,
+      deps: [KeycloakService],
+    },
+    AuthService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -19,12 +19,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
-            builder.Property(e => e.MetamaskWallet)
-                .HasColumnName("metamask_wallet");
-
-            builder.Property(e => e.DateAddedWallet)
-                .HasColumnName("date_added_wallet");
-
             builder.Property(e => e.EmailNotification)
                 .HasColumnName("email_notification")
                 .HasDefaultValue(false);

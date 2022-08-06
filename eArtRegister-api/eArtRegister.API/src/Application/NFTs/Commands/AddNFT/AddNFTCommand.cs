@@ -3,6 +3,7 @@ using eArtRegister.API.Application.Common.Models;
 using eArtRegister.API.Domain.Entities;
 using IPFS.Interfaces;
 using MediatR;
+using NethereumAccess.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,17 +28,25 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         private readonly IDateTime _dateTime;
         private readonly ICurrentUserService _currentUserService;
         private readonly IIPFSFile _ipfs;
+        private readonly INethereumBC _nethereum;
 
-        public AddNFTCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService, IIPFSFile ipfs)
+        public AddNFTCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService, IIPFSFile ipfs, INethereumBC nethereum)
         {
             _context = context;
             _dateTime = dateTime;
             _currentUserService = currentUserService;
             _ipfs = ipfs;
+            _nethereum = nethereum;
         }
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
+            var minted = await _nethereum.SafeMint(
+                _context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.ContractAddress).First(),
+                "0xDd0b94bc78346A9DD38af2ec8e10013364cE6622",
+                "ipfs://QmQgjzLxvXryjPGjDrtYEsGqHLeYUUBKqu4Rs7vrH7CxQe"
+                );
+
             var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
 
             var entry = new NFT

@@ -1,6 +1,7 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
 using eArtRegister.API.Domain.Entities;
 using MediatR;
+using NethereumAccess.Interfaces;
 using System;
 using System.Linq;
 using System.Threading;
@@ -18,17 +19,21 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUserService _currentUserService;
+        private readonly INethereumBC _nethereum;
 
-        public CreateBundleCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+        public CreateBundleCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, INethereumBC nethereum)
         {
             _context = context;
             _currentUserService = currentUserService;
+            _nethereum = nethereum;
         }
 
         public async Task<Guid> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
         {
             if (_context.Bundles.Any(t => t.Name == request.Name && t.OwnerId == _currentUserService.UserId))
                 throw new Exception("Name is already taken");
+
+            var transactionReceipt = await _nethereum.CreateContact(request.Name);
 
             var entry = new Bundle
             {
@@ -37,6 +42,10 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
                 OwnerId = _currentUserService.UserId,
                 Order = _context.Bundles.Where(t => t.OwnerId == _currentUserService.UserId).Count() + 1,
                 IsObservable = false,
+                ContractAddress = transactionReceipt.ContractAddress,
+                From = transactionReceipt.From,
+                TransactionHash = transactionReceipt.TransactionHash,  
+                BlockHash = transactionReceipt.BlockHash,
                 IsDeleted = false
             };
 
