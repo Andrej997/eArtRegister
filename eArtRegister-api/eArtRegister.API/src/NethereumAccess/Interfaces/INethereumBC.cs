@@ -1,4 +1,5 @@
 ﻿using Nethereum.RPC.Eth.DTOs;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NethereumAccess.Interfaces
@@ -7,5 +8,6 @@ namespace NethereumAccess.Interfaces
     {
         Task<TransactionReceipt> SafeMint(string contractAddress, string to, string uri);
         Task<TransactionReceipt> CreateContact(string name);
+        Task<List<string>> IPFSIds(string contractAddress);
     }
 }

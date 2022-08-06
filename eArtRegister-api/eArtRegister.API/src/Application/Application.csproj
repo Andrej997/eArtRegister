@@ -21,4 +21,8 @@
     <ProjectReference Include="..\NethereumAccess\NethereumAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NFTs\Queries\" />
+  </ItemGroup>
+
 </Project>

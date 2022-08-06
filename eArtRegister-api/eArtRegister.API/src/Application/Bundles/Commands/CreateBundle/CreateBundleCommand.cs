@@ -44,7 +44,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
                 IsObservable = false,
                 ContractAddress = transactionReceipt.ContractAddress,
                 From = transactionReceipt.From,
-                TransactionHash = transactionReceipt.TransactionHash,  
+                TransactionHash = transactionReceipt.TransactionHash,
                 BlockHash = transactionReceipt.BlockHash,
                 IsDeleted = false
             };

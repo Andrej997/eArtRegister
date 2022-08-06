@@ -7,6 +7,7 @@ using NethereumAccess.Definitions;
 using NethereumAccess.Interfaces;
 using NethereumAccess.Util;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NethereumAccess.Services
@@ -53,6 +54,32 @@ namespace NethereumAccess.Services
                 };
 
                 return await ERC721Service.DeployContractAndWaitForReceiptAsync(web3, erc721Deployment);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<string>> IPFSIds(string contractAddress)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var erc721Service = new ERC721Service(web3, contractAddress);
+
+                var total = await erc721Service.TotalSupplyQueryAsync();
+
+                var ipfsIds = new List<string>();
+                for (int i = 0; i < total; i++)
+                {
+                    ipfsIds.Add(await erc721Service.TokenURIQueryAsync(i));
+                }
+
+                return ipfsIds;
             }
             catch (Exception e)
             {
