@@ -1,13 +1,29 @@
 ﻿using eArtRegister.API.Application.Bundles.Commands.AddNFTToBundle;
 using eArtRegister.API.Application.Bundles.Commands.CreateBundle;
+using eArtRegister.API.Application.Bundles.Queries.GetBundles;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace eArtRegister.API.WebApi.Controllers
 {
     public class BundleController : ApiControllerBase
     {
+        [HttpGet]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<ActionResult<List<BundleDto>>> GetBundles()
+        {
+            try
+            {
+                return await Mediator.Send(new GetBundlesQuery());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("create")]
         [ApiExplorerSettings(GroupName = "v1")]

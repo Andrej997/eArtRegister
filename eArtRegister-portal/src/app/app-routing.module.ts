@@ -19,6 +19,11 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'bundles',
+    component: CollectionsComponent,
+    pathMatch: 'full',
+  },
+  {
     path: 'profile',
     component: ProfileComponent,
     pathMatch: 'full',
