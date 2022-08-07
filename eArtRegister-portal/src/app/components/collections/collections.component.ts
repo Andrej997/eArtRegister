@@ -27,8 +27,8 @@ export class CollectionsComponent implements OnInit {
     });
   }
 
-  openCollection(collectionId: any) {
-    //this.router.navigate([`/collections/${this.userId}/collection/${collectionId}`]);
+  openCollection(bundleId: any) {
+    this.router.navigate([`/bundles/${bundleId}`]);
   }
 
 }

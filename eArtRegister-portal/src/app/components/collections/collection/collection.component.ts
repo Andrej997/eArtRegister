@@ -23,6 +23,10 @@ export class CollectionComponent implements OnInit {
 
   }
 
+  mintNFT() {
+    this.router.navigate([`/bundles/${this.bundleId}/mint`]);
+  }
+
   private getNFTs(bundleId: string) {
     this.http.get(environment.api + `NFT/bundle/` + bundleId).subscribe(result => {
       console.log(result);

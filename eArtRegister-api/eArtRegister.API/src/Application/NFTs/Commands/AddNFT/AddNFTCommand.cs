@@ -73,7 +73,9 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 BlockHash = minted.BlockHash,
                 BlockNumber = Convert.ToInt64(minted.BlockNumber.ToString(), 16),
                 GasUsed = Convert.ToInt64(minted.GasUsed.ToString(), 16),
-                EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16)
+                EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16),
+                ModifiedBy = _currentUserService.UserId.ToString(),
+                ModifiedOn = _dateTime.UtcNow
             };
 
             _context.NFTs.Add(entry);
