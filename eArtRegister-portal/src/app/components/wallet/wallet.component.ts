@@ -4,6 +4,7 @@ import { switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MetaMaskService } from 'src/app/services/meta-mask.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-wallet',
@@ -14,7 +15,7 @@ export class WalletComponent implements OnInit {
 
   user: any;
 
-  constructor(private metaMaskService: MetaMaskService, private cdr: ChangeDetectorRef) { }
+  constructor(private metaMaskService: MetaMaskService, private cdr: ChangeDetectorRef, private http: HttpClient,) { }
 
   ngOnInit(): void {
     this.checkConnected();
@@ -35,12 +36,21 @@ export class WalletComponent implements OnInit {
   }
 
   signInWithMetaMask(){
-
     this.metaMaskService.signInWithMetaMask().subscribe( res => {
-      console.log(res)
+      this.checkWallet(res[0].caveats[0].value[0]);
       this.user = res[0].caveats[0].value[0];
       this.cdr.detectChanges();
     })
   }
 
+  private checkWallet(wallet: string) {
+    let body = {
+      Wallet: wallet,
+    };
+
+    this.http.post(environment.api + `Users/checkWallet`, body).subscribe(result => {
+    }, error => {
+        console.error(error);
+    });
+  }
 }

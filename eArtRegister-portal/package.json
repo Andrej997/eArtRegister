@@ -21,8 +21,6 @@
     "@metamask/detect-provider": "^1.2.0",
     "@metamask/eth-sig-util": "^4.0.0",
     "@walletconnect/web3-provider": "^1.7.1",
-    "keycloak-angular": "^12.0.0",
-    "keycloak-js": "^19.0.1",
     "ngx-toastr": "^14.2.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
