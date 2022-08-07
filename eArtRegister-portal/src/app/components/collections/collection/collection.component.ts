@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -8,15 +9,24 @@ import { environment } from 'src/environments/environment';
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.css']
 })
-export class CollectionComponent implements OnInit {
+export class CollectionComponent implements OnInit, OnDestroy {
 
   nfts: any[] = [];
-  bundleId = "473a2cb4-c062-4e4a-a71f-c5321ee3ee0a";
+  private bundleId = "";
+  private routeSub: Subscription;
 
-  constructor(private http: HttpClient, private router: Router) { }
+
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.getNFTs(this.bundleId);
+    this.routeSub = this.route.params.subscribe(params => {
+      this.bundleId = params['bundleId'];
+      this.getNFTs(this.bundleId);
+    });
+  }
+
+  ngOnDestroy() {
+    this.routeSub.unsubscribe();
   }
 
   openNFT(nftId: any) {

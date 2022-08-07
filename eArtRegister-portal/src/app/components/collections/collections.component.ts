@@ -19,8 +19,7 @@ export class CollectionsComponent implements OnInit {
   }
 
   private getBundles() {
-    this.http.get(environment.api + `Bundle`).subscribe(result => {
-      console.log(result);
+    this.http.get(environment.api + `Bundle/mine`).subscribe(result => {
       this.bundles = result as any[];
     }, error => {
         console.error(error);

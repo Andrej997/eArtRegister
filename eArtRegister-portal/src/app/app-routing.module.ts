@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CollectionComponent } from './components/collections/collection/collection.component';
 import { CollectionsComponent } from './components/collections/collections.component';
+import { CreateBundleComponent } from './components/create-bundle/create-bundle.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { MintNftComponent } from './components/mint-nft/mint-nft.component';
@@ -42,6 +43,11 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'create',
+    component: CreateBundleComponent,
     pathMatch: 'full',
   },
 ];

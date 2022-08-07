@@ -14,6 +14,19 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
 {
     public class GetBundlesQuery : IRequest<List<BundleDto>>
     {
+        public string Search { get; set; }
+        public bool Mine { get; set; }
+
+        public GetBundlesQuery(bool mine = false)
+        {
+            Mine = mine;
+        }
+
+        public GetBundlesQuery(string search, bool mine = false)
+        {
+            Search = search;
+            Mine = mine;
+        }
     }
     public class GetBundlesQueryHandler : IRequestHandler<GetBundlesQuery, List<BundleDto>>
     {
@@ -41,13 +54,21 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
 
         public async Task<List<BundleDto>> Handle(GetBundlesQuery request, CancellationToken cancellationToken)
         {
-            var ret = await _context.Bundles
-                    .AsNoTracking()
+            var bundlesQuery = _context.Bundles
+                    .AsNoTracking();
+
+            if (!string.IsNullOrEmpty(request.Search))
+                bundlesQuery = bundlesQuery.Where(t => t.Name.Contains(request.Search));
+
+            if (request.Mine)
+                bundlesQuery = bundlesQuery.Where(t => t.OwnerId == _currentUserService.UserId);
+
+            var bundles = await bundlesQuery
                     .OrderBy(t => t.Order)
                     .ProjectTo<BundleDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-            return ret;
+            return bundles;
         }
     }
 }

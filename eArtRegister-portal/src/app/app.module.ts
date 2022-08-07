@@ -15,6 +15,7 @@ import { CollectionsComponent } from './components/collections/collections.compo
 import { CollectionComponent } from './components/collections/collection/collection.component';
 import { WalletComponent } from './components/wallet/wallet.component';
 import { MintNftComponent } from './components/mint-nft/mint-nft.component';
+import { CreateBundleComponent } from './components/create-bundle/create-bundle.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { MintNftComponent } from './components/mint-nft/mint-nft.component';
     CollectionsComponent,
     CollectionComponent,
     WalletComponent,
-    MintNftComponent
+    MintNftComponent,
+    CreateBundleComponent
   ],
   imports: [
     BrowserModule,

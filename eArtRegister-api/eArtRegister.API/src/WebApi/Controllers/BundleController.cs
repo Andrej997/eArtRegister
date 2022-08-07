@@ -24,6 +24,36 @@ namespace eArtRegister.API.WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("search")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<ActionResult<List<BundleDto>>> SearchBundles(string search)
+        {
+            try
+            {
+                return await Mediator.Send(new GetBundlesQuery(search));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("mine")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<ActionResult<List<BundleDto>>> MineBundles()
+        {
+            try
+            {
+                return await Mediator.Send(new GetBundlesQuery(true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("create")]
         [ApiExplorerSettings(GroupName = "v1")]

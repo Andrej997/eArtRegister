@@ -64,8 +64,6 @@ export class MintNftComponent implements OnInit {
 }
 
   onFirstSubmit() {
-    
-
     let params = new HttpParams()
       .set('name', this.mintForm.value.name)
       .set('description', this.mintForm.value.description)
