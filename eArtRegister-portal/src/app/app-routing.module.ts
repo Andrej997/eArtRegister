@@ -14,13 +14,8 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'collections/:username/collection/:collectionName',
+    path: 'bundles/:bundleId',
     component: CollectionComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'collections/:username',
-    component: CollectionsComponent,
     pathMatch: 'full',
   },
   {
