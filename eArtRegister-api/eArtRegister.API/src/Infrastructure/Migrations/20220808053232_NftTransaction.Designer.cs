@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eArtRegister.API.Infrastructure.Persistence;
@@ -11,9 +12,10 @@ using eArtRegister.API.Infrastructure.Persistence;
 namespace eArtRegister.API.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220808053232_NftTransaction")]
+    partial class NftTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -447,10 +449,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("current_price_date");
 
-                    b.Property<string>("CurrentWallet")
-                        .HasColumnType("text")
-                        .HasColumnName("current_wallet");
-
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
@@ -507,6 +505,10 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<long>("Order")
+                        .HasColumnType("bigint")
+                        .HasColumnName("order");
+
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid")
                         .HasColumnName("owner_id");
@@ -518,10 +520,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Property<string>("To")
                         .HasColumnType("text")
                         .HasColumnName("to");
-
-                    b.Property<long>("TokenId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("token_id");
 
                     b.Property<string>("TransactionHash")
                         .HasColumnType("text")
@@ -1381,14 +1379,14 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasForeignKey("BundleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_nft_transaction_bundle_bundle_id");
+                        .HasConstraintName("fk_nft_transaction_bundles_bundle_id");
 
                     b.HasOne("eArtRegister.API.Domain.Entities.NFT", "NFT")
                         .WithMany("Transactions")
                         .HasForeignKey("NFTId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_nft_transaction_nft_nft_id");
+                        .HasConstraintName("fk_nft_transaction_nf_ts_nft_id");
 
                     b.Navigation("Bundle");
 

@@ -29,8 +29,8 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.Description)
                 .HasColumnName("description");
 
-            builder.Property(e => e.Order)
-                .HasColumnName("order");
+            builder.Property(e => e.TokenId)
+                .HasColumnName("token_id");
 
             builder.Property(e => e.StatusId)
                .HasColumnName("status_id");
@@ -56,6 +56,9 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.OwnerId)
                .HasColumnName("owner_id");
+
+            builder.Property(e => e.CurrentWallet)
+                .HasColumnName("current_wallet");
 
             builder.Property(e => e.FixedPrice)
                .HasColumnName("fixed_price")

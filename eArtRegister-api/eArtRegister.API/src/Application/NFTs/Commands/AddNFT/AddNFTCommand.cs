@@ -50,13 +50,16 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 "ipfs://" + retVal.Hash
                 );
 
+            long tokenId = _context.NFTs.Where(t => t.BundleId == request.BundleId).Count();
+
+
             var entry = new NFT
             {
                 IPFSId = retVal.Hash,
                 Name = request.Name,
                 Description = request.Description,
                 OwnerId = _currentUserService.UserId,
-                Order = _context.Bundles.Where(t => t.OwnerId == _currentUserService.UserId).Count() + 1,
+                TokenId = tokenId,
                 BundleId = request.BundleId,
                 StatusId = Domain.Enums.NFTStatus.Minted,
                 CreatorId = _currentUserService.UserId,

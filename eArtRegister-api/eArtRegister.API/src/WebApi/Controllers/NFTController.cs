@@ -1,6 +1,7 @@
 ﻿using eArtRegister.API.Application.NFTs.Commands.AddNFT;
 using eArtRegister.API.Application.NFTs.Commands.ChangeStatus;
 using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
+using eArtRegister.API.Application.NFTs.Commands.TransferNFT;
 using eArtRegister.API.WebApi.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,21 @@ namespace eArtRegister.API.WebApi.Controllers
                     Wallet = wallet,
                     File = file.GetUploadFileModel()
                 });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("transfer")]
+        public async Task<IActionResult> TransferNFT(TransferNFTCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
             }
             catch (Exception e)
             {

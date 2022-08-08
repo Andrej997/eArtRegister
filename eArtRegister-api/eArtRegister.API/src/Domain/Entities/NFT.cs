@@ -10,7 +10,7 @@ namespace eArtRegister.API.Domain.Entities
         public string IPFSId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public long Order { get; set; }
+        public long TokenId { get; set; }
         public string StatusId { get; set; }
         public Guid BundleId { get; set; }
         public Guid CreatorId { get; set; }
@@ -19,6 +19,7 @@ namespace eArtRegister.API.Domain.Entities
         public DateTime CurrentPriceDate { get; set; }
         public double CreatorRoyalty { get; set; }
         public Guid OwnerId { get; set; }
+        public string CurrentWallet { get; set; }
         public bool FixedPrice { get; set; }
         public double MinBidPrice { get; set; }
         public string TransactionHash { get; set; }
@@ -42,6 +43,7 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<NFTRate> Rates { get; set; }
         public virtual ICollection<PriceOffer> PriceOffers { get; set; }
         public virtual ICollection<BidPrice> Bids { get; set; }
+        public virtual ICollection<NFTTransaction> Transactions { get; set; }
         //public virtual ICollection<NFTPriceHistory> PriceHistory { get; set; }
     }
 }

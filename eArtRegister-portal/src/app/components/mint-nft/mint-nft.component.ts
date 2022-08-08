@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { AuthService } from 'src/app/services/auth.service';
 import { MetaMaskService } from 'src/app/services/meta-mask.service';
@@ -13,18 +14,20 @@ import { environment } from 'src/environments/environment';
   templateUrl: './mint-nft.component.html',
   styleUrls: ['./mint-nft.component.css']
 })
-export class MintNftComponent implements OnInit {
+export class MintNftComponent implements OnInit, OnDestroy {
 
   mintForm: FormGroup;
   wallet: any;
-  bundleId = "473a2cb4-c062-4e4a-a71f-c5321ee3ee0a";
+  bundleId = "";
+  private routeSub: Subscription;
 
   constructor(private fb: FormBuilder, private router: Router,
     private authService: AuthService,
     private http: HttpClient,
     private toastr: ToastrService,
     private metaMaskService: MetaMaskService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef, 
+    private route: ActivatedRoute,
     public authGuard: AuthGuard) { }
 
   ngOnInit(): void {
@@ -36,6 +39,14 @@ export class MintNftComponent implements OnInit {
     });
 
     this.checkConnected();
+
+    this.routeSub = this.route.params.subscribe(params => {
+      this.bundleId = params['bundleId'];
+    });
+  }
+
+  ngOnDestroy() {
+    this.routeSub.unsubscribe();
   }
 
   checkConnected(){

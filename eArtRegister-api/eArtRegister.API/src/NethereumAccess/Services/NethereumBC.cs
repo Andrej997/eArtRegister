@@ -86,5 +86,22 @@ namespace NethereumAccess.Services
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<string> TransferNFT(string contractAddress, string from, string to, long tokenId)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var erc721Service = new ERC721Service(web3, contractAddress);
+                return await erc721Service.TransferFromRequestAsync(from, to, tokenId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }
