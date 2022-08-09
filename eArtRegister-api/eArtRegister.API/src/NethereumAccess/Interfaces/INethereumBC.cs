@@ -9,6 +9,6 @@ namespace NethereumAccess.Interfaces
         Task<TransactionReceipt> SafeMint(string contractAddress, string to, string uri);
         Task<TransactionReceipt> CreateContact(string name);
         Task<List<string>> IPFSIds(string contractAddress);
-        Task<string> TransferNFT(string contractAddress, string from, string to, long tokenId);
+        Task<TransactionReceipt> TransferNFT(string contractAddress, string from, string to, long tokenId);
     }
 }

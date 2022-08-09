@@ -33,11 +33,11 @@ namespace eArtRegister.API.Application.NFTs.Commands.TransferNFT
         {
             var nft = _context.NFTs.Find(request.NFTId);
             var contractAddress = _context.Bundles.Where(t => t.Id == nft.BundleId).Select(t => t.ContractAddress).FirstOrDefault();
-            var transactionHash = await _nethereum.TransferNFT(contractAddress, request.From, request.To, nft.TokenId);
+            var transaction = await _nethereum.TransferNFT(contractAddress, request.From, request.To, nft.TokenId);
 
             _context.NFTTransactions.Add(new Domain.Entities.NFTTransaction
             {
-                TransactionHash = transactionHash,
+                TransactionHash = transaction.TransactionHash,
                 ContactAddress = contractAddress,
                 FromWallet = request.From,
                 ToWallet = request.To,

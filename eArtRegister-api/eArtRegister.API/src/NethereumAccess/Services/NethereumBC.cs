@@ -87,7 +87,7 @@ namespace NethereumAccess.Services
             }
         }
 
-        public async Task<string> TransferNFT(string contractAddress, string from, string to, long tokenId)
+        public async Task<TransactionReceipt> TransferNFT(string contractAddress, string from, string to, long tokenId)
         {
             var account = new Account(config.PrivateKey, config.ChainId);
             var web3 = new Web3(account, config.Url);
@@ -96,7 +96,7 @@ namespace NethereumAccess.Services
             try
             {
                 var erc721Service = new ERC721Service(web3, contractAddress);
-                return await erc721Service.TransferFromRequestAsync(from, to, tokenId);
+                return await erc721Service.TransferFromRequestAndWaitForReceiptAsync(from, to, tokenId);
             }
             catch (Exception e)
             {
