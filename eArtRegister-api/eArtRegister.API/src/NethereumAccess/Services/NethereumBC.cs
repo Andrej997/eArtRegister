@@ -103,5 +103,26 @@ namespace NethereumAccess.Services
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<TransactionReceipt> CreatePurchaseContract()
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var traderDeployment = new TraderDeployment()
+                {
+                    Gas = config.Gass,
+                };
+
+                return await TraderService.DeployContractAndWaitForReceiptAsync(web3, traderDeployment);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

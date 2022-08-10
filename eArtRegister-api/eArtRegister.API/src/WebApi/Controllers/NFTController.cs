@@ -59,7 +59,7 @@ namespace eArtRegister.API.WebApi.Controllers
         }
 
         [ApiExplorerSettings(GroupName = "v1")]
-        [HttpPost("transfer")]
+        [HttpPost("sendAsGift")]
         public async Task<IActionResult> TransferNFT(TransferNFTCommand command)
         {
             try

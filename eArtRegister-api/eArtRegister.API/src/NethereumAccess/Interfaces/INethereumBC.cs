@@ -10,5 +10,6 @@ namespace NethereumAccess.Interfaces
         Task<TransactionReceipt> CreateContact(string name);
         Task<List<string>> IPFSIds(string contractAddress);
         Task<TransactionReceipt> TransferNFT(string contractAddress, string from, string to, long tokenId);
+        Task<TransactionReceipt> CreatePurchaseContract();
     }
 }

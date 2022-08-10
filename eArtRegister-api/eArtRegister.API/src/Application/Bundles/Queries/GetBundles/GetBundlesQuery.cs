@@ -54,6 +54,8 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
 
         public async Task<List<BundleDto>> Handle(GetBundlesQuery request, CancellationToken cancellationToken)
         {
+            var aa = await _nethereum.CreatePurchaseContract();
+
             var bundlesQuery = _context.Bundles
                     .AsNoTracking();
 

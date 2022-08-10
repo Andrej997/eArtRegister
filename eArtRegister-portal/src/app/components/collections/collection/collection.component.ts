@@ -30,7 +30,19 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   openNFT(nftId: any) {
+    this.router.navigate([`/bundles/${this.bundleId}/nft/${nftId}`]);
+  }
 
+  setNFTOnSale(nftId: any) {
+    console.log(nftId);
+  }
+
+  buyNFT(nftId: any) {
+    console.log(nftId);
+  }
+
+  sendNFTasGift(nftId: any) {
+    console.log(nftId);
   }
 
   mintNFT() {
