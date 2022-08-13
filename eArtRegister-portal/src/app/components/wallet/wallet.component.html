@@ -1,12 +1,47 @@
 <div class="wallet-div">
     <img src="../../../assets/images/metamask.png" alt="MetaMask" width="100%">
-    <header class="header"  *ngIf="!user">
-        <div class="banner">
-          <!-- <a href="#" class='butn butn__new' (click)="signInWithMetaMask()"><span>Show</span></a> -->
-        </div>
-    </header>
 
     <div *ngIf="user" class="logged-div">
       <p>Logged user: </p><span> {{ user }}</span>
     </div>
+
+    <div *ngIf="user" class="logged-div">
+      <p>Deposit contract: </p><span> {{ depositContract }}</span>
+    </div>
+
+    <div *ngIf="user" class="logged-div">
+      <p>Deposit: </p><span> {{ depositValue }}</span>
+    </div>
+
+    <div *ngIf="user" class="logged-div">
+      <p>Deposit server: </p><span> {{ depositServerValue }}</span>
+    </div>
+
+    <button class="btn btn-warning btn-lg" (click)="createDeposit()" *ngIf="!isSellet">
+      Create deposit
+    </button>
+
+    <button class="btn btn-warning btn-lg" (click)="addDeposit()">
+      Deposit 
+    </button>
+
+    <button class="btn btn-warning btn-lg" (click)="depositToServer()">
+      Deposit server
+    </button>
+
+    <span class="navbar-text" *ngIf="isSellet">
+      <a class="nav-link" href="nfts">
+        My NFTs
+      </a>
+    </span>
+    <span class="navbar-text" *ngIf="isSellet">
+      <a class="nav-link" href="bundles">
+        My bundles
+      </a>
+    </span>
+    <span class="navbar-text" *ngIf="isSellet">
+      <a class="nav-link" href="create">
+        Create bundle
+      </a>
+    </span>
 </div>

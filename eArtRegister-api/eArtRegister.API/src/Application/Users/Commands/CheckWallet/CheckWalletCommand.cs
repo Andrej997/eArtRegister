@@ -2,6 +2,7 @@
 using eArtRegister.API.Domain.Entities;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +34,14 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
                 _context.Users.Add(new User
                 {
                     Wallet = request.Wallet.ToLower(),
-                    DateWalletAdded = _dateTime.UtcNow
+                    DateWalletAdded = _dateTime.UtcNow,
+                    Roles = new List<UserRole>
+                    {
+                        new UserRole
+                        {
+                            RoleId = (long)Domain.Enums.Role.Observer
+                        }
+                    }
                 });
 
                 await _context.SaveChangesAsync(cancellationToken);

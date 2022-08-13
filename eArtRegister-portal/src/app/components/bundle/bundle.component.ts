@@ -51,9 +51,11 @@ export class BundleComponent implements OnInit, OnDestroy {
       this.nfts = result as any[];
 
       this.nfts.forEach(element => {
-        this.web3.getUserBalance(element.purchaseContract).then(response =>{
-          element.balance = (response as number);
-        });
+        if (element.purchaseContract != null) {
+          this.web3.getUserBalance(element.purchaseContract).then(response =>{
+            element.balance = (response as number);
+          });
+        }
       });
     }, error => {
         console.error(error);
@@ -71,6 +73,8 @@ export class BundleComponent implements OnInit, OnDestroy {
     };
 
     this.http.post(environment.api + `NFT/prepareForSale`, body).subscribe(result => {
+      this.nfts = [];
+      this.getNFTs(this.bundleId);
     }, error => {
         console.error(error);
     });
@@ -78,31 +82,36 @@ export class BundleComponent implements OnInit, OnDestroy {
 
   setNFTOnSale(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number, nftId: any) {
     this.web3.setNftOnSale(purchaseContract, valueOfNft, erc721, tokenId).then(response =>{
-      let body = {
-        NFTId: nftId,
-        Wallet: this.wallet,
-        TransactionHash: response
-      };
-  
-      this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
-      }, error => {
-          console.error(error);
-      });
+      if (response) {
+        let body = {
+          NFTId: nftId,
+          Wallet: this.wallet,
+          TransactionHash: response
+        };
+        console.log(body);
+    
+        this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
+        }, error => {
+            console.error(error);
+        });
+      }
     });
   }
 
   buyNFT(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number, nftId: any) {
     this.web3.purchaseNft(purchaseContract, valueOfNft, erc721, tokenId).then(response =>{
-      let body = {
-        NFTId: nftId,
-        Wallet: this.wallet,
-        TransactionHash: response
-      };
-  
-      this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
-      }, error => {
-          console.error(error);
-      });
+      if (response) {
+        let body = {
+          NFTId: nftId,
+          Wallet: this.wallet,
+          TransactionHash: response
+        };
+    
+        this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
+        }, error => {
+            console.error(error);
+        });
+      }
     })
   }
 

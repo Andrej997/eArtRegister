@@ -1,5 +1,6 @@
 ﻿using Nethereum.RPC.Eth.DTOs;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace NethereumAccess.Interfaces
@@ -16,5 +17,7 @@ namespace NethereumAccess.Interfaces
         Task<TransactionReceipt> BalanceOfTrader(string traderContractAddress, string myWallet);
         Task<TransactionReceipt> WithdrawMoney(string traderContractAddress, long amount, string destAddr);
         Task<TransactionReceipt> ApprovePurchaseContract(string contractAddress, string purchaseContractAddress);
+        Task<TransactionReceipt> CreateDepositContract();
+        Task<BigInteger> GetDepositBalance(string depositContractAddress, string myWallet);
     }
 }

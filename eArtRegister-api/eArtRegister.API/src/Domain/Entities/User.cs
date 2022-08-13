@@ -10,6 +10,8 @@ namespace eArtRegister.API.Domain.Entities
         //public bool EmailNotification { get; set; }
         public string Wallet { get; set; }
         public DateTime? DateWalletAdded { get; set; }
+        public string DepositContract { get; set; }
+        public long ServerBalance { get; set; }
 
         //public virtual ICollection<Wallet> Wallets { get; set; }
         public virtual ICollection<UserRole> Roles { get; set; }
@@ -25,5 +27,6 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<NFTRate> RatedNFTs { get; set; }
         public virtual ICollection<BidPrice> Bids { get; set; }
         public virtual ICollection<PriceOffer> Offers { get; set; }
+        public virtual ICollection<UserDeposit> Deposits { get; set; }
     }
 }

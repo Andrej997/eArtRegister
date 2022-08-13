@@ -45,6 +45,7 @@ namespace eArtRegister.API.Infrastructure.Persistence
         public DbSet<NFTSale> NFTSales { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserDeposit> UserDeposits { get; set; }
         public DbSet<UserPortalNotification> UserPortalNotifications { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eArtRegister.API.Infrastructure.Persistence;
@@ -11,9 +12,10 @@ using eArtRegister.API.Infrastructure.Persistence;
 namespace eArtRegister.API.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220813194919_Deposit")]
+    partial class Deposit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -861,10 +863,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_on");
 
-                    b.Property<long>("ServerBalance")
-                        .HasColumnType("bigint")
-                        .HasColumnName("server_balance");
-
                     b.Property<string>("Wallet")
                         .HasColumnType("text")
                         .HasColumnName("wallet");
@@ -873,39 +871,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasName("user_pkey");
 
                     b.ToTable("user", "eart");
-                });
-
-            modelBuilder.Entity("eArtRegister.API.Domain.Entities.UserDeposit", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id")
-                        .HasDefaultValueSql("uuid_generate_v4()");
-
-                    b.Property<long>("DepositValue")
-                        .HasColumnType("bigint")
-                        .HasColumnName("deposit_value");
-
-                    b.Property<DateTime>("DepositeDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deposit_date");
-
-                    b.Property<string>("TransactionHash")
-                        .HasColumnType("text")
-                        .HasColumnName("transaction_hash");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("user_deposit_pkey");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_user_deposit_user_id");
-
-                    b.ToTable("user_deposit", "eart");
                 });
 
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.UserPortalNotification", b =>
@@ -1471,18 +1436,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("eArtRegister.API.Domain.Entities.UserDeposit", b =>
-                {
-                    b.HasOne("eArtRegister.API.Domain.Entities.User", "User")
-                        .WithMany("Deposits")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_deposit_user_user_id");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.UserPortalNotification", b =>
                 {
                     b.HasOne("eArtRegister.API.Domain.Entities.User", "User")
@@ -1604,8 +1557,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.User", b =>
                 {
                     b.Navigation("Bids");
-
-                    b.Navigation("Deposits");
 
                     b.Navigation("Followers");
 

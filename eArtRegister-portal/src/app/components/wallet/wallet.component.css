@@ -4,8 +4,8 @@
     z-index: 1;
     background-color: white;
 }
-a,
-a:hover {
+span,
+span:hover {
   text-decoration: none;
 }
 

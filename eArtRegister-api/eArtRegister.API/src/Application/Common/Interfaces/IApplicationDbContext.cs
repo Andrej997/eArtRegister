@@ -21,6 +21,7 @@ namespace eArtRegister.API.Application.Common.Interfaces
         DbSet<NFTSale> NFTSales { get; set; }
         DbSet<Role> Roles { get; set; }
         DbSet<User> Users { get; set; }
+        DbSet<UserDeposit> UserDeposits { get; set; }
         DbSet<UserPortalNotification> UserPortalNotifications { get; set; }
         DbSet<UserRole> UserRoles { get; set; }
 

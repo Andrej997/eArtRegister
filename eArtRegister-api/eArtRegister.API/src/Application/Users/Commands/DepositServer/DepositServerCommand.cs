@@ -4,20 +4,18 @@ using eArtRegister.API.Domain.Entities;
 using IPFS.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.NFTs.Commands.Bought
+namespace eArtRegister.API.Application.Users.Commands.DepositServer
 {
-    public class BoughtCommand : IRequest
+    public class DepositServerCommand : IRequest
     {
-        public Guid NFTId { get; set; }
         public string Wallet { get; set; }
-        public string TransactionHash { get; set; }
+        public long DepositValue { get; set; }
     }
-    public class BoughtCommandHandler : IRequestHandler<BoughtCommand, Unit>
+    public class DepositServerCommandHandler : IRequestHandler<DepositServerCommand, Unit>
     {
         private readonly IApplicationDbContext _context;
         private readonly IDateTime _dateTime;
@@ -26,7 +24,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
         private readonly IMapper _mapper;
         private readonly INethereumBC _nethereum;
 
-        public BoughtCommandHandler(IApplicationDbContext context,
+        public DepositServerCommandHandler(IApplicationDbContext context,
                                                IDateTime dateTime,
                                                ICurrentUserService currentUserService,
                                                IIPFSFile ipfs,
@@ -41,20 +39,20 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
             _nethereum = nethereum;
         }
 
-        public async Task<Unit> Handle(BoughtCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DepositServerCommand request, CancellationToken cancellationToken)
         {
             var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
-            var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
+            user.ServerBalance = user.ServerBalance + request.DepositValue;
 
-            var nftSale = _context.NFTSales.Where(s => s.NFTId == request.NFTId && s.SaleContractAddress == nft.PurchaseContract).FirstOrDefault();
-
-            nftSale.WalletBought = request.Wallet;
-            nftSale.DateOfPurchase = _dateTime.UtcNow;
-            nftSale.TransactionHashPurchase = request.TransactionHash;
-
-            nft.CurrentWallet = request.Wallet;
-            //nft.StatusId = Domain.Enums.NFTStatus.Sold;
+            if (!_context.UserRoles.Any(u => u.UserId == user.Id && u.RoleId == (long)Domain.Enums.Role.Seller))
+            {
+                _context.UserRoles.Add(new UserRole
+                {
+                    UserId = user.Id,
+                    RoleId = (long)Domain.Enums.Role.Seller
+                });
+            }
 
             await _context.SaveChangesAsync(cancellationToken);
 

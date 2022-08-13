@@ -10,7 +10,9 @@ using NethereumAccess.Interfaces;
 using NethereumAccess.Util;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
+using static NethereumAccess.Definitions.DepositDefinition;
 
 namespace NethereumAccess.Services
 {
@@ -178,7 +180,7 @@ namespace NethereumAccess.Services
 
             try
             {
-                var balances = new BalancesFunction();
+                var balances = new Definitions.BalancesFunction();
                 balances.ReturnValue1 = myWallet;
 
                 var traderService = new TraderService(web3, traderContractAddress);
@@ -198,7 +200,7 @@ namespace NethereumAccess.Services
 
             try
             {
-                var withdraw = new WithdrawFunction();
+                var withdraw = new Definitions.WithdrawFunction();
                 withdraw.Amount = amount;
                 withdraw.DestAddr = destAddr;
 
@@ -221,6 +223,47 @@ namespace NethereumAccess.Services
             {
                 var erc721Service = new ERC721Service(web3, contractAddress);
                 return await erc721Service.SetApprovalForAllRequestAndWaitForReceiptAsync(purchaseContractAddress, true);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<TransactionReceipt> CreateDepositContract()
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var depositDeployment = new DepositDeployment()
+                {
+                    Gas = config.Gass,
+                };
+
+                return await DepositService.DeployContractAndWaitForReceiptAsync(web3, depositDeployment);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<BigInteger> GetDepositBalance(string depositContractAddress, string myWallet)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var balances = new DepositDefinition.BalancesFunction();
+                balances.ReturnValue1 = myWallet;
+
+                var depositService = new DepositService(web3, depositContractAddress);
+                return await depositService.BalanceQueryAsync(balances);
             }
             catch (Exception e)
             {
