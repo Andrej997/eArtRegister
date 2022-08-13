@@ -49,6 +49,12 @@ export class BundleComponent implements OnInit, OnDestroy {
     this.http.get(environment.api + `NFT/bundle/` + bundleId).subscribe(result => {
       console.log(result);
       this.nfts = result as any[];
+
+      this.nfts.forEach(element => {
+        this.web3.getUserBalance(element.purchaseContract).then(response =>{
+          element.balance = (response as number);
+        });
+      });
     }, error => {
         console.error(error);
     });
@@ -70,25 +76,34 @@ export class BundleComponent implements OnInit, OnDestroy {
     });
   }
 
-  setNFTOnSale(nftId: any) {
-    // this.web3.setNftOnSale().then(response =>{
-
-    // })
-    let body = {
-      NFTId: nftId,
-    };
-
-    this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
-    }, error => {
-        console.error(error);
+  setNFTOnSale(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number, nftId: any) {
+    this.web3.setNftOnSale(purchaseContract, valueOfNft, erc721, tokenId).then(response =>{
+      let body = {
+        NFTId: nftId,
+        Wallet: this.wallet,
+        TransactionHash: response
+      };
+  
+      this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
+      }, error => {
+          console.error(error);
+      });
     });
   }
 
-  buyNFT(nftId: any) {
-    console.log(nftId);
-    // this.web3.purchaseNft().then(response =>{
-
-    // })
+  buyNFT(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number, nftId: any) {
+    this.web3.purchaseNft(purchaseContract, valueOfNft, erc721, tokenId).then(response =>{
+      let body = {
+        NFTId: nftId,
+        Wallet: this.wallet,
+        TransactionHash: response
+      };
+  
+      this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
+      }, error => {
+          console.error(error);
+      });
+    })
   }
 
   sendNFTasGift(nftId: any, erc721: string, tokenId: number) {
@@ -111,7 +126,9 @@ export class BundleComponent implements OnInit, OnDestroy {
     this.router.navigate([`/bundles/${this.bundleId}/mint`]);
   }
 
-  openNFT(nftId: any) {
-    this.router.navigate([`/bundles/${this.bundleId}/nft/${nftId}`]);
+  withdraw(purchaseContract: string, valueOfNft: number) {
+    this.web3.withdraw(purchaseContract, valueOfNft).then(response =>{
+      
+    })
   }
 }

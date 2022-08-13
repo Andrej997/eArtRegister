@@ -1,4 +1,5 @@
 ﻿using eArtRegister.API.Application.NFTs.Commands.AddNFT;
+using eArtRegister.API.Application.NFTs.Commands.Bought;
 using eArtRegister.API.Application.NFTs.Commands.ChangeStatus;
 using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
 using eArtRegister.API.Application.NFTs.Commands.SetOnSale;
@@ -93,6 +94,21 @@ namespace eArtRegister.API.WebApi.Controllers
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("setOnSale")]
         public async Task<IActionResult> SetOnSale(SetOnSaleCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("bought")]
+        public async Task<IActionResult> Bought(BoughtCommand command)
         {
             try
             {

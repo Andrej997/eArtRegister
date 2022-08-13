@@ -132,21 +132,22 @@ export class Web3Service {
 
   
 
-  async purchaseNft(): Promise<number> {
-    this.provider = await this.web3Modal.connect(); // set provider
+  async purchaseNft(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number): Promise<number> {
+    const etherValue = Web3.utils.fromWei(valueOfNft.toString(), 'ether');
+    const weiValue = Web3.utils.toWei(etherValue, 'ether');
+
+    this.provider = await this.web3Modal.connect(); 
     if (this.provider) {
       this.web3js = new Web3(this.provider);
-    } // create web3 ins
+    }
     this.accounts = await this.web3js.eth.getAccounts();
-    console.log(this.accounts);
-    this._tokenContract = await new this.web3js.eth.Contract(tokenAbi, this._tokenContractAddress);
-    
+    this._tokenContract = await new this.web3js.eth.Contract(tokenAbi, purchaseContract);
     
     return new Promise((resolve, reject) => {
       let _web3 = this.web3js;
       console.log(this._tokenContract);
       
-      this._tokenContract.methods.purchase('0xBF656629698C7aD1b7d060650811556d1Fb80055', 1).send({from: (this.accounts as string[])[0], gas: 3000000, value: 1000000000}, function (err, result) {
+      this._tokenContract.methods.purchase(erc721, tokenId).send({from: (this.accounts as string[])[0], gas: 3000000, value: weiValue}, function (err, result) {
         console.log(err);
         console.log(result);
         
@@ -186,30 +187,55 @@ export class Web3Service {
     }) as Promise<number>;
   }
 
-  public async getUserBalance(): Promise<number> {
+  public async getUserBalance(purchaseContract: string): Promise<number> {
 
-    // console.log(this.accounts);
-    this._tokenContract = await new this.web3js.eth.Contract(tokenAbi, this._tokenContractAddress);
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+    this.accounts = await this.web3js.eth.getAccounts();
+    this._tokenContract = await new this.web3js.eth.Contract(tokenAbi, purchaseContract);
   
     return new Promise((resolve, reject) => {
       let _web3 = this.web3js;
-      console.log(this._tokenContract);
       
-      this._tokenContract.methods.balanceOf((this.accounts as string[])[0]).call(function (err, result) {
-        console.log(err);
-        console.log(result);
+      this._tokenContract.methods.balances((this.accounts as string[])[0]).call(function (err, result) {
         
         if(err != null) {
           reject(err);
         }
   
-        // resolve(_web3.fromWei(result));
+        resolve(result);
       });
     }) as Promise<number>;
   }
+
+  public async withdraw(purchaseContract: string, valueOfNft: number): Promise<number> {
+    const etherValue = Web3.utils.fromWei(valueOfNft.toString(), 'ether');
+    const weiValue = Web3.utils.toWei(etherValue, 'ether');
+
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+    this.accounts = await this.web3js.eth.getAccounts();
+    this._tokenContract = await new this.web3js.eth.Contract(tokenAbi, purchaseContract);
+  
+    return new Promise((resolve, reject) => {
+      let _web3 = this.web3js;
+      
+      this._tokenContract.methods.withdraw(weiValue, (this.accounts as string[])[0]).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<number>;
+  }
+
 }
 
-function BigNumber(BigNumber: any, valueOfNft: number, arg2: string) {
-  throw new Error('Function not implemented.');
-}
+
 
