@@ -42,7 +42,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(x => x.Wallet == request.Wallet).FirstOrDefault();
+            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
 
             if (!_context.Bundles.Any(b => b.OwnerId == user.Id))
             {
@@ -65,7 +65,6 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 IPFSId = retVal.Hash,
                 Name = request.Name,
                 Description = request.Description,
-                OwnerId = user.Id,
                 TokenId = tokenId,
                 BundleId = request.BundleId,
                 StatusId = Domain.Enums.NFTStatus.Minted,
@@ -86,7 +85,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16),
                 ModifiedBy = user.Id.ToString(),
                 ModifiedOn = _dateTime.UtcNow,
-                CurrentWallet = request.Wallet
+                CurrentWallet = request.Wallet.ToLower()
             };
 
             _context.NFTs.Add(entry);

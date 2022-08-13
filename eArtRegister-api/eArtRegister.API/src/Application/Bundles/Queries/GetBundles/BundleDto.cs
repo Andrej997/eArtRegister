@@ -15,5 +15,6 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
         public bool IsObservable { get; set; }
         public Guid OwnerId { get; set; }
         public string OwnerWallet { get; set; }
+        public string ContractAddress { get; set; }
     }
 }

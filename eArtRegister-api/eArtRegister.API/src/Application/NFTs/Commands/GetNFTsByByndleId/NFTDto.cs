@@ -19,7 +19,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
         public string IPFSId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public long Order { get; set; }
+        public long TokenId { get; set; }
         public string StatusId { get; set; }
         public Guid BundleId { get; set; }
         public Guid CreatorId { get; set; }

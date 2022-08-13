@@ -30,9 +30,6 @@ namespace eArtRegister.API.Application.NFTs.Commands.ChangeStatus
             if (nft == null)
                 throw new Exception("Unknown NFT");
 
-            if (nft.OwnerId != _currentUserService.UserId)
-                throw new Exception("You don't own that NFT");
-
             nft.StatusId = request.StatusId;
 
             await _context.SaveChangesAsync(cancellationToken);

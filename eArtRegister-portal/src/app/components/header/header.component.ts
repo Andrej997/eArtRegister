@@ -10,7 +10,7 @@ export class HeaderComponent implements OnInit {
 
   @Output() toggleWallet: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(/*public authGuard: AuthGuard, private authService: AuthService,*/ private router: Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }

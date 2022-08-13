@@ -18,7 +18,6 @@ namespace eArtRegister.API.Domain.Entities
         public double CurrentPrice { get; set; }
         public DateTime CurrentPriceDate { get; set; }
         public double CreatorRoyalty { get; set; }
-        public Guid OwnerId { get; set; }
         public string CurrentWallet { get; set; }
         public bool FixedPrice { get; set; }
         public double MinBidPrice { get; set; }
@@ -36,7 +35,6 @@ namespace eArtRegister.API.Domain.Entities
         public virtual NFTStatus Status { get; set; }
         public virtual Bundle Bundle { get; set; }
         public virtual User Creator { get; set; }
-        public virtual User Owner { get; set; }
         public virtual ICollection<NFTCategory> Categories { get; set; }
         public virtual ICollection<FollowNFT> Followers { get; set; }
         public virtual ICollection<NFTLike> Likes { get; set; }

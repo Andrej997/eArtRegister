@@ -3,6 +3,7 @@ using eArtRegister.API.Domain.Entities;
 using MediatR;
 using NethereumAccess.Interfaces;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,8 +33,8 @@ namespace eArtRegister.API.Application.NFTs.Commands.TransferNFT
 
         public async Task<Unit> Handle(TransferNFTCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Find(request.From);
-            var nft = _context.NFTs.Find(request.NFTId);
+            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.From.ToLower()).FirstOrDefault();
+            var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
             _context.NFTTransactions.Add(new NFTTransaction
             {
@@ -44,10 +45,10 @@ namespace eArtRegister.API.Application.NFTs.Commands.TransferNFT
                 NFTId = request.NFTId,
             });
 
-            nft.OwnerId = user.Id;
             nft.CurrentWallet = request.To;
 
             await _context.SaveChangesAsync(cancellationToken);
+
 
             return Unit.Value;
         }

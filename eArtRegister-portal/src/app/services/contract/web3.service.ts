@@ -5,6 +5,8 @@ import Web3 from 'web3';
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { provider } from 'web3-core';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 let tokenAbi = require('./transferAbi.json');
 let erc271Abi = require('./erc271Abi.json');
@@ -24,7 +26,7 @@ export class Web3Service {
   accounts: string[] | undefined;
   balance: string | undefined;
 
-  constructor(@Inject(WEB3) private web3: Web3) {
+  constructor(@Inject(WEB3) private web3: Web3, private http: HttpClient) {
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider, // required
@@ -74,7 +76,20 @@ export class Web3Service {
       this.web3js = new Web3(this.provider);
     } // create web3 instance
     this.accounts = await this.web3js.eth.getAccounts();
+
+    this.checkWallet((this.accounts as string[])[0]);
     return this.accounts;
+  }
+
+  private checkWallet(wallet: string) {
+    let body = {
+      Wallet: wallet,
+    };
+
+    this.http.post(environment.api + `Users/checkWallet`, body).subscribe(result => {
+    }, error => {
+        console.error(error);
+    });
   }
 
   async accountInfo(account: any[]){
@@ -140,7 +155,6 @@ export class Web3Service {
   }
 
   private _erc271Contract: any;
-  private _erc271ContractAddress: string = "0xBF656629698C7aD1b7d060650811556d1Fb80055";
 
   async sendNftAsGift(contractAddress: string, from: string, to: string, tokenId: number): Promise<number> {
     this.provider = await this.web3Modal.connect(); 

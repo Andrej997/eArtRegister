@@ -31,7 +31,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
 
         public async Task<Guid> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(x => x.Wallet == request.Wallet).FirstOrDefault();
+            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
             if (_context.Bundles.Any(t => t.Name == request.Name && t.OwnerId == _currentUserService.UserId))
                 throw new Exception("Name is already taken");
 

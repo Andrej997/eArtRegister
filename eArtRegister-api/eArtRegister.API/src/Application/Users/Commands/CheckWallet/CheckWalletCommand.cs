@@ -27,7 +27,8 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
 
         public async Task<Unit> Handle(CheckWalletCommand request, CancellationToken cancellationToken)
         {
-            if (!_context.Users.Any(t => t.Wallet == request.Wallet))
+            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            if (user == null)
             {
                 _context.Users.Add(new User
                 {

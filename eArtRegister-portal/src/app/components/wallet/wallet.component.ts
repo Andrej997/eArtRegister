@@ -15,25 +15,13 @@ export class WalletComponent implements OnInit {
   constructor(private web3: Web3Service, private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.signInWithMetaMask();
   }
 
   signInWithMetaMask(){
     this.web3.connectAccount().then(response => {
       console.log(response);
       this.user = response
-
-      this.checkWallet(this.user[0]);
-    });
-  }
-
-  private checkWallet(wallet: string) {
-    let body = {
-      Wallet: wallet,
-    };
-
-    this.http.post(environment.api + `Users/checkWallet`, body).subscribe(result => {
-    }, error => {
-        console.error(error);
     });
   }
 }

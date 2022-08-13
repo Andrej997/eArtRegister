@@ -54,7 +54,7 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTs
 
             var ret = await _context.NFTs
                     .AsNoTracking()
-                    .Where(t => t.OwnerId == user.Id)
+                    .Where(t => t.CurrentWallet == user.Wallet)
                     .OrderBy(t => t.TokenId)
                     .ProjectTo<NFTDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);

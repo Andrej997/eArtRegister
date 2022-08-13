@@ -54,9 +54,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasColumnName("creator_royality")
                 .HasDefaultValue(0);
 
-            builder.Property(e => e.OwnerId)
-               .HasColumnName("owner_id");
-
             builder.Property(e => e.CurrentWallet)
                 .HasColumnName("current_wallet");
 
@@ -115,11 +112,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.Bundle)
                 .WithMany(p => p.NFTs)
                 .HasForeignKey(d => d.BundleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(d => d.Owner)
-                .WithMany(p => p.OwnedNFTs)
-                .HasForeignKey(d => d.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(d => d.Creator)

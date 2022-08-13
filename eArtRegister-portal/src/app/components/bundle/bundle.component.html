@@ -1,7 +1,8 @@
 <div *ngIf="bundle">
     <h1>Name: {{bundle.name}}</h1>
     <h1>Description: {{bundle.description}}</h1>
-    <h1>Bundle owner: {{bundle.ownerWallet}}</h1>
+    <h1>Bundle owner: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{bundle.ownerWallet}}">{{bundle.ownerWallet}}</a></h1>
+    <h1>Contract Address: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{bundle.contractAddress}}">{{bundle.contractAddress}}</a></h1>
     <button type="button" *ngIf="wallet == bundle.ownerWallet" style="width:100%" class="btn btn-warning" (click)="mintNFT()" >MINT</button>
 </div>
 
@@ -14,12 +15,13 @@
                 <h4 class="card-title">Name: {{nft.name}}</h4>
                 <p class="card-text">Description: {{nft.description}}</p>
                 <p class="card-text">Status: {{nft.statusId}}</p>
+                <p class="card-text">Owner: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.currentWallet}}">{{nft.currentWallet}}</a></p>
                 <span><span class="card-text" style="float: left">Price {{nft.currentPrice / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="8%"></span><br>
                 <p class="card-text"><small class="text-muted">Minted at {{nft.mintedAt}}</small></p>
-                <button type="button" style="width:100%" class="btn btn-warning" (click)="setNFTOnSale(nft.id)" *ngIf="wallet != nft.currentWallet">SELL</button>
-                <button type="button" style="width:100%" class="btn btn-warning" (click)="buyNFT(nft.id)" *ngIf="wallet == nft.currentWallet && nft.statusId == 'ON_SALE'">BUY</button>
-                <button type="button" style="width:42%" class="btn btn-warning" (click)="sendNFTasGift(nft.id, nft.erC721ContractAddress, nft.tokenId)" *ngIf="wallet != nft.currentWallet">SEND AS GIFT</button>
-                <input class="form-control mr-sm-2" style="width:54%; float: left;" type="text" placeholder="Wallet" aria-label="Wallet" [(ngModel)]="toWallet" *ngIf="wallet != nft.currentWallet">
+                <button type="button" style="width:100%" class="btn btn-warning" (click)="setNFTOnSale(nft.id)" *ngIf="wallet == nft.currentWallet">SELL</button>
+                <button type="button" style="width:100%" class="btn btn-warning" (click)="buyNFT(nft.id)" *ngIf="wallet != nft.currentWallet">BUY</button>
+                <button type="button" style="width:42%" class="btn btn-warning" (click)="sendNFTasGift(nft.id, nft.erC721ContractAddress, nft.tokenId)" *ngIf="wallet == nft.currentWallet">SEND AS GIFT</button>
+                <input class="form-control mr-sm-2" style="width:54%; float: left;" type="text" placeholder="Wallet" aria-label="Wallet" [(ngModel)]="toWallet" *ngIf="wallet == nft.currentWallet">
                 <!-- <button type="button" style="width:100%" class="btn btn-warning" (click)="openNFT(nft.id)">OPEN NFT</button> -->
             </div>
         </div>

@@ -48,11 +48,10 @@ namespace NethereumAccess.Services
 
             try
             {
-                var erc721Deployment = new ERC721Deployment()
+                var erc721Deployment = new EArtRegisterDeployment()
                 {
                     Gas = config.Gass,
-                    Name = name,
-                    Symbol = config.Symbol
+                    Name = name
                 };
 
                 return await ERC721Service.DeployContractAndWaitForReceiptAsync(web3, erc721Deployment);
