@@ -58,6 +58,18 @@ export class BundleComponent implements OnInit, OnDestroy {
     this.routeSub.unsubscribe();
   }
 
+  setInStatusForSale(nftId: any) {
+    let body = {
+      Id: nftId,
+      StatusId: "ON_SALE"
+    };
+
+    this.http.post(environment.api + `NFT/prepareForSale`, body).subscribe(result => {
+    }, error => {
+        console.error(error);
+    });
+  }
+
   setNFTOnSale(nftId: any) {
     // this.web3.setNftOnSale().then(response =>{
 

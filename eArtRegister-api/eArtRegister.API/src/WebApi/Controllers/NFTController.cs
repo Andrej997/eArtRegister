@@ -106,7 +106,7 @@ namespace eArtRegister.API.WebApi.Controllers
         }
 
         [ApiExplorerSettings(GroupName = "v1")]
-        [HttpPut("changeStatus")]
+        [HttpPost("prepareForSale")]
         public async Task<IActionResult> ChangeStatus(ChangeStatusCommand command)
         {
             try

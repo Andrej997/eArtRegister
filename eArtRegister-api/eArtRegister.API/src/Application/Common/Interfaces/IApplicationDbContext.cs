@@ -18,6 +18,7 @@ namespace eArtRegister.API.Application.Common.Interfaces
         DbSet<NFTPriceHistory> NFTPriceHistory { get; set; }
         DbSet<NFTStatus> NFTStatuses { get; set; }
         DbSet<NFTTransaction> NFTTransactions { get; set; }
+        DbSet<NFTSale> NFTSales { get; set; }
         DbSet<Role> Roles { get; set; }
         DbSet<User> Users { get; set; }
         DbSet<UserPortalNotification> UserPortalNotifications { get; set; }

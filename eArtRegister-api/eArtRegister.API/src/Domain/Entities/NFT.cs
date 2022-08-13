@@ -31,6 +31,7 @@ namespace eArtRegister.API.Domain.Entities
         public long GasUsed { get; set; }
         public long EffectiveGasPrice { get; set; }
         public long MintStatus { get; set; }
+        public string PurchaseContract { get; set; }
 
         public virtual NFTStatus Status { get; set; }
         public virtual Bundle Bundle { get; set; }
@@ -41,6 +42,7 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<NFTRate> Rates { get; set; }
         public virtual ICollection<PriceOffer> PriceOffers { get; set; }
         public virtual ICollection<BidPrice> Bids { get; set; }
+        public virtual ICollection<NFTSale> Sales { get; set; }
         public virtual ICollection<NFTTransaction> Transactions { get; set; }
         //public virtual ICollection<NFTPriceHistory> PriceHistory { get; set; }
     }

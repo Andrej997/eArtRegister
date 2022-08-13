@@ -135,7 +135,6 @@ namespace NethereumAccess.Services
             try
             {
                 var addListing = new AddListingFunction();
-                addListing.SystemWallet = config.SenderAddress;
                 addListing.Price = price;
                 addListing.ContractAddress = bundleContractAddress;
                 addListing.TokenId = tokenId;

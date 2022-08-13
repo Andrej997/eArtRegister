@@ -33,17 +33,30 @@ export class MyNftsComponent implements OnInit {
     });
   }
 
-  setNFTOnSale(nftId: any) {
-    // this.web3.setNftOnSale().then(response =>{
-
-    // })
+  setInStatusForSale(nftId: any) {
     let body = {
-      NFTId: nftId,
+      Id: nftId,
+      StatusId: "ON_SALE"
     };
 
-    this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
+    this.http.post(environment.api + `NFT/prepareForSale`, body).subscribe(result => {
     }, error => {
         console.error(error);
+    });
+  }
+
+  setNFTOnSale(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number, nftId: any) {
+    this.web3.setNftOnSale(purchaseContract, valueOfNft, erc721, tokenId).then(response =>{
+      let body = {
+        NFTId: nftId,
+        Wallet: this.wallet,
+        TransactionHash: response
+      };
+  
+      this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
+      }, error => {
+          console.error(error);
+      });
     });
   }
 

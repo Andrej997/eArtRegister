@@ -42,6 +42,7 @@ namespace eArtRegister.API.Infrastructure.Persistence
         public DbSet<NFTPriceHistory> NFTPriceHistory { get; set; }
         public DbSet<NFTStatus> NFTStatuses { get; set; }
         public DbSet<NFTTransaction> NFTTransactions { get; set; }
+        public DbSet<NFTSale> NFTSales { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserPortalNotification> UserPortalNotifications { get; set; }

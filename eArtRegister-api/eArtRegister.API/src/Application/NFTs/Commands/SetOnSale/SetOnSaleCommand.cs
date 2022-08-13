@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using eArtRegister.API.Application.Common.Interfaces;
+using eArtRegister.API.Domain.Entities;
 using IPFS.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +14,8 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
     public class SetOnSaleCommand : IRequest
     {
         public Guid NFTId { get; set; }
+        public string Wallet { get; set; }
+        public string TransactionHash { get; set; }
     }
     public class SetOnSaleCommandHandler : IRequestHandler<SetOnSaleCommand, Unit>
     {
@@ -39,15 +43,20 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
 
         public async Task<Unit> Handle(SetOnSaleCommand request, CancellationToken cancellationToken)
         {
-            var nft = _context.NFTs.Find(request.NFTId);
-            var bundle = _context.Bundles.Find(nft.BundleId);
-            var purchaseContactTransaction = await _nethereum.CreatePurchaseContract();
-            Thread.Sleep(10000);
-            var approveTransaction = await _nethereum.ApprovePurchaseContract(bundle.ContractAddress, purchaseContactTransaction.ContractAddress);
-            Thread.Sleep(10000);
-            var onSaleTransaction = await _nethereum.SetNFTonSale(purchaseContactTransaction.ContractAddress, (long)nft.CurrentPrice, bundle.ContractAddress, nft.TokenId);
-            Thread.Sleep(10000);
-            var buyTransaction = await _nethereum.BuyNFT(purchaseContactTransaction.ContractAddress, bundle.ContractAddress, nft.TokenId);
+            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+
+            var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
+
+            _context.NFTSales.Add(new NFTSale
+            {
+                DateOfSet = _dateTime.UtcNow,
+                NFTId = request.NFTId,
+                TransactionHashSet = request.TransactionHash.ToLower(),
+                WalletSet = request.Wallet.ToLower(),
+                SaleContractAddress = nft.PurchaseContract.ToLower()
+            });
+
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

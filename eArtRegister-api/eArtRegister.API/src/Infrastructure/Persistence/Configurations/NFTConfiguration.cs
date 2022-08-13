@@ -104,6 +104,9 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.MintStatus)
                 .HasColumnName("mint_status");
 
+            builder.Property(e => e.PurchaseContract)
+                .HasColumnName("purchase_contract");
+
             builder.HasOne(d => d.Status)
                 .WithMany()
                 .HasForeignKey(d => d.StatusId)
