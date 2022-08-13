@@ -4,9 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { AuthGuard } from 'src/app/guards/auth.guard';
-import { AuthService } from 'src/app/services/auth.service';
-import { MetaMaskService } from 'src/app/services/meta-mask.service';
+import { Web3Service } from 'src/app/services/contract/web3.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -17,18 +15,15 @@ import { environment } from 'src/environments/environment';
 export class MintNftComponent implements OnInit, OnDestroy {
 
   mintForm: FormGroup;
-  wallet: any;
   bundleId = "";
   private routeSub: Subscription;
 
   constructor(private fb: FormBuilder, private router: Router,
-    private authService: AuthService,
     private http: HttpClient,
+    private web3: Web3Service,
     private toastr: ToastrService,
-    private metaMaskService: MetaMaskService,
     private cdr: ChangeDetectorRef, 
-    private route: ActivatedRoute,
-    public authGuard: AuthGuard) { }
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.mintForm = this.fb.group({
@@ -38,8 +33,6 @@ export class MintNftComponent implements OnInit, OnDestroy {
       royality: [0, Validators.required],
     });
 
-    this.checkConnected();
-
     this.routeSub = this.route.params.subscribe(params => {
       this.bundleId = params['bundleId'];
     });
@@ -47,22 +40,6 @@ export class MintNftComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
-  }
-
-  checkConnected(){
-    this.metaMaskService.isConnected().subscribe( (res: any) => {
-      this.wallet = res.accounts[0]
-      console.log(this.wallet);
-      this.mintForm.value.wallet = this.wallet;
-      res.provider.on('accountsChanged', (accounts: any) => {
-        if (accounts.length == 0) {
-          this.wallet = undefined;
-        }else {
-          this.wallet = accounts[0];
-        }
-        this.cdr.detectChanges();
-      });
-    })
   }
 
   private formData:FormData = new FormData();
@@ -75,21 +52,23 @@ export class MintNftComponent implements OnInit, OnDestroy {
 }
 
   onFirstSubmit() {
-    let params = new HttpParams()
-      .set('name', this.mintForm.value.name)
-      .set('description', this.mintForm.value.description)
-      .set('bundleId', this.bundleId)
-      .set('price', this.mintForm.value.price)
-      .set('royality', this.mintForm.value.royality)
-      .set('wallet', this.wallet)
-      ;
+    this.web3.connectAccount().then(response => {
+      let params = new HttpParams()
+        .set('name', this.mintForm.value.name)
+        .set('description', this.mintForm.value.description)
+        .set('bundleId', this.bundleId)
+        .set('price', this.mintForm.value.price * 1000000000000000000)
+        .set('royality', this.mintForm.value.royality)
+        .set('wallet', (response as string[])[0])
+        ;
 
-    this.http.post(environment.api + `NFT/add`, this.formData, { params: params }).subscribe(result => {
-      this.toastr.success("Image minted");
-      this.router.navigate([`/bundles/${this.bundleId}`]);
-    }, error => {
-        console.error(error);
-        this.toastr.error("Failed to mint");
+      this.http.post(environment.api + `NFT/add`, this.formData, { params: params }).subscribe(result => {
+        this.toastr.success("Image minted");
+        this.router.navigate([`/bundles/${this.bundleId}`]);
+      }, error => {
+          console.error(error);
+          this.toastr.error("Failed to mint");
+      });
     });
   }
 

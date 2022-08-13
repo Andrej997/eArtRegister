@@ -11,5 +11,10 @@ namespace NethereumAccess.Interfaces
         Task<List<string>> IPFSIds(string contractAddress);
         Task<TransactionReceipt> TransferNFT(string contractAddress, string from, string to, long tokenId);
         Task<TransactionReceipt> CreatePurchaseContract();
+        Task<TransactionReceipt> SetNFTonSale(string traderContractAddress, long price, string bundleContractAddress, long tokenId);
+        Task<TransactionReceipt> BuyNFT(string traderContractAddress, string bundleContractAddress, long tokenId);
+        Task<TransactionReceipt> BalanceOfTrader(string traderContractAddress, string myWallet);
+        Task<TransactionReceipt> WithdrawMoney(string traderContractAddress, long amount, string destAddr);
+        Task<TransactionReceipt> ApprovePurchaseContract(string contractAddress, string purchaseContractAddress);
     }
 }

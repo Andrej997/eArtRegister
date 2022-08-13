@@ -19,14 +19,8 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
-            builder.Property(e => e.BundleId)
-                .HasColumnName("bundle_id");
-
             builder.Property(e => e.NFTId)
                 .HasColumnName("nft_id");
-
-            builder.Property(e => e.ContactAddress)
-                .HasColumnName("contact_address");
 
             builder.Property(e => e.FromWallet)
                 .HasColumnName("from_wallet");
@@ -39,11 +33,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.TransactionHash)
                 .HasColumnName("transaction_hash");
-
-            builder.HasOne(d => d.Bundle)
-                .WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.BundleId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(d => d.NFT)
                .WithMany(p => p.Transactions)

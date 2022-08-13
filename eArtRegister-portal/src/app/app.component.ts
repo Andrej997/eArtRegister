@@ -1,5 +1,5 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, ViewEncapsulation } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
@@ -20,12 +20,17 @@ import { Component, ViewEncapsulation } from '@angular/core';
   ],
 })
 export class AppComponent {
-  title = 'eArtRegister-portal';
+  title = 'eART register';
+  authenticated: boolean = false;
+  data: string[] | undefined;
+
   showWallet: boolean = false;
   
   toggleWallet(){
     this.showWallet = !this.showWallet;
   }
 
+  constructor() {
+  }
 
 }

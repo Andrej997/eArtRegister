@@ -19,9 +19,15 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
-            builder.Property(e => e.EmailNotification)
-                .HasColumnName("email_notification")
-                .HasDefaultValue(false);
+            //builder.Property(e => e.EmailNotification)
+            //    .HasColumnName("email_notification")
+            //    .HasDefaultValue(false);
+
+            builder.Property(e => e.Wallet)
+                .HasColumnName("wallet");
+
+            builder.Property(e => e.DateWalletAdded)
+                .HasColumnName("date_wallet_added");
 
             builder.Property(e => e.ModifiedBy)
                 .HasColumnName("modified_by");

@@ -13,6 +13,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Wallet { get; set; }
     }
 
     public class CreateBundleCommandHandler : IRequestHandler<CreateBundleCommand, Guid>
@@ -30,6 +31,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
 
         public async Task<Guid> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
         {
+            var user = _context.Users.Where(x => x.Wallet == request.Wallet).FirstOrDefault();
             if (_context.Bundles.Any(t => t.Name == request.Name && t.OwnerId == _currentUserService.UserId))
                 throw new Exception("Name is already taken");
 
@@ -39,8 +41,8 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             {
                 Name = request.Name,
                 Description = request.Description,
-                OwnerId = _currentUserService.UserId,
-                Order = _context.Bundles.Where(t => t.OwnerId == _currentUserService.UserId).Count() + 1,
+                OwnerId = user.Id,
+                Order = _context.Bundles.Where(t => t.OwnerId == user.Id).Count() + 1,
                 IsObservable = false,
                 ContractAddress = transactionReceipt.ContractAddress,
                 From = transactionReceipt.From,

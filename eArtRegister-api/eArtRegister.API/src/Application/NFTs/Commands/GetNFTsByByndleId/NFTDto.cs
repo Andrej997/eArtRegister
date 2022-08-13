@@ -29,6 +29,9 @@ namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
         public double CreatorRoyalty { get; set; }
         public Guid OwnerId { get; set; }
         public byte[] Bytes { get; set; }
+        public string CurrentWallet { get; set; }
+        public string BundleWalletOwner { get; set; }
+        public string ERC721ContractAddress { get; set; }
 
         //public virtual NFTStatus Status { get; set; }
         //public virtual Bundle Bundle { get; set; }

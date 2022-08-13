@@ -7,9 +7,11 @@ namespace eArtRegister.API.Domain.Entities
     public class User : AuditableEntity
     {
         public Guid Id { get; set; }
-        public bool EmailNotification { get; set; }
+        //public bool EmailNotification { get; set; }
+        public string Wallet { get; set; }
+        public DateTime? DateWalletAdded { get; set; }
 
-        public virtual ICollection<Wallet> Wallets { get; set; }
+        //public virtual ICollection<Wallet> Wallets { get; set; }
         public virtual ICollection<UserRole> Roles { get; set; }
         public virtual ICollection<NFT> OwnedNFTs { get; set; }
         public virtual ICollection<NFT> MintedNFTs { get; set; }

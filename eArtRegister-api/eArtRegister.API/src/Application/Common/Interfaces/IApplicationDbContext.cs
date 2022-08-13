@@ -22,7 +22,6 @@ namespace eArtRegister.API.Application.Common.Interfaces
         DbSet<User> Users { get; set; }
         DbSet<UserPortalNotification> UserPortalNotifications { get; set; }
         DbSet<UserRole> UserRoles { get; set; }
-        DbSet<Wallet> Wallets { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

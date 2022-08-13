@@ -1,8 +1,8 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
+using eArtRegister.API.Domain.Entities;
 using MediatR;
 using NethereumAccess.Interfaces;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +13,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.TransferNFT
         public Guid NFTId { get; set; }
         public string From { get; set; }
         public string To { get; set; }
+        public string TransactionHash { get; set; }
     }
     public class TransferNFTCommandHandler : IRequestHandler<TransferNFTCommand>
     {
@@ -31,22 +32,19 @@ namespace eArtRegister.API.Application.NFTs.Commands.TransferNFT
 
         public async Task<Unit> Handle(TransferNFTCommand request, CancellationToken cancellationToken)
         {
+            var user = _context.Users.Find(request.From);
             var nft = _context.NFTs.Find(request.NFTId);
-            var contractAddress = _context.Bundles.Where(t => t.Id == nft.BundleId).Select(t => t.ContractAddress).FirstOrDefault();
-            var transaction = await _nethereum.TransferNFT(contractAddress, request.From, request.To, nft.TokenId);
 
-            _context.NFTTransactions.Add(new Domain.Entities.NFTTransaction
+            _context.NFTTransactions.Add(new NFTTransaction
             {
-                TransactionHash = transaction.TransactionHash,
-                ContactAddress = contractAddress,
-                FromWallet = request.From,
-                ToWallet = request.To,
-                BundleId = nft.BundleId,
+                TransactionHash = request.TransactionHash.ToLower(),
+                FromWallet = nft.CurrentWallet.ToLower(),
+                ToWallet = request.To.ToLower(),
                 DateOfTransaction = _dateTime.UtcNow,
                 NFTId = request.NFTId,
             });
 
-            nft.OwnerId = _currentUserService.UserId;
+            nft.OwnerId = user.Id;
             nft.CurrentWallet = request.To;
 
             await _context.SaveChangesAsync(cancellationToken);

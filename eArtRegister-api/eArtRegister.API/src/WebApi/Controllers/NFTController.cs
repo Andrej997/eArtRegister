@@ -1,7 +1,9 @@
 ﻿using eArtRegister.API.Application.NFTs.Commands.AddNFT;
 using eArtRegister.API.Application.NFTs.Commands.ChangeStatus;
 using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
+using eArtRegister.API.Application.NFTs.Commands.SetOnSale;
 using eArtRegister.API.Application.NFTs.Commands.TransferNFT;
+using eArtRegister.API.Application.NFTs.Queries.GetNFTs;
 using eArtRegister.API.WebApi.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +29,21 @@ namespace eArtRegister.API.WebApi.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("mine/{wallet}")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<ActionResult<List<NFTDto>>> NFTs(string wallet)
+        {
+            try
+            {
+                return await Mediator.Send(new GetNFTsQuery(wallet));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -61,6 +78,21 @@ namespace eArtRegister.API.WebApi.Controllers
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("sendAsGift")]
         public async Task<IActionResult> TransferNFT(TransferNFTCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("setOnSale")]
+        public async Task<IActionResult> SetOnSale(SetOnSaleCommand command)
         {
             try
             {

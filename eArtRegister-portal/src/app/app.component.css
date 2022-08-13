@@ -1,5 +1,4 @@
-
-  .wallet{
+.wallet{
     position: absolute;
     right: 0;
     height: calc(100% - 72px);

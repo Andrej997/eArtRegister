@@ -42,6 +42,13 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
+            var user = _context.Users.Where(x => x.Wallet == request.Wallet).FirstOrDefault();
+
+            if (!_context.Bundles.Any(b => b.OwnerId == user.Id))
+            {
+                throw new InvalidOperationException("Can't mint in others bundles");
+            }
+
             var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
 
             var minted = await _nethereum.SafeMint(
@@ -58,11 +65,11 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 IPFSId = retVal.Hash,
                 Name = request.Name,
                 Description = request.Description,
-                OwnerId = _currentUserService.UserId,
+                OwnerId = user.Id,
                 TokenId = tokenId,
                 BundleId = request.BundleId,
                 StatusId = Domain.Enums.NFTStatus.Minted,
-                CreatorId = _currentUserService.UserId,
+                CreatorId = user.Id,
                 MintedAt = _dateTime.UtcNow,
                 CurrentPrice = request.Price,
                 CurrentPriceDate = _dateTime.UtcNow,
@@ -77,8 +84,9 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 BlockNumber = Convert.ToInt64(minted.BlockNumber.ToString(), 16),
                 GasUsed = Convert.ToInt64(minted.GasUsed.ToString(), 16),
                 EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16),
-                ModifiedBy = _currentUserService.UserId.ToString(),
-                ModifiedOn = _dateTime.UtcNow
+                ModifiedBy = user.Id.ToString(),
+                ModifiedOn = _dateTime.UtcNow,
+                CurrentWallet = request.Wallet
             };
 
             _context.NFTs.Add(entry);

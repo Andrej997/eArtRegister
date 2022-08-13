@@ -1,13 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CollectionComponent } from './components/collections/collection/collection.component';
-import { CollectionsComponent } from './components/collections/collections.component';
+import { BundleComponent } from './components/bundle/bundle.component';
 import { CreateBundleComponent } from './components/create-bundle/create-bundle.component';
 import { HomeComponent } from './components/home/home.component';
-import { LoginComponent } from './components/login/login.component';
 import { MintNftComponent } from './components/mint-nft/mint-nft.component';
-import { ProfileComponent } from './components/profile/profile.component';
-import { RegisterComponent } from './components/register/register.component';
+import { MyBundlesComponent } from './components/my-bundles/my-bundles.component';
+import { MyNftsComponent } from './components/my-nfts/my-nfts.component';
 
 const routes: Routes = [
   {
@@ -17,32 +15,22 @@ const routes: Routes = [
   },
   {
     path: 'bundles/:bundleId',
-    component: CollectionComponent,
+    component: BundleComponent,
     pathMatch: 'full',
   },
   {
     path: 'bundles',
-    component: CollectionsComponent,
+    component: MyBundlesComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'nfts',
+    component: MyNftsComponent,
     pathMatch: 'full',
   },
   {
     path: 'bundles/:bundleId/mint',
     component: MintNftComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'profile',
-    component: ProfileComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'register',
-    component: RegisterComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'login',
-    component: LoginComponent,
     pathMatch: 'full',
   },
   {

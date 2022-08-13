@@ -2,31 +2,45 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths":{
+      "crypto": ["./node_modules/crypto-browserify"],
+      "stream": ["./node_modules/stream-browserify"],
+      "assert": ["./node_modules/assert"],
+      "http": ["./node_modules/stream-http"],
+      "https": ["./node_modules/https-browserify"],
+      "url": ["./node_modules/url"],
+      "os": ["./node_modules/os-browserify"],
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "strictPropertyInitialization": false,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
     "lib": [
-      "es2018",
+      "es2020",
       "dom"
-    ]
+    ],
+    "noImplicitAny": false
   },
   "angularCompilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "noImplicitAny": false,
+    "strictTemplates": true,
+    "strictNullChecks": false
   }
 }

@@ -13,10 +13,20 @@ export class HomeComponent implements OnInit {
   searchInput: string = '';
   bundles: any[] = [];
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, 
+    private router: Router) { }
 
   ngOnInit(): void {
     this.getBundles();
+  }
+
+  private getBundles() {
+    this.http.get(environment.api + `Bundle`).subscribe(result => {
+      console.log(result);
+      this.bundles = result as any[];
+    }, error => {
+        console.error(error);
+    });
   }
 
   changeSearch(): void {
@@ -30,17 +40,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  private getBundles() {
-    this.http.get(environment.api + `Bundle`).subscribe(result => {
-      console.log(result);
-      this.bundles = result as any[];
-    }, error => {
-        console.error(error);
-    });
-  }
-
   openCollection(bundleId: any) {
     this.router.navigate([`/bundles/${bundleId}`]);
   }
-
 }

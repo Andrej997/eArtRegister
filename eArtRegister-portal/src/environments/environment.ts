@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  infuraId: '',
   api : "https://localhost:44335/api/"
 };
 

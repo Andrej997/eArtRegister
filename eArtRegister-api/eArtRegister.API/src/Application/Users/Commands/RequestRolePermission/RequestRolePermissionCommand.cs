@@ -36,16 +36,16 @@ namespace eArtRegister.API.Application.Users.Commands.RequestRolePermission
 
             if (request.RoleId == (long)Domain.Enums.Role.Administrator)
                 throw new Exception("Only administrator can add you as administrator");
-            else if (request.RoleId == (long)Domain.Enums.Role.Buyer)
-            {
-                if (user.Wallets != null && user.Wallets.Any())
-                    throw new Exception("You need to register a wallet to be a buyer");
-            }
-            else if (request.RoleId == (long)Domain.Enums.Role.Seller)
-            {
-                if (user.Wallets != null && user.Wallets.Any())
-                    throw new Exception("You need to register a wallet to be a seller");
-            }
+            //else if (request.RoleId == (long)Domain.Enums.Role.Buyer)
+            //{
+            //    if (string.IsNullOrEmpty(user.Wallet))
+            //        throw new Exception("You need to register a wallet to be a buyer");
+            //}
+            //else if (request.RoleId == (long)Domain.Enums.Role.Seller)
+            //{
+            //    if (user.Wallets != null && user.Wallets.Any())
+            //        throw new Exception("You need to register a wallet to be a seller");
+            //}
 
             _context.UserRoles.Add(new Domain.Entities.UserRole
             {

@@ -1,0 +1,31 @@
+<div *ngIf="bundle">
+    <h1>Name: {{bundle.name}}</h1>
+    <h1>Description: {{bundle.description}}</h1>
+    <h1>Bundle owner: {{bundle.ownerWallet}}</h1>
+    <button type="button" *ngIf="wallet == bundle.ownerWallet" style="width:100%" class="btn btn-warning" (click)="mintNFT()" >MINT</button>
+</div>
+
+<br/>
+<div class="row" style='margin-left: 4px; margin-right: 4px; margin-top: 4px;'>
+    <div class="col-md-3 col-xs-6" *ngFor='let nft of nfts' style='margin-top: 4px; '>
+        <div class="card">
+            <img class="card-img-top img-fluid" width="100px" height="100px" src="data:image/png;base64,{{nft.bytes}}" alt="Card image cap">
+            <div class="card-block">
+                <h4 class="card-title">Name: {{nft.name}}</h4>
+                <p class="card-text">Description: {{nft.description}}</p>
+                <p class="card-text">Status: {{nft.statusId}}</p>
+                <span><span class="card-text" style="float: left">Price {{nft.currentPrice / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="8%"></span><br>
+                <p class="card-text"><small class="text-muted">Minted at {{nft.mintedAt}}</small></p>
+                <button type="button" style="width:100%" class="btn btn-warning" (click)="setNFTOnSale(nft.id)" *ngIf="wallet != nft.currentWallet">SELL</button>
+                <button type="button" style="width:100%" class="btn btn-warning" (click)="buyNFT(nft.id)" *ngIf="wallet == nft.currentWallet && nft.statusId == 'ON_SALE'">BUY</button>
+                <button type="button" style="width:42%" class="btn btn-warning" (click)="sendNFTasGift(nft.id, nft.erC721ContractAddress, nft.tokenId)" *ngIf="wallet != nft.currentWallet">SEND AS GIFT</button>
+                <input class="form-control mr-sm-2" style="width:54%; float: left;" type="text" placeholder="Wallet" aria-label="Wallet" [(ngModel)]="toWallet" *ngIf="wallet != nft.currentWallet">
+                <!-- <button type="button" style="width:100%" class="btn btn-warning" (click)="openNFT(nft.id)">OPEN NFT</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="nfts.length == 0" style="width:800px; margin:0 auto;">
+    <h1>NO NFTS IN THIS BUNDLE</h1>
+</div>

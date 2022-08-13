@@ -1,4 +1,5 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
+using eArtRegister.API.Domain.Entities;
 using MediatR;
 using System;
 using System.Linq;
@@ -26,13 +27,12 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
 
         public async Task<Unit> Handle(CheckWalletCommand request, CancellationToken cancellationToken)
         {
-            if (_context.Wallets.Any(t => t.UserId == Guid.Parse("290839d8-0572-45c4-9622-2840d6d613c5") && t.MetamaskWallet == request.Wallet))
+            if (!_context.Users.Any(t => t.Wallet == request.Wallet))
             {
-                _context.Wallets.Add(new Domain.Entities.Wallet
+                _context.Users.Add(new User
                 {
-                    MetamaskWallet = request.Wallet,
-                    UserId = Guid.Parse("290839d8-0572-45c4-9622-2840d6d613c5"),
-                    DateAddedWallet = _dateTime.UtcNow
+                    Wallet = request.Wallet.ToLower(),
+                    DateWalletAdded = _dateTime.UtcNow
                 });
 
                 await _context.SaveChangesAsync(cancellationToken);

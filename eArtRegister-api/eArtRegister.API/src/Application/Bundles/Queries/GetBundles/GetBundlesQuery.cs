@@ -16,16 +16,19 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
     {
         public string Search { get; set; }
         public bool Mine { get; set; }
+        public string Wallet { get; set; }
 
-        public GetBundlesQuery(bool mine = false)
+        public GetBundlesQuery(bool mine = false, string wallet = null)
         {
             Mine = mine;
+            Wallet = wallet;
         }
 
-        public GetBundlesQuery(string search, bool mine = false)
+        public GetBundlesQuery(string search, bool mine = false, string wallet = null)
         {
             Search = search;
             Mine = mine;
+            Wallet = wallet;
         }
     }
     public class GetBundlesQueryHandler : IRequestHandler<GetBundlesQuery, List<BundleDto>>
@@ -54,8 +57,7 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
 
         public async Task<List<BundleDto>> Handle(GetBundlesQuery request, CancellationToken cancellationToken)
         {
-            var aa = await _nethereum.CreatePurchaseContract();
-
+            var user = _context.Users.Where(x => x.Wallet.ToLower() == request.Wallet).FirstOrDefault();
             var bundlesQuery = _context.Bundles
                     .AsNoTracking();
 
@@ -63,7 +65,7 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
                 bundlesQuery = bundlesQuery.Where(t => t.Name.Contains(request.Search));
 
             if (request.Mine)
-                bundlesQuery = bundlesQuery.Where(t => t.OwnerId == _currentUserService.UserId);
+                bundlesQuery = bundlesQuery.Where(t => t.OwnerId == user.Id);
 
             var bundles = await bundlesQuery
                     .OrderBy(t => t.Order)

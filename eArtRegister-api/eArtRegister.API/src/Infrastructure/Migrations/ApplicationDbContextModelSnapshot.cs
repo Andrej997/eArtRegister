@@ -683,14 +683,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<Guid>("BundleId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("bundle_id");
-
-                    b.Property<string>("ContactAddress")
-                        .HasColumnType("text")
-                        .HasColumnName("contact_address");
-
                     b.Property<DateTime>("DateOfTransaction")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_of_transaction");
@@ -713,9 +705,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("nft_transaction_pkey");
-
-                    b.HasIndex("BundleId")
-                        .HasDatabaseName("ix_nft_transaction_bundle_id");
 
                     b.HasIndex("NFTId")
                         .HasDatabaseName("ix_nft_transaction_nft_id");
@@ -799,11 +788,9 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<bool>("EmailNotification")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("email_notification");
+                    b.Property<DateTime?>("DateWalletAdded")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_wallet_added");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -816,6 +803,10 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_on");
+
+                    b.Property<string>("Wallet")
+                        .HasColumnType("text")
+                        .HasColumnName("wallet");
 
                     b.HasKey("Id")
                         .HasName("user_pkey");
@@ -881,35 +872,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasDatabaseName("ix_user_role_role_id");
 
                     b.ToTable("user_role", "eart");
-                });
-
-            modelBuilder.Entity("eArtRegister.API.Domain.Entities.Wallet", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id")
-                        .HasDefaultValueSql("uuid_generate_v4()");
-
-                    b.Property<DateTime?>("DateAddedWallet")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_added_wallet");
-
-                    b.Property<string>("MetamaskWallet")
-                        .HasColumnType("text")
-                        .HasColumnName("metamask_wallet");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_is");
-
-                    b.HasKey("Id")
-                        .HasName("wallet_pkey");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_wallet_user_id");
-
-                    b.ToTable("wallet", "eart");
                 });
 
             modelBuilder.Entity("eArtRegister.API.Infrastructure.Identity.ApplicationUser", b =>
@@ -1376,21 +1338,12 @@ namespace eArtRegister.API.Infrastructure.Migrations
 
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.NFTTransaction", b =>
                 {
-                    b.HasOne("eArtRegister.API.Domain.Entities.Bundle", "Bundle")
-                        .WithMany("Transactions")
-                        .HasForeignKey("BundleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_nft_transaction_bundle_bundle_id");
-
                     b.HasOne("eArtRegister.API.Domain.Entities.NFT", "NFT")
                         .WithMany("Transactions")
                         .HasForeignKey("NFTId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_nft_transaction_nft_nft_id");
-
-                    b.Navigation("Bundle");
 
                     b.Navigation("NFT");
                 });
@@ -1445,18 +1398,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasConstraintName("fk_user_role_user_user_id");
 
                     b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("eArtRegister.API.Domain.Entities.Wallet", b =>
-                {
-                    b.HasOne("eArtRegister.API.Domain.Entities.User", "User")
-                        .WithMany("Wallets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_wallet_user_user_id");
 
                     b.Navigation("User");
                 });
@@ -1525,8 +1466,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Navigation("NFTs");
 
                     b.Navigation("Rates");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.NFT", b =>
@@ -1573,8 +1512,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Navigation("RatedNFTs");
 
                     b.Navigation("Roles");
-
-                    b.Navigation("Wallets");
                 });
 #pragma warning restore 612, 618
         }

@@ -24,6 +24,20 @@ namespace eArtRegister.API.WebApi.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<ActionResult<BundleDto>> GetBundle(Guid id)
+        {
+            try
+            {
+                return await Mediator.Send(new GetBundleQuery(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         [Route("search")]
         [ApiExplorerSettings(GroupName = "v1")]
@@ -40,13 +54,13 @@ namespace eArtRegister.API.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("mine")]
+        [Route("mine/{wallet}")]
         [ApiExplorerSettings(GroupName = "v1")]
-        public async Task<ActionResult<List<BundleDto>>> MineBundles()
+        public async Task<ActionResult<List<BundleDto>>> MineBundles(string wallet)
         {
             try
             {
-                return await Mediator.Send(new GetBundlesQuery(true));
+                return await Mediator.Send(new GetBundlesQuery(true, wallet: wallet));
             }
             catch (Exception ex)
             {
