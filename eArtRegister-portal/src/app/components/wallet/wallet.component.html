@@ -6,6 +6,10 @@
     </div>
 
     <div *ngIf="user" class="logged-div">
+      <p>Balance: </p><span> {{ balance }}</span>
+    </div>
+
+    <div *ngIf="user" class="logged-div">
       <p>Deposit contract: </p><span> {{ depositContract }}</span>
     </div>
 
@@ -22,11 +26,11 @@
     </button>
 
     <button class="btn btn-warning btn-lg" (click)="addDeposit()">
-      Deposit 
+      Deposit 0.02
     </button>
 
     <button class="btn btn-warning btn-lg" (click)="depositToServer()">
-      Deposit server
+      Deposit server 0.01
     </button>
 
     <span class="navbar-text" *ngIf="isSellet">

@@ -2,6 +2,7 @@
 using MediatR;
 using NethereumAccess.Interfaces;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.ChangeStatus
     public class ChangeStatusCommand : IRequest
     {
         public Guid Id { get; set; }
-        public string StatusId { get; set; }
+        public string Wallet { get; set; }
     }
     public class AddNFTCommandHandler : IRequestHandler<ChangeStatusCommand>
     {
@@ -33,9 +34,12 @@ namespace eArtRegister.API.Application.NFTs.Commands.ChangeStatus
             if (nft == null)
                 throw new Exception("Unknown NFT");
 
-            nft.StatusId = request.StatusId;
+            nft.StatusId = Domain.Enums.NFTStatus.Pending;
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
+            user.ServerBalance = user.ServerBalance - 1000000000000000;
 
             var bundle = _context.Bundles.Find(nft.BundleId);
 

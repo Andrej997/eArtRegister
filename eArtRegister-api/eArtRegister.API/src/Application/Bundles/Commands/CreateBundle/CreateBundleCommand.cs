@@ -35,6 +35,8 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             if (_context.Bundles.Any(t => t.Name == request.Name && t.OwnerId == _currentUserService.UserId))
                 throw new Exception("Name is already taken");
 
+            user.ServerBalance = user.ServerBalance - 1000000000000000;
+
             var transactionReceipt = await _nethereum.CreateContact(request.Name);
 
             var entry = new Bundle

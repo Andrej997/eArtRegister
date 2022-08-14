@@ -122,7 +122,7 @@ export class Web3Service {
         if(err != null) {
           reject(err);
         }
-  
+
         resolve(result);
       });
     }) as Promise<string>;

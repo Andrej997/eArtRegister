@@ -47,11 +47,11 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
 
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
-            var nftSale = _context.NFTSales.Where(s => s.NFTId == request.NFTId && s.SaleContractAddress == nft.PurchaseContract).FirstOrDefault();
+            //var nftSale = _context.NFTSales.Where(s => s.NFTId == request.NFTId && s.SaleContractAddress == nft.PurchaseContract).FirstOrDefault();
 
-            nftSale.WalletBought = request.Wallet;
-            nftSale.DateOfPurchase = _dateTime.UtcNow;
-            nftSale.TransactionHashPurchase = request.TransactionHash;
+            //nftSale.WalletBought = request.Wallet;
+            //nftSale.DateOfPurchase = _dateTime.UtcNow;
+            //nftSale.TransactionHashPurchase = request.TransactionHash;
 
             nft.CurrentWallet = request.Wallet;
             //nft.StatusId = Domain.Enums.NFTStatus.Sold;

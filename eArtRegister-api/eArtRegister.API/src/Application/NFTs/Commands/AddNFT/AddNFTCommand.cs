@@ -44,6 +44,8 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         {
             var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
 
+            user.ServerBalance = user.ServerBalance - 1000000000000000;
+
             if (!_context.Bundles.Any(b => b.OwnerId == user.Id))
             {
                 throw new InvalidOperationException("Can't mint in others bundles");

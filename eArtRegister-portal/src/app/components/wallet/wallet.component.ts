@@ -12,6 +12,7 @@ export class WalletComponent implements OnInit {
 
   user: any;
   isSellet: boolean = false;
+  balance: any = '';
   depositValue: any = '';
   depositContract: any = '';
   depositServerValue: any = '';
@@ -27,6 +28,15 @@ export class WalletComponent implements OnInit {
       console.log(response);
       this.user = response
       this.getUserRoles();
+      this.getGetWalletBallance(this.user[0]);
+    });
+  }
+
+  private getGetWalletBallance(wallet) {
+    this.http.get(environment.chainApi + "?module=account&action=balance&address=" + wallet + "&tag=latest&apikey=" + environment.apiKey).subscribe(result => {
+      this.balance = ((result as any).result) / 1000000000000000000;
+    }, error => {
+        console.error(error);
     });
   }
 
