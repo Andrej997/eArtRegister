@@ -7,6 +7,8 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { provider } from 'web3-core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { timer } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 let tokenAbi = require('./transferAbi.json');
 let erc271Abi = require('./erc271Abi.json');
@@ -75,11 +77,26 @@ export class Web3Service {
     this.provider = await this.web3Modal.connect(); // set provider
     if (this.provider) {
       this.web3js = new Web3(this.provider);
-    } // create web3 instance
+    } 
     this.accounts = await this.web3js.eth.getAccounts();
 
     this.checkWallet((this.accounts as string[])[0]);
     return this.accounts;
+  }
+
+  async getTransactionStatus(transactionHash): Promise<boolean> {
+    this.provider = await this.web3Modal.connect(); // set provider
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    } 
+
+    let receipt = null;
+    do {
+      receipt = await this.web3js.eth.getTransactionReceipt(transactionHash);
+      await timer(1000).pipe(take(1)).toPromise();
+    } while (receipt == null)
+
+    return ((receipt as any).status as boolean);
   }
 
   private checkWallet(wallet: string) {
