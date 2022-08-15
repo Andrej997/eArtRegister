@@ -3,6 +3,7 @@ using eArtRegister.API.Application.Common.Interfaces;
 using eArtRegister.API.Infrastructure;
 using eArtRegister.API.Infrastructure.Persistence;
 using eArtRegister.API.WebApi.Services;
+using Etherscan;
 using IPFS;
 using KeyCloak;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -124,6 +125,9 @@ namespace eArtRegister.API.WebApi
 
             services.Configure<IPFS.Common.IPFSConfig>(Configuration.GetSection("IPFS"));
             services.AddIPFS();
+
+            services.Configure<Etherscan.Common.EtherscanConfig>(Configuration.GetSection("Etherscan"));
+            services.AddEtherscan();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

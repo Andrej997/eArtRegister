@@ -1,6 +1,7 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
 using eArtRegister.API.Application.Common.Models;
 using eArtRegister.API.Domain.Entities;
+using Etherscan.Interfaces;
 using IPFS.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
@@ -30,21 +31,23 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         private readonly ICurrentUserService _currentUserService;
         private readonly IIPFSFile _ipfs;
         private readonly INethereumBC _nethereum;
+        private readonly IEtherscan _etherscan;
 
-        public AddNFTCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService, IIPFSFile ipfs, INethereumBC nethereum)
+        public AddNFTCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService, IIPFSFile ipfs, INethereumBC nethereum, IEtherscan etherscan)
         {
             _context = context;
             _dateTime = dateTime;
             _currentUserService = currentUserService;
             _ipfs = ipfs;
             _nethereum = nethereum;
+            _etherscan = etherscan;
         }
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
             var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
 
-            user.ServerBalance = user.ServerBalance - 1000000000000000;
+            var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
 
             if (!_context.Bundles.Any(b => b.OwnerId == user.Id))
             {
@@ -58,6 +61,8 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 request.Wallet,
                 "ipfs://" + retVal.Hash
                 );
+
+            var transaction = await _etherscan.GetTransactionStatus(minted.TransactionHash, cancellationToken);
 
             long tokenId = _context.NFTs.Where(t => t.BundleId == request.BundleId).Count();
 

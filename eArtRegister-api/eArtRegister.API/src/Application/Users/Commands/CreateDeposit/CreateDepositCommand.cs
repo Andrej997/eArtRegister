@@ -39,7 +39,7 @@ namespace eArtRegister.API.Application.Users.Commands.CreateDeposit
 
         public async Task<Unit> Handle(CreateDepositCommand request, CancellationToken cancellationToken)
         {
-            var depositTransaction = await _nethereum.CreateDepositContract();
+            var depositTransaction = await _nethereum.CreateDepositContract(request.Wallet);
 
             var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
             user.DepositContract = depositTransaction.ContractAddress;

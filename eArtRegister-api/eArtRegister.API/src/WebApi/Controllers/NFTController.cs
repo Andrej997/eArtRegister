@@ -1,7 +1,8 @@
 ﻿using eArtRegister.API.Application.NFTs.Commands.AddNFT;
+using eArtRegister.API.Application.NFTs.Commands.Approved;
 using eArtRegister.API.Application.NFTs.Commands.Bought;
-using eArtRegister.API.Application.NFTs.Commands.ChangeStatus;
 using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
+using eArtRegister.API.Application.NFTs.Commands.PrepareForSale;
 using eArtRegister.API.Application.NFTs.Commands.SetOnSale;
 using eArtRegister.API.Application.NFTs.Commands.TransferNFT;
 using eArtRegister.API.Application.NFTs.Queries.GetNFTs;
@@ -123,7 +124,22 @@ namespace eArtRegister.API.WebApi.Controllers
 
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("prepareForSale")]
-        public async Task<IActionResult> ChangeStatus(ChangeStatusCommand command)
+        public async Task<IActionResult> PrepareForSale(PrepareForSaleCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("approved")]
+        public async Task<IActionResult> Approved(ApprovedCommand command)
         {
             try
             {

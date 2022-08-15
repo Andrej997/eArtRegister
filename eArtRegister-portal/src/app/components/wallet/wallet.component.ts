@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Web3Service } from 'src/app/services/contract/web3.service';
 import { environment } from 'src/environments/environment';
 
@@ -17,7 +18,8 @@ export class WalletComponent implements OnInit {
   depositContract: any = '';
   depositServerValue: any = '';
 
-  constructor(private web3: Web3Service, private http: HttpClient) { }
+  constructor(private web3: Web3Service, private http: HttpClient,
+    private toastr: ToastrService,) { }
 
   ngOnInit(): void {
     this.signInWithMetaMask();
@@ -28,15 +30,6 @@ export class WalletComponent implements OnInit {
       console.log(response);
       this.user = response
       this.getUserRoles();
-      this.getGetWalletBallance(this.user[0]);
-    });
-  }
-
-  private getGetWalletBallance(wallet) {
-    this.http.get(environment.chainApi + "?module=account&action=balance&address=" + wallet + "&tag=latest&apikey=" + environment.apiKey).subscribe(result => {
-      this.balance = ((result as any).result) / 1000000000000000000;
-    }, error => {
-        console.error(error);
     });
   }
 
@@ -47,6 +40,7 @@ export class WalletComponent implements OnInit {
       this.depositValue = (result as any).depositBalance / 1000000000000000000;
       this.depositContract = (result as any).depositContract;
       this.depositServerValue = (result as any).serverBalance / 1000000000000000000;
+      this.balance = (result as any).walletBalance / 1000000000000000000;
     }, error => {
         console.error(error);
     });
@@ -58,6 +52,7 @@ export class WalletComponent implements OnInit {
     };
 
     this.http.post(environment.api + `Users/createDeposit`, body).subscribe(result => {
+      this.toastr.success("Deposit created");
     }, error => {
         console.error(error);
     });
@@ -72,6 +67,7 @@ export class WalletComponent implements OnInit {
       };
   
       this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
+        this.toastr.success("Add to your private deposit");
       }, error => {
           console.error(error);
       });
@@ -86,6 +82,7 @@ export class WalletComponent implements OnInit {
       };
   
       this.http.post(environment.api + `Users/deposit/server`, body).subscribe(result => {
+        this.toastr.success("Deposited on server");
       }, error => {
           console.error(error);
       });

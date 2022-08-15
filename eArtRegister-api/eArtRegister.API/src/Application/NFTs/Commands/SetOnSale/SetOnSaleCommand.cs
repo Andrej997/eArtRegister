@@ -47,15 +47,15 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
 
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
-            _context.NFTSales.Add(new NFTSale
-            {
-                DateOfSet = _dateTime.UtcNow,
-                DateOfPurchase = _dateTime.UtcNow,
-                NFTId = request.NFTId,
-                TransactionHashSet = request.TransactionHash.ToLower(),
-                WalletSet = request.Wallet.ToLower(),
-                SaleContractAddress = nft.PurchaseContract.ToLower()
-            });
+            //_context.NFTSales.Add(new NFTSale
+            //{
+            //    DateOfSet = _dateTime.UtcNow,
+            //    DateOfPurchase = _dateTime.UtcNow,
+            //    NFTId = request.NFTId,
+            //    TransactionHashSet = request.TransactionHash.ToLower(),
+            //    WalletSet = request.Wallet.ToLower(),
+            //    SaleContractAddress = nft.PurchaseContract.ToLower()
+            //});
 
             nft.StatusId = Domain.Enums.NFTStatus.OnSale;
 

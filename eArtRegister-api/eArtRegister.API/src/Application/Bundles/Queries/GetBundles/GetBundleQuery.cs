@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using eArtRegister.API.Application.Common.Interfaces;
+using Etherscan.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,6 +24,7 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        
 
         public GetBundleQueryHandler(IApplicationDbContext context, IMapper mapper)
         {

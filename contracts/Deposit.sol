@@ -3,14 +3,24 @@ pragma solidity ^0.8.4;
 
 contract Deposit {
 
+    address owner;
+    address server;
     mapping(address => uint256) public balances;
 
-    function deposit() public payable {
-        balances[msg.sender] += msg.value;
+    constructor(address _owner) {    
+        owner = _owner;  
+        server = msg.sender;
     }
 
-    function withdraw(address payable destAddr) public payable {
-        destAddr.transfer(msg.value);
-        balances[msg.sender] -= msg.value;
+    function deposit() public payable {
+        balances[owner] += msg.value;
+    }
+
+    function withdraw(address payable _server) external payable {
+        require(server == _server, "Not server");
+        require(msg.sender == _server, "Not server");
+        require(msg.sender == server, "Not server");
+        _server.transfer(msg.value);
+        balances[owner] -= msg.value;
     }
 }

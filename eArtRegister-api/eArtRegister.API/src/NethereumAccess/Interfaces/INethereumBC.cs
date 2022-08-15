@@ -17,7 +17,8 @@ namespace NethereumAccess.Interfaces
         Task<TransactionReceipt> BalanceOfTrader(string traderContractAddress, string myWallet);
         Task<TransactionReceipt> WithdrawMoney(string traderContractAddress, long amount, string destAddr);
         Task<TransactionReceipt> ApprovePurchaseContract(string contractAddress, string purchaseContractAddress);
-        Task<TransactionReceipt> CreateDepositContract();
+        Task<TransactionReceipt> CreateDepositContract(string ownerWallet);
         Task<BigInteger> GetDepositBalance(string depositContractAddress, string myWallet);
+        Task<TransactionReceipt> WithdrawDepositContract(string depositContractAddress);
     }
 }

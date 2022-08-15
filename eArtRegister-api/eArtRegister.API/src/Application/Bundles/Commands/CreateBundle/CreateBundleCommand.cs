@@ -1,5 +1,6 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
 using eArtRegister.API.Domain.Entities;
+using Etherscan.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
 using System;
@@ -21,12 +22,14 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUserService _currentUserService;
         private readonly INethereumBC _nethereum;
+        private readonly IEtherscan _etherscan;
 
-        public CreateBundleCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, INethereumBC nethereum)
+        public CreateBundleCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, INethereumBC nethereum, IEtherscan etherscan)
         {
             _context = context;
             _currentUserService = currentUserService;
             _nethereum = nethereum;
+            _etherscan = etherscan;
         }
 
         public async Task<Guid> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
@@ -35,9 +38,14 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             if (_context.Bundles.Any(t => t.Name == request.Name && t.OwnerId == _currentUserService.UserId))
                 throw new Exception("Name is already taken");
 
-            user.ServerBalance = user.ServerBalance - 1000000000000000;
+            var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
 
             var transactionReceipt = await _nethereum.CreateContact(request.Name);
+
+            var transaction = await _etherscan.GetTransactionStatus(transactionReceipt.TransactionHash, cancellationToken);
+
+            if (transaction.IsError == true)
+                throw new Exception("Bundle not created!");
 
             var entry = new Bundle
             {

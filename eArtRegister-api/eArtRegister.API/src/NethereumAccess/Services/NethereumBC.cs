@@ -230,7 +230,7 @@ namespace NethereumAccess.Services
             }
         }
 
-        public async Task<TransactionReceipt> CreateDepositContract()
+        public async Task<TransactionReceipt> CreateDepositContract(string ownerWallet)
         {
             var account = new Account(config.PrivateKey, config.ChainId);
             var web3 = new Web3(account, config.Url);
@@ -241,6 +241,7 @@ namespace NethereumAccess.Services
                 var depositDeployment = new DepositDeployment()
                 {
                     Gas = config.Gass,
+                    Owner = ownerWallet
                 };
 
                 return await DepositService.DeployContractAndWaitForReceiptAsync(web3, depositDeployment);
@@ -264,6 +265,27 @@ namespace NethereumAccess.Services
 
                 var depositService = new DepositService(web3, depositContractAddress);
                 return await depositService.BalanceQueryAsync(balances);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<TransactionReceipt> WithdrawDepositContract(string depositContractAddress)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var withdraw = new DepositDefinition.WithdrawFunction();
+                withdraw.Server = config.ServerWallet;
+                withdraw.Amount = 1000000000000000;
+
+                var depositService = new DepositService(web3, depositContractAddress);
+                return await depositService.WithdrawRequestAndWaitForReceiptAsync(withdraw);
             }
             catch (Exception e)
             {

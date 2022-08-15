@@ -388,7 +388,9 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     "NOT_ON_SALE",
                     "ON_SALE",
                     "PENDING",
-                    "SOLD"
+                    "SOLD",
+                    "APPROVED",
+                    "WAITING_FOR_APPROVAL"
                 });
 
             migrationBuilder.InsertData(

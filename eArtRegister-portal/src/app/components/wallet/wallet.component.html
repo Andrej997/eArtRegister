@@ -17,11 +17,11 @@
       <p>Deposit: </p><span> {{ depositValue }}</span>
     </div>
 
-    <div *ngIf="user" class="logged-div">
+    <!-- <div *ngIf="user" class="logged-div">
       <p>Deposit server: </p><span> {{ depositServerValue }}</span>
-    </div>
+    </div> -->
 
-    <button class="btn btn-warning btn-lg" (click)="createDeposit()" *ngIf="!isSellet">
+    <button class="btn btn-warning btn-lg" (click)="createDeposit()" *ngIf="!depositContract">
       Create deposit
     </button>
 
@@ -29,21 +29,21 @@
       Deposit 0.02
     </button>
 
-    <button class="btn btn-warning btn-lg" (click)="depositToServer()">
+    <!-- <button class="btn btn-warning btn-lg" (click)="depositToServer()">
       Deposit server 0.01
-    </button>
+    </button> -->
 
-    <span class="navbar-text" *ngIf="isSellet">
+    <span class="navbar-text" *ngIf="depositContract">
       <a class="nav-link" href="nfts">
         My NFTs
       </a>
     </span>
-    <span class="navbar-text" *ngIf="isSellet">
+    <span class="navbar-text" *ngIf="depositContract">
       <a class="nav-link" href="bundles">
         My bundles
       </a>
     </span>
-    <span class="navbar-text" *ngIf="isSellet">
+    <span class="navbar-text" *ngIf="depositContract">
       <a class="nav-link" href="create">
         Create bundle
       </a>

@@ -54,7 +54,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
             //nftSale.TransactionHashPurchase = request.TransactionHash;
 
             nft.CurrentWallet = request.Wallet;
-            //nft.StatusId = Domain.Enums.NFTStatus.Sold;
+            nft.StatusId = Domain.Enums.NFTStatus.Sold;
 
             await _context.SaveChangesAsync(cancellationToken);
 

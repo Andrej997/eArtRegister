@@ -7,8 +7,6 @@ export const environment = {
   infuraId: '',
   api : "https://localhost:44335/api/",
   serverAddress: '0x6009C754B4b625f32d3ad7de27363871F00BaBf8',
-  apiKey: '3JKQ2VQUVN3PYCPJKJS4ZWXNMEJFRKIZ4V',
-  chainApi: 'https://api-rinkeby.etherscan.io/api'
 };
 
 /*

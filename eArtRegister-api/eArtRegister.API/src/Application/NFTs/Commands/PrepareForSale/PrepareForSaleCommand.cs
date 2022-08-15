@@ -1,4 +1,5 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
+using Etherscan.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
 using System;
@@ -6,49 +7,48 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.NFTs.Commands.ChangeStatus
+namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
 {
-    public class ChangeStatusCommand : IRequest
+    public class PrepareForSaleCommand : IRequest
     {
         public Guid Id { get; set; }
         public string Wallet { get; set; }
     }
-    public class AddNFTCommandHandler : IRequestHandler<ChangeStatusCommand>
+    public class PrepareForSaleCommandHandler : IRequestHandler<PrepareForSaleCommand>
     {
         private readonly IApplicationDbContext _context;
         private readonly IDateTime _dateTime;
         private readonly ICurrentUserService _currentUserService;
         private readonly INethereumBC _nethereum;
+        private readonly IEtherscan _etherscan;
 
-        public AddNFTCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService, INethereumBC nethereum)
+        public PrepareForSaleCommandHandler(IApplicationDbContext context, IDateTime dateTime, ICurrentUserService currentUserService, INethereumBC nethereum, IEtherscan etherscan)
         {
             _context = context;
             _dateTime = dateTime;
             _currentUserService = currentUserService;
             _nethereum = nethereum;
+            _etherscan = etherscan;
         }
 
-        public async Task<Unit> Handle(ChangeStatusCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(PrepareForSaleCommand request, CancellationToken cancellationToken)
         {
             var nft = _context.NFTs.Find(request.Id);
             if (nft == null)
                 throw new Exception("Unknown NFT");
 
-            nft.StatusId = Domain.Enums.NFTStatus.Pending;
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
-            user.ServerBalance = user.ServerBalance - 1000000000000000;
+            nft.StatusId = Domain.Enums.NFTStatus.WaitingForApproval;
 
             var bundle = _context.Bundles.Find(nft.BundleId);
 
             var purchaseContractTransaction = await _nethereum.CreatePurchaseContract();
-            Thread.Sleep(10);
-            var approvedTransaction = await _nethereum.ApprovePurchaseContract(bundle.ContractAddress, purchaseContractTransaction.ContractAddress);
-            Thread.Sleep(10);
-
+            var transaction = await _etherscan.GetTransactionStatus(purchaseContractTransaction.TransactionHash, cancellationToken);
+            
             nft.PurchaseContract = purchaseContractTransaction.ContractAddress;
+
+            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
+            var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

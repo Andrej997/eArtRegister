@@ -183,6 +183,33 @@ export class Web3Service {
     }) as Promise<number>;
   }
 
+  async setApprovalForAll(contractAddress: string, purchaseContractAddress: string): Promise<number> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    } 
+    this.accounts = await this.web3js.eth.getAccounts();
+    console.log(this.accounts);
+    this._erc271Contract = await new this.web3js.eth.Contract(erc271Abi, contractAddress);
+    
+    
+    return new Promise((resolve, reject) => {
+      let _web3 = this.web3js;
+      console.log(this._tokenContract);
+      
+      this._erc271Contract.methods.setApprovalForAll(purchaseContractAddress, true).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
+        console.log(err);
+        console.log(result);
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve((result));
+      });
+    }) as Promise<number>;
+  }
+
   public async getUserBalance(purchaseContract: string): Promise<number> {
 
     this.provider = await this.web3Modal.connect(); 

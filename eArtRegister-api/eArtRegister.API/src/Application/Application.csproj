@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Etherscan\Etherscan.csproj" />
     <ProjectReference Include="..\IPFS\IPFS.csproj" />
     <ProjectReference Include="..\NethereumAccess\NethereumAccess.csproj" />
   </ItemGroup>

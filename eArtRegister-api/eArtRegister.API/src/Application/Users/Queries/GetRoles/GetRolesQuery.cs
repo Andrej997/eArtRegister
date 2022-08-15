@@ -1,4 +1,5 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
+using Etherscan.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
 using System;
@@ -25,13 +26,15 @@ namespace eArtRegister.API.Application.Users.Queries.GetRoles
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
         private readonly INethereumBC _nethereum;
+        private readonly IEtherscan _etherscan;
 
-        public GetRolesQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IDateTime dateTime, INethereumBC nethereum)
+        public GetRolesQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IDateTime dateTime, INethereumBC nethereum, IEtherscan etherscan)
         {
             _context = context;
             _currentUserService = currentUserService;
             _dateTime = dateTime;
             _nethereum = nethereum;
+            _etherscan = etherscan;
         }
 
         public async Task<UserDto> Handle(GetRolesQuery request, CancellationToken cancellationToken)
@@ -45,13 +48,28 @@ namespace eArtRegister.API.Application.Users.Queries.GetRoles
                 balanace = long.Parse(balanaceString);
             }
 
+            if (!string.IsNullOrEmpty(user.DepositContract) && balanace > 0)
+            {
+                if (!_context.UserRoles.Any(ur => ur.UserId == user.Id && ur.RoleId == (long)Domain.Enums.Role.Seller))
+                {
+                    _context.UserRoles.Add(new Domain.Entities.UserRole
+                    {
+                        UserId = user.Id,
+                        RoleId = (long)Domain.Enums.Role.Seller
+                    });
+                    await _context.SaveChangesAsync(cancellationToken);
+                    roles.Add((long)Domain.Enums.Role.Seller);
+                }
+            }
+
             return new UserDto
             {
                 Wallet = user.Wallet,
                 RoleIds = roles,
                 DepositContract = user.DepositContract,
                 DepositBalance = balanace,
-                ServerBalance = user.ServerBalance
+                ServerBalance = user.ServerBalance,
+                WalletBalance = await _etherscan.GetBalance(user.Wallet, cancellationToken)
             };
         }
     }
