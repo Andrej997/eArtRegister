@@ -44,6 +44,16 @@ namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
         public async Task<List<NFTDto>> Handle(GetNFTsByByndleIdCommand request, CancellationToken cancellationToken)
         {
             var bundle = _context.Bundles.Find(request.BundleId);
+
+            var totalBigHex = await _nethereum.TotalSupply(bundle.ContractAddress);
+            long totalNFTs = Convert.ToInt64(totalBigHex.ToString(), 16);
+
+            for (long i = 0; i < totalNFTs; i++)
+            {
+                var wallet = await _nethereum.OwnerOf(bundle.ContractAddress, i);
+                var uri = await _nethereum.TokenUri(bundle.ContractAddress, i);
+            }
+
             var user = _context.Users.Where(u => u.Id == bundle.OwnerId).FirstOrDefault();
             var ipfsIds = await _nethereum.IPFSIds(_context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.ContractAddress).First());
 

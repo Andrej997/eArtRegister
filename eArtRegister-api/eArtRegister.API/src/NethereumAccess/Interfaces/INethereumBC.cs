@@ -8,6 +8,9 @@ namespace NethereumAccess.Interfaces
     public interface INethereumBC
     {
         Task<TransactionReceipt> SafeMint(string contractAddress, string to, string uri);
+        Task<BigInteger> TotalSupply(string contractAddress);
+        Task<string> OwnerOf(string contractAddress, long tokenId);
+        Task<string> TokenUri(string contractAddress, long tokenId);
         Task<TransactionReceipt> CreateContact(string name);
         Task<List<string>> IPFSIds(string contractAddress);
         Task<TransactionReceipt> TransferNFT(string contractAddress, string from, string to, long tokenId);

@@ -292,5 +292,60 @@ namespace NethereumAccess.Services
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<BigInteger> TotalSupply(string contractAddress)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var erc721Service = new ERC721Service(web3, contractAddress);
+                return await erc721Service.TotalSupplyQueryAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<string> OwnerOf(string contractAddress, long tokenId)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var ownerOf = new OwnerOfFunction();
+                ownerOf.TokenId = tokenId;
+                var erc721Service = new ERC721Service(web3, contractAddress);
+                return await erc721Service.OwnerOfQueryAsync(ownerOf);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<string> TokenUri(string contractAddress, long tokenId)
+        {
+            var account = new Account(config.PrivateKey, config.ChainId);
+            var web3 = new Web3(account, config.Url);
+            web3.Eth.TransactionManager.UseLegacyAsDefault = true;
+
+            try
+            {
+                var tokenUri = new TokenURIFunction();
+                tokenUri.TokenId = tokenId;
+                var erc721Service = new ERC721Service(web3, contractAddress);
+                return await erc721Service.TokenURIQueryAsync(tokenUri);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

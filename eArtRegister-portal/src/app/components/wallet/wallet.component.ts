@@ -62,20 +62,25 @@ export class WalletComponent implements OnInit {
     
     this.web3.deposit(this.depositContract).then(response => {
 
-      this.web3.getTransactionStatus(response).then(response => {
-        console.log(response);
+      this.web3.getTransactionStatus(response).then(response2 => {
+        this.toastr.success("Add to your private deposit");
+        if ((response2 as boolean) == true) {
+          let body = {
+            Wallet: this.user[0],
+            DepositValue : 20000000000000000,
+            TransactionHash: response
+          };
+      
+          this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
+            
+          }, error => {
+              console.error(error);
+          });
+        }
+        else {
+
+        }
         
-        let body = {
-          Wallet: this.user[0],
-          DepositValue : 20000000000000000,
-          TransactionHash: response
-        };
-    
-        this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
-          this.toastr.success("Add to your private deposit");
-        }, error => {
-            console.error(error);
-        });
       });
     });
   }
