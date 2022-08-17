@@ -107,6 +107,14 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.PurchaseContract)
                 .HasColumnName("purchase_contract");
 
+            builder.Property(e => e.MinimumParticipation)
+                .HasDefaultValue(0)
+                .HasColumnName("minimum_participation");
+
+            builder.Property(e => e.DaysToPay)
+                .HasDefaultValue(0)
+                .HasColumnName("days_to_pay");
+
             builder.HasOne(d => d.Status)
                 .WithMany()
                 .HasForeignKey(d => d.StatusId)

@@ -2,25 +2,23 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
 				"internalType": "address",
-				"name": "contractAddress",
+				"name": "_contractAddress",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "tokenId",
+				"name": "_tokenId",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_server",
+				"type": "address"
 			}
 		],
-		"name": "addListing",
-		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
+		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -30,7 +28,7 @@
 				"type": "address"
 			}
 		],
-		"name": "balances",
+		"name": "balance",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -42,19 +40,70 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "buyer",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "participation",
+				"type": "uint256"
+			},
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "buyer",
 				"type": "address"
 			},
+			{
+				"internalType": "uint256",
+				"name": "participated",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "buyerAddr",
+				"type": "address"
+			}
+		],
+		"name": "buyerRequestToStopBuy",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "daysLeftToPay",
+		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "listings",
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "isStopped",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "listing",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -65,24 +114,28 @@
 				"internalType": "address",
 				"name": "seller",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "minParticipation",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "daysToPay",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "listed",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "contractAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
+		"inputs": [],
 		"name": "purchase",
 		"outputs": [],
 		"stateMutability": "payable",
@@ -91,13 +144,49 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
+				"internalType": "address payable",
+				"name": "buyerAddr",
+				"type": "address"
 			},
 			{
 				"internalType": "address payable",
-				"name": "destAddr",
+				"name": "serverAddr",
+				"type": "address"
+			}
+		],
+		"name": "sellerStop",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "minParticipation",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "daysToPay",
+				"type": "uint256"
+			}
+		],
+		"name": "setPrice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "sellerAddr",
 				"type": "address"
 			}
 		],

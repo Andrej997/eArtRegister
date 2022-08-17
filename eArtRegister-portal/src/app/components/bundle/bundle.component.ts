@@ -6,6 +6,15 @@ import { Subscription } from 'rxjs';
 import { Web3Service } from 'src/app/services/contract/web3.service';
 import { environment } from 'src/environments/environment';
 
+class Buyer {
+  buyer: string;
+  participated: string;
+  participation: string;
+  get getDate() {
+    return this.participated;
+  }
+}
+
 @Component({
   selector: 'app-bundle',
   templateUrl: './bundle.component.html',
@@ -19,6 +28,7 @@ export class BundleComponent implements OnInit, OnDestroy {
   toWallet: string = "";
   wallet = "";
   bundle = null;
+  minParticipation = 0;
 
   constructor(private http: HttpClient, 
     private router: Router, 
@@ -48,15 +58,28 @@ export class BundleComponent implements OnInit, OnDestroy {
   }
 
   private getNFTs(bundleId: string) {
+    this.nfts = [];
     this.http.get(environment.api + `NFT/bundle/` + bundleId).subscribe(result => {
       console.log(result);
       this.nfts = result as any[];
 
       this.nfts.forEach(element => {
         if (element.purchaseContract != null) {
-          this.web3.getUserBalance(element.purchaseContract).then(response =>{
-            element.balance = (response as number);
-          });
+          if (element.statusId == "ON_SALE") {
+            this.web3.getUserBalance(element.purchaseContract, element.currentWallet).then(response =>{
+              element.balance = (response as number);
+            });
+
+            this.web3.getBuyer(element.purchaseContract).then(buyerres =>{
+              if ((buyerres as any).participation != '0')
+                element.buyer = (buyerres as any).buyer.toLowerCase();;
+            });
+          }
+          else if (element.statusId == "SOLD") {
+            this.web3.getUserBalance(element.purchaseContract, this.wallet).then(response =>{
+              element.balance = (response as number);
+            });
+          }
         }
       });
     }, error => {
@@ -76,50 +99,62 @@ export class BundleComponent implements OnInit, OnDestroy {
 
     this.http.post(environment.api + `NFT/prepareForSale`, body).subscribe(result => {
       this.toastr.success("Purchase contract created");
-      this.nfts = [];
       this.getNFTs(this.bundleId);
     }, error => {
         console.error(error);
     });
   }
 
-  setNFTOnSale(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number, nftId: any) {
-    this.web3.setNftOnSale(purchaseContract, valueOfNft, erc721, tokenId).then(response =>{
-      if (response) {
-        let body = {
-          NFTId: nftId,
-          Wallet: this.wallet,
-          TransactionHash: response
-        };
-    
-        this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
-          this.toastr.success("NFT approved");
-          this.nfts = [];
-          this.getNFTs(this.bundleId);
-        }, error => {
-            console.error(error);
-        });
-      }
+
+  setNFTOnSale(purchaseContract: string, price: number, minParticipation: number, daysToPay: number, nftId: any) {
+    this.web3.setNftOnSale(purchaseContract, price, minParticipation, daysToPay).then(response =>{
+      this.web3.getTransactionStatus(response).then(response2 => {
+
+        if ((response2 as boolean) == true) {
+          this.toastr.success("NFT set on sale");
+          let body = {
+            NFTId: nftId,
+            Wallet: this.wallet,
+            TransactionHash: response
+          };
+      
+          this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
+            this.getNFTs(this.bundleId);
+          }, error => {
+              console.error(error);
+          });
+        }
+        else {
+          this.toastr.error("Failed to set NFT on sale");
+        }
+      });
     });
   }
 
-  buyNFT(purchaseContract: string, valueOfNft: number, erc721: string, tokenId: number, nftId: any) {
-    this.web3.purchaseNft(purchaseContract, valueOfNft, erc721, tokenId).then(response =>{
-      if (response) {
-        let body = {
-          NFTId: nftId,
-          Wallet: this.wallet,
-          TransactionHash: response
-        };
-    
-        this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
+  buyNFT(purchaseContract: string, nftId: any) {
+    let valueToBuy = this.minParticipation * 1000000000000000000;
+    this.web3.purchaseNft(purchaseContract, valueToBuy).then(response =>{
+      this.web3.getTransactionStatus(response).then(response2 => {
+
+        if ((response2 as boolean) == true) {
           this.toastr.success("NFT bought");
-          this.nfts = [];
-          this.getNFTs(this.bundleId);
-        }, error => {
-            console.error(error);
-        });
-      }
+          let body = {
+            NFTId: nftId,
+            Wallet: this.wallet,
+            TransactionHash: response,
+            Funds: valueToBuy
+          };
+      
+          this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
+            this.getNFTs(this.bundleId);
+          }, error => {
+              console.error(error);
+          });
+        }
+        else {
+          this.toastr.error("Failed to buy NFT");
+        }
+      });
     })
   }
 
@@ -143,28 +178,96 @@ export class BundleComponent implements OnInit, OnDestroy {
     this.router.navigate([`/bundles/${this.bundleId}/mint`]);
   }
 
-  withdraw(purchaseContract: string, valueOfNft: number) {
-    this.web3.withdraw(purchaseContract, valueOfNft).then(response =>{
-      this.toastr.success("Funds withdrawed");
-        this.nfts = [];
-        this.getNFTs(this.bundleId);
+  withdraw(purchaseContract: string) {
+    this.web3.withdraw(purchaseContract).then(response =>{
+      this.web3.getTransactionStatus(response).then(response2 => {
+
+        if ((response2 as boolean) == true) {
+          this.toastr.success("Funds withdrawed");
+          this.getNFTs(this.bundleId);
+        }
+        else {
+          this.toastr.error("Failed to withdrawed funds");
+        }
+      });
     })
   }
 
   approve(nftId: string, purchaseContract: string) {
     this.web3.setApprovalForAll((this.bundle as any).contractAddress, purchaseContract).then(response => {
-      let body = {
-        Id: nftId,
-        Wallet: this.wallet,
-      };
-  
-      this.http.post(environment.api + `NFT/approved`, body).subscribe(result => {
-        this.toastr.success("NFT approved");
-        this.nfts = [];
-        this.getNFTs(this.bundleId);
-      }, error => {
-          console.error(error);
+      this.web3.getTransactionStatus(response).then(response2 => {
+
+        if ((response2 as boolean) == true) {
+          this.toastr.success("Contract approved");
+          let body = {
+            Id: nftId,
+            Wallet: this.wallet,
+          };
+      
+          this.http.post(environment.api + `NFT/approved`, body).subscribe(result => {
+            this.getNFTs(this.bundleId);
+          }, error => {
+              console.error(error);
+          });
+        }
+        else {
+          this.toastr.error("Failed to approve contract");
+        }
       });
     });
+  }
+
+  cancel(purchaseContract: string, buyerAddress: string, currentWallet: string, minParticipation: number, nftId: string) {
+    if (this.wallet.toLowerCase() === buyerAddress.toLowerCase()) {
+        this.web3.buyerRequestToStopBuy(purchaseContract, buyerAddress).then(response => {
+          this.web3.getTransactionStatus(response).then(response2 => {
+
+            if ((response2 as boolean) == true) {
+              this.toastr.success("You sucessfully canceled");
+              let body = {
+                NFTId: nftId,
+                Wallet: this.wallet,
+                TransactionHash: response
+              };
+          
+              this.http.post(environment.api + `NFT/cancel`, body).subscribe(result => {
+                this.getNFTs(this.bundleId);
+              }, error => {
+                  console.error(error);
+              });
+            }
+            else {
+              this.toastr.error("Failed to cancel");
+            }
+          });
+      });
+    }
+    else if (this.wallet.toLowerCase() === currentWallet.toLowerCase()){
+      this.web3.sellerStop(purchaseContract, buyerAddress, minParticipation).then(response => {
+        this.web3.getTransactionStatus(response).then(response2 => {
+
+          if ((response2 as boolean) == true) {
+            this.toastr.success("You sucessfully canceled");
+            let body = {
+              NFTId: nftId,
+              Wallet: this.wallet,
+              TransactionHash: response
+            };
+        
+            this.http.post(environment.api + `NFT/cancel`, body).subscribe(result => {
+              this.getNFTs(this.bundleId);
+            }, error => {
+                console.error(error);
+            });
+          }
+          else {
+            this.toastr.error("Failed to cancel");
+          }
+        });
+    });
+    }
+    else {
+      this.toastr.error('Unknown action');
+    }
   }
 }

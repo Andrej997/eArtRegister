@@ -1,6 +1,7 @@
 ﻿using eArtRegister.API.Application.NFTs.Commands.AddNFT;
 using eArtRegister.API.Application.NFTs.Commands.Approved;
 using eArtRegister.API.Application.NFTs.Commands.Bought;
+using eArtRegister.API.Application.NFTs.Commands.Cancel;
 using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
 using eArtRegister.API.Application.NFTs.Commands.PrepareForSale;
 using eArtRegister.API.Application.NFTs.Commands.SetOnSale;
@@ -51,7 +52,7 @@ namespace eArtRegister.API.WebApi.Controllers
 
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("add")]
-        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, string name, string description, Guid bundleId, double price, double royality, string wallet)
+        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, string name, string description, Guid bundleId, double price, double minimumParticipation, long daysToPay, string wallet)
         {
             if (file == null)
             {
@@ -66,7 +67,8 @@ namespace eArtRegister.API.WebApi.Controllers
                     Description = description,
                     BundleId = bundleId,
                     Price = price,
-                    Royality = royality,
+                    MinimumParticipation = minimumParticipation,
+                    DaysToPay = daysToPay,
                     Wallet = wallet,
                     File = file.GetUploadFileModel()
                 });
@@ -80,6 +82,21 @@ namespace eArtRegister.API.WebApi.Controllers
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("sendAsGift")]
         public async Task<IActionResult> TransferNFT(TransferNFTCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("cancel")]
+        public async Task<IActionResult> CancelNFT(CancelNFTCommand command)
         {
             try
             {

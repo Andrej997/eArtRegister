@@ -30,7 +30,8 @@ export class MintNftComponent implements OnInit, OnDestroy {
       name: ['', Validators.required],
       description: ['', Validators.required],
       price: [0, Validators.required],
-      royality: [0, Validators.required],
+      minimumParticipation: [0, Validators.required],
+      daysToPay: [0, Validators.required],
     });
 
     this.routeSub = this.route.params.subscribe(params => {
@@ -58,7 +59,8 @@ export class MintNftComponent implements OnInit, OnDestroy {
         .set('description', this.mintForm.value.description)
         .set('bundleId', this.bundleId)
         .set('price', this.mintForm.value.price * 1000000000000000000)
-        .set('royality', this.mintForm.value.royality)
+        .set('minimumParticipation', this.mintForm.value.minimumParticipation * 1000000000000000000)
+        .set('daysToPay', this.mintForm.value.daysToPay)
         .set('wallet', (response as string[])[0])
         ;
 

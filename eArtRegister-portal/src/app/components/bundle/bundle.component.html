@@ -12,35 +12,50 @@
         <div class="card">
             <img class="card-img-top img-fluid" width="100px" height="100px" src="data:image/png;base64,{{nft.bytes}}" alt="Card image cap">
             <div class="card-block">
+                <p class="card-text"><small class="text-muted">Minted at {{nft.mintedAt}}</small></p>
                 <h4 class="card-title">Name: {{nft.name}}</h4>
                 <p class="card-text">Description: {{nft.description}}</p>
                 <p class="card-text">Status: {{nft.statusId}}</p>
                 <p class="card-text">Owner: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.currentWallet}}">{{nft.currentWallet}}</a></p>
-                <span><span class="card-text" style="float: left">Price {{nft.currentPrice / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="8%"></span><br>
-                <p class="card-text"><small class="text-muted">Minted at {{nft.mintedAt}}</small></p>
+                <span><span class="card-text" style="float: left">Price {{nft.currentPrice / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br>
+                <span><span class="card-text" style="float: left">Minimum participation {{nft.minimumParticipation / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br>
+                <p class="card-text">Days to pay full price: {{nft.daysToPay}}</p>
                 <p class="card-text">Purchase contract: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.purchaseContract}}">{{nft.purchaseContract}}</a></p>
+                <p *ngIf="nft.balance != '0'">Balance: {{nft.balance / 1000000000000000000}}</p>
+                <p *ngIf="nft.buyer">Buyer: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.buyer}}">{{nft.buyer}}</a></p>
                 <button type="button" style="width:100%" class="btn btn-warning" 
                         (click)="setInStatusForSale(nft.id)" 
                         *ngIf="wallet == nft.currentWallet && (nft.statusId == 'MINTED' || nft.statusId == 'SOLD')">
                     PREPARE FOR SALE
                 </button>
+                
                 <button type="button" style="width:100%" class="btn btn-warning" 
-                        (click)="setNFTOnSale(nft.purchaseContract, nft.currentPrice, nft.erC721ContractAddress, nft.tokenId, nft.id)" 
+                        (click)="setNFTOnSale(nft.purchaseContract, nft.currentPrice, nft.minimumParticipation, nft.daysToPay, nft.id)" 
                         *ngIf="wallet == nft.currentWallet && nft.statusId == 'APPROVED'">
                     PUT ON SELL
                 </button>
+                
                 <button type="button" style="width:100%" class="btn btn-warning"    
-                        (click)="buyNFT(nft.purchaseContract, nft.currentPrice, nft.erC721ContractAddress, nft.tokenId, nft.id)" 
+                        (click)="buyNFT(nft.purchaseContract, nft.id)" 
                         *ngIf="wallet != nft.currentWallet && nft.statusId == 'ON_SALE'">
-                    BUY
+                    TRANSFER FUNDS
                 </button>
-                <!-- <button type="button" style="width:42%" class="btn btn-warning" (click)="sendNFTasGift(nft.id, nft.erC721ContractAddress, nft.tokenId)" *ngIf="wallet == nft.currentWallet && nft.statusId == 'MINTED'">SEND AS GIFT</button> -->
-                <!-- <input class="form-control mr-sm-2" style="width:54%; float: left;" type="text" placeholder="Wallet" aria-label="Wallet" [(ngModel)]="toWallet" *ngIf="wallet == nft.currentWallet && nft.statusId == 'MINTED'"> -->
-                <button type="button" style="width:100%" class="btn btn-warning" (click)="withdraw(nft.purchaseContract, nft.balance)" *ngIf="nft.balance != '0'">
+                <input class="form-control mr-sm-2" style="width:100%;" type="number" aria-label="Minimum participation" [(ngModel)]="minParticipation" *ngIf="wallet != nft.currentWallet && nft.statusId == 'ON_SALE'">
+                
+                <button type="button" style="width:100%" class="btn btn-warning" 
+                        (click)="withdraw(nft.purchaseContract)" 
+                        *ngIf="nft.balance != '0' && wallet == nft.currentWallet">
                     Withdraw: {{nft.balance / 1000000000000000000}}<img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: right" width="8%">
                 </button>
+                
                 <button type="button" style="width:100%" class="btn btn-warning" (click)="approve(nft.id, nft.purchaseContract)" *ngIf="nft.statusId == 'WAITING_FOR_APPROVAL'">
                     APPROVE
+                </button>
+
+                <button type="button" style="width:100%" class="btn btn-warning"    
+                        (click)="cancel(nft.purchaseContract, nft.buyer, nft.currentWallet, nft.minimumParticipation, nft.id)" 
+                        *ngIf="nft.statusId == 'ON_SALE'">
+                    CANCEL
                 </button>
             </div>
         </div>

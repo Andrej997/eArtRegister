@@ -14,12 +14,8 @@ namespace NethereumAccess.Interfaces
         Task<TransactionReceipt> CreateContact(string name);
         Task<List<string>> IPFSIds(string contractAddress);
         Task<TransactionReceipt> TransferNFT(string contractAddress, string from, string to, long tokenId);
-        Task<TransactionReceipt> CreatePurchaseContract();
-        Task<TransactionReceipt> SetNFTonSale(string traderContractAddress, long price, string bundleContractAddress, long tokenId);
-        Task<TransactionReceipt> BuyNFT(string traderContractAddress, string bundleContractAddress, long tokenId);
-        Task<TransactionReceipt> BalanceOfTrader(string traderContractAddress, string myWallet);
-        Task<TransactionReceipt> WithdrawMoney(string traderContractAddress, long amount, string destAddr);
-        Task<TransactionReceipt> ApprovePurchaseContract(string contractAddress, string purchaseContractAddress);
+        Task<TransactionReceipt> CreatePurchaseContract(string contractAddress, long tokenId);
+        Task<BigInteger> BalanceOfTrader(string traderContractAddress, string myWallet);
         Task<TransactionReceipt> CreateDepositContract(string ownerWallet);
         Task<BigInteger> GetDepositBalance(string depositContractAddress, string myWallet);
         Task<TransactionReceipt> WithdrawDepositContract(string depositContractAddress);

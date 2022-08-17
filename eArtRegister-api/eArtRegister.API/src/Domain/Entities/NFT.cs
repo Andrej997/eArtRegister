@@ -32,6 +32,8 @@ namespace eArtRegister.API.Domain.Entities
         public long EffectiveGasPrice { get; set; }
         public long MintStatus { get; set; }
         public string PurchaseContract { get; set; }
+        public double MinimumParticipation { get; set; }
+        public long DaysToPay { get; set; }
 
         public virtual NFTStatus Status { get; set; }
         public virtual Bundle Bundle { get; set; }

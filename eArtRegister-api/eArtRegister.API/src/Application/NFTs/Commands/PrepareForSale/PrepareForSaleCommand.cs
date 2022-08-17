@@ -41,7 +41,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
 
             var bundle = _context.Bundles.Find(nft.BundleId);
 
-            var purchaseContractTransaction = await _nethereum.CreatePurchaseContract();
+            var purchaseContractTransaction = await _nethereum.CreatePurchaseContract(bundle.ContractAddress, nft.TokenId);
             var transaction = await _etherscan.GetTransactionStatus(purchaseContractTransaction.TransactionHash, cancellationToken);
             
             nft.PurchaseContract = purchaseContractTransaction.ContractAddress;

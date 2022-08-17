@@ -29,11 +29,11 @@ export class WalletComponent implements OnInit {
     this.web3.connectAccount().then(response => {
       console.log(response);
       this.user = response
-      this.getUserRoles();
+      this.getUser();
     });
   }
 
-  getUserRoles(){
+  getUser(){
     this.http.get(environment.api + `Users/getUser/` + this.user[0]).subscribe(result => {
       console.log(result);
       this.isSellet = ((result as any).roleIds.includes(4));
@@ -59,12 +59,11 @@ export class WalletComponent implements OnInit {
   }
 
   addDeposit() {
-    
     this.web3.deposit(this.depositContract).then(response => {
-
       this.web3.getTransactionStatus(response).then(response2 => {
-        this.toastr.success("Add to your private deposit");
         if ((response2 as boolean) == true) {
+          this.signInWithMetaMask();
+          this.toastr.success("Add to your private deposit");
           let body = {
             Wallet: this.user[0],
             DepositValue : 20000000000000000,
@@ -78,9 +77,8 @@ export class WalletComponent implements OnInit {
           });
         }
         else {
-
+          this.toastr.error("Failed to add to deposit");
         }
-        
       });
     });
   }

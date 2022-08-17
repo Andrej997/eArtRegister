@@ -20,7 +20,8 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 new NFTStatus { Id = "PENDING" },
                 new NFTStatus { Id = "APPROVED" },
                 new NFTStatus { Id = "WAITING_FOR_APPROVAL" },
-                new NFTStatus { Id = "SOLD" }
+                new NFTStatus { Id = "SOLD" },
+                new NFTStatus { Id = "CANCELED" }
                 );
         }
     }

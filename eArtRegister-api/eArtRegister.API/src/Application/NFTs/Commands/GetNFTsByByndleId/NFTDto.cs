@@ -34,6 +34,9 @@ namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
         public string ERC721ContractAddress { get; set; }
         public string PurchaseContract { get; set; }
         public long Balance { get; set; }
+        public double MinimumParticipation { get; set; }
+        public long DaysToPay { get; set; }
+        public string Buyer { get; set; }
 
         //public virtual NFTStatus Status { get; set; }
         //public virtual Bundle Bundle { get; set; }

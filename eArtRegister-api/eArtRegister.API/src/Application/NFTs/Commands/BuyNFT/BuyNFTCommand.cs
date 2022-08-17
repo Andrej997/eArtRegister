@@ -44,7 +44,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.BuyNFT
             //var purchaseContactTransaction = await _nethereum.CreatePurchaseContract();
             //var approveTransaction = await _nethereum.ApprovePurchaseContract(bundle.ContractAddress, purchaseContactTransaction.ContractAddress);
             //var onSaleTransaction = await _nethereum.SetNFTonSale(purchaseContactTransaction.ContractAddress, (long)nft.CurrentPrice, bundle.ContractAddress, nft.TokenId);
-            var buyTransaction = await _nethereum.BuyNFT("", bundle.ContractAddress, nft.TokenId);
+            //var buyTransaction = await _nethereum.BuyNFT("", bundle.ContractAddress, nft.TokenId);
 
             return Unit.Value;
         }

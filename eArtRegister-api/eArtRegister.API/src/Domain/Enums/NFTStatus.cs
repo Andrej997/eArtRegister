@@ -9,5 +9,6 @@
         public static string WaitingForApproval { get => "WAITING_FOR_APPROVAL"; }
         public static string Approved { get => "APPROVED"; }
         public static string Sold { get => "SOLD"; }
+        public static string Canceled { get => "CANCELED"; }
     }
 }

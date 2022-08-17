@@ -24,14 +24,14 @@ namespace NethereumAccess.Util
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public Task<TransactionReceipt> AddListingRequestAndWaitForReceiptAsync(AddListingFunction addListingFunction, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> AddListingRequestAndWaitForReceiptAsync(SetPriceFunction addListingFunction, CancellationTokenSource cancellationToken = null)
         {
             return ContractHandler.SendRequestAndWaitForReceiptAsync(addListingFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> BalancesRequestAndWaitForReceiptAsync(BalancesFunction balancesFunction, CancellationTokenSource cancellationToken = null)
+        public Task<BigInteger> BalancesRequestAndWaitForReceiptAsync(BalanceFunction balancesFunction, BlockParameter blockParameter = null)
         {
-            return ContractHandler.SendRequestAndWaitForReceiptAsync(balancesFunction, cancellationToken);
+            return ContractHandler.QueryAsync<BalanceFunction, BigInteger>(balancesFunction, blockParameter);
         }
 
         public Task<TransactionReceipt> PurchaseRequestAndWaitForReceiptAsync(PurchaseFunction purchaseFunction, CancellationTokenSource cancellationToken = null)

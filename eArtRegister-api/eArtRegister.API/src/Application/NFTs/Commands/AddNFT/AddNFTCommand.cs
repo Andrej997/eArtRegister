@@ -23,6 +23,8 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         public double Royality { get; set; }
         public List<string> Categories { get; set; }
         public string Wallet { get; set; }
+        public double MinimumParticipation { get; set; }
+        public long DaysToPay { get; set; }
     }
     public class AddNFTCommandHandler : IRequestHandler<AddNFTCommand, Guid>
     {
@@ -92,7 +94,9 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16),
                 ModifiedBy = user.Id.ToString(),
                 ModifiedOn = _dateTime.UtcNow,
-                CurrentWallet = request.Wallet.ToLower()
+                CurrentWallet = request.Wallet.ToLower(),
+                MinimumParticipation = request.MinimumParticipation,
+                DaysToPay = request.DaysToPay
             };
 
             _context.NFTs.Add(entry);

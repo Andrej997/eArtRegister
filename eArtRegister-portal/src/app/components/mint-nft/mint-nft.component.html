@@ -24,9 +24,15 @@
         </div>
 
         <div class="form-outline mb-3">
-            <input type="number" id="royality" class="form-control form-control-lg"
-                placeholder="Enter royality" formControlName="royality"/>
-            <label class="form-label" for="royality">Royality</label>
+            <input type="number" id="minimumParticipation" class="form-control form-control-lg"
+                placeholder="Enter minimum participation" formControlName="minimumParticipation"/>
+            <label class="form-label" for="minimumParticipation">Minimum participation</label>
+        </div>
+
+        <div class="form-outline mb-3">
+            <input type="number" id="daysToPay" class="form-control form-control-lg"
+                placeholder="Enter days to pay" formControlName="daysToPay"/>
+            <label class="form-label" for="daysToPay">Days to pay</label>
         </div>
 
         <input type="file" (change)="fileChange($event)" placeholder="Upload file" accept=".png">
