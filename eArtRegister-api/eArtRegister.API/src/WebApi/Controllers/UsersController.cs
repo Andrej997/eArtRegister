@@ -3,7 +3,8 @@ using eArtRegister.API.Application.Users.Commands.CreateDeposit;
 using eArtRegister.API.Application.Users.Commands.Deposit;
 using eArtRegister.API.Application.Users.Commands.DepositServer;
 using eArtRegister.API.Application.Users.Commands.RequestRolePermission;
-using eArtRegister.API.Application.Users.Queries.GetRoles;
+using eArtRegister.API.Application.Users.Queries.GetUser;
+using eArtRegister.API.Application.Users.Queries.GetUserHistoryActions;
 using eArtRegister.API.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,11 +17,25 @@ namespace eArtRegister.API.WebApi.Controllers
     {
         [HttpGet("getUser/{wallet}")]
         [ApiExplorerSettings(GroupName = "v1")]
-        public async Task<ActionResult<UserDto>> GetRoles(string wallet)
+        public async Task<ActionResult<UserDto>> GetUser(string wallet)
         {
             try
             {
-                return await Mediator.Send(new GetRolesQuery(wallet));
+                return await Mediator.Send(new GetUserQuery(wallet));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("actions/{wallet}")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<ActionResult<List<ActionHistoryDto>>> GetUserHistoryActions(string wallet)
+        {
+            try
+            {
+                return await Mediator.Send(new GetUserHistoryActionsQuery(wallet));
             }
             catch (Exception ex)
             {

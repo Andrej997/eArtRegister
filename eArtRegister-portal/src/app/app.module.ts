@@ -14,6 +14,7 @@ import { CreateBundleComponent } from './components/create-bundle/create-bundle.
 import { MintNftComponent } from './components/mint-nft/mint-nft.component';
 import { MyBundlesComponent } from './components/my-bundles/my-bundles.component';
 import { MyNftsComponent } from './components/my-nfts/my-nfts.component';
+import { MySystemHistoryComponent } from './components/my-system-history/my-system-history.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { MyNftsComponent } from './components/my-nfts/my-nfts.component';
     MintNftComponent,
     MyBundlesComponent,
     MyNftsComponent,
+    MySystemHistoryComponent,
   ],
   imports: [
     BrowserModule,

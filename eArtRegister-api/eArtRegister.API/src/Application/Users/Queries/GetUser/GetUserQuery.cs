@@ -9,18 +9,18 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.Users.Queries.GetRoles
+namespace eArtRegister.API.Application.Users.Queries.GetUser
 {
-    public class GetRolesQuery : IRequest<UserDto>
+    public class GetUserQuery : IRequest<UserDto>
     {
         public string Wallet { get; set; }
 
-        public GetRolesQuery(string wallet)
+        public GetUserQuery(string wallet)
         {
             Wallet = wallet;
         }
     }
-    public class GetRolesQueryHandler : IRequestHandler<GetRolesQuery, UserDto>
+    public class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserDto>
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUserService _currentUserService;
@@ -28,7 +28,7 @@ namespace eArtRegister.API.Application.Users.Queries.GetRoles
         private readonly INethereumBC _nethereum;
         private readonly IEtherscan _etherscan;
 
-        public GetRolesQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IDateTime dateTime, INethereumBC nethereum, IEtherscan etherscan)
+        public GetUserQueryHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IDateTime dateTime, INethereumBC nethereum, IEtherscan etherscan)
         {
             _context = context;
             _currentUserService = currentUserService;
@@ -37,7 +37,7 @@ namespace eArtRegister.API.Application.Users.Queries.GetRoles
             _etherscan = etherscan;
         }
 
-        public async Task<UserDto> Handle(GetRolesQuery request, CancellationToken cancellationToken)
+        public async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
             var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
             if (user == null)
@@ -71,7 +71,7 @@ namespace eArtRegister.API.Application.Users.Queries.GetRoles
 
             return new UserDto
             {
-                Wallet = user.Wallet,
+                Wallet = user.Wallet.ToLower(),
                 RoleIds = roles,
                 DepositContract = user.DepositContract,
                 DepositBalance = balanace,

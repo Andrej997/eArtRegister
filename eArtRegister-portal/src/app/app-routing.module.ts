@@ -6,6 +6,7 @@ import { HomeComponent } from './components/home/home.component';
 import { MintNftComponent } from './components/mint-nft/mint-nft.component';
 import { MyBundlesComponent } from './components/my-bundles/my-bundles.component';
 import { MyNftsComponent } from './components/my-nfts/my-nfts.component';
+import { MySystemHistoryComponent } from './components/my-system-history/my-system-history.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
   {
     path: 'create',
     component: CreateBundleComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'my-history',
+    component: MySystemHistoryComponent,
     pathMatch: 'full',
   },
 ];

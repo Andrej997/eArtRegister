@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace eArtRegister.API.Application.Users.Queries.GetRoles
+namespace eArtRegister.API.Application.Users.Queries.GetUser
 {
     public class UserDto
     {

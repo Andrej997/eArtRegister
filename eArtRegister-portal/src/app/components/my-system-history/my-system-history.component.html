@@ -1,0 +1,19 @@
+<p>Wallet: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{wallet}}">{{wallet}}</a></p>
+<table class="table" cdkScrollable>
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Event action</th>
+        <th scope="col">Transaction hash</th>
+        <th scope="col">Is completed</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let event of myEvents">
+      <tr>
+        <th scope="row">{{event.dateOfEvent}}</th>
+        <td>{{event.eventAction}}</td>
+        <td><a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/tx/{{event.transactionHash}}">{{event.transactionHash}}</a></td>
+        <td>{{event.isCompleted}}</td>
+      </tr>
+    </tbody>
+  </table>

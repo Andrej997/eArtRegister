@@ -38,7 +38,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
             if (nft == null)
                 throw new Exception("Unknown NFT");
 
-            nft.StatusId = Domain.Enums.NFTStatus.WaitingForApproval;
+            
 
             var bundle = _context.Bundles.Find(nft.BundleId);
 
@@ -76,7 +76,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
                 _context.NFTActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = withdraw.TransactionHash,
+                    TransactionHash = purchaseContractTransaction.TransactionHash,
                     Wallet = request.Wallet,
                     IsCompleted = true,
                     EventAction = Domain.Enums.EventAction.PURCHASE_CONTRACT_CREATED,
@@ -88,7 +88,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
                 _context.NFTActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = withdraw.TransactionHash,
+                    TransactionHash = purchaseContractTransaction.TransactionHash,
                     Wallet = request.Wallet,
                     IsCompleted = false,
                     EventAction = Domain.Enums.EventAction.PURCHASE_CONTRACT_CREATED_FAIL,
@@ -97,7 +97,11 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
                 throw new Exception("Failed to create purchase contract!");
             }
 
-            nft.PurchaseContract = purchaseContractTransaction.ContractAddress;
+            if (transaction.IsError == false)
+            {
+                nft.PurchaseContract = purchaseContractTransaction.ContractAddress;
+                nft.StatusId = Domain.Enums.NFTStatus.WaitingForApproval;
+            }
 
             await _context.SaveChangesAsync(cancellationToken);
 
