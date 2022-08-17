@@ -1,0 +1,59 @@
+version: '3.4'
+
+networks:
+  dockerapi-dev:
+    driver: bridge
+
+services:
+  webapi:
+    container_name: webapi
+    image: ${DOCKER_REGISTRY-}webapi
+    depends_on:
+      - "postgres"
+    build:
+      context: .
+      dockerfile: eArtRegister.API/src/WebApi/Dockerfile
+    ports:
+      - 5001:80
+      - 5002:443
+    environment:
+      ConnectionStrings__DefaultConnection: "host=postgres;port=5432;database=eArtRegisterDb;username=postgres;password=admin"
+    networks:
+      - dockerapi-dev
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: eArtRegisterDb
+    networks:
+      - dockerapi-dev
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - dockerapi-dev
+    restart: unless-stopped
+
+volumes:
+  postgres:
+  pgadmin:
