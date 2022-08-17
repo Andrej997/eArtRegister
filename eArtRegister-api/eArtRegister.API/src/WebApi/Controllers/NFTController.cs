@@ -6,6 +6,7 @@ using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
 using eArtRegister.API.Application.NFTs.Commands.PrepareForSale;
 using eArtRegister.API.Application.NFTs.Commands.SetOnSale;
 using eArtRegister.API.Application.NFTs.Commands.TransferNFT;
+using eArtRegister.API.Application.NFTs.Commands.WithdrawFunds;
 using eArtRegister.API.Application.NFTs.Queries.GetNFTs;
 using eArtRegister.API.WebApi.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -72,6 +73,21 @@ namespace eArtRegister.API.WebApi.Controllers
                     Wallet = wallet,
                     File = file.GetUploadFileModel()
                 });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("withdrawFunds")]
+        public async Task<IActionResult> WithdrawFunds(WithdrawFundsCommad command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
             }
             catch (Exception e)
             {

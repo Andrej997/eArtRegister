@@ -53,6 +53,7 @@ export class WalletComponent implements OnInit {
 
     this.http.post(environment.api + `Users/createDeposit`, body).subscribe(result => {
       this.toastr.success("Deposit created");
+      this.signInWithMetaMask();
     }, error => {
         console.error(error);
     });
@@ -66,7 +67,7 @@ export class WalletComponent implements OnInit {
           this.toastr.success("Add to your private deposit");
           let body = {
             Wallet: this.user[0],
-            DepositValue : 20000000000000000,
+            IsCompleted : true,
             TransactionHash: response
           };
       
@@ -78,22 +79,19 @@ export class WalletComponent implements OnInit {
         }
         else {
           this.toastr.error("Failed to add to deposit");
-        }
-      });
-    });
-  }
 
-  depositToServer() {
-    this.web3.withdrawDeposit(this.depositContract).then(response => {
-      let body = {
-        Wallet: this.user[0],
-        DepositValue : 10000000000000000,
-      };
-  
-      this.http.post(environment.api + `Users/deposit/server`, body).subscribe(result => {
-        this.toastr.success("Deposited on server");
-      }, error => {
-          console.error(error);
+          let body = {
+            Wallet: this.user[0],
+            IsCompleted : false,
+            TransactionHash: response
+          };
+      
+          this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
+            
+          }, error => {
+              console.error(error);
+          });
+        }
       });
     });
   }

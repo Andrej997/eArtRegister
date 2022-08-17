@@ -16,7 +16,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
         public Guid NFTId { get; set; }
         public string Wallet { get; set; }
         public string TransactionHash { get; set; }
-        public long Funds { get; set; }
+        public bool IsCompleted { get; set; }
     }
     public class BoughtCommandHandler : IRequestHandler<BoughtCommand, Unit>
     {
@@ -48,15 +48,37 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
 
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
-            var aaa = await _nethereum.BalanceOfTrader(nft.PurchaseContract, nft.CurrentWallet);
-            var balance = Convert.ToInt64(aaa.ToString(), 16);
+            var balance = await _nethereum.BalanceOfTrader(nft.PurchaseContract, nft.CurrentWallet);
 
-            if ((double)aaa >= nft.CurrentPrice)
+            if ((double)balance >= nft.CurrentPrice)
             {
                 nft.CurrentWallet = request.Wallet;
                 nft.StatusId = Domain.Enums.NFTStatus.Sold;
-                await _context.SaveChangesAsync(cancellationToken);
+
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = request.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = request.IsCompleted,
+                    EventAction = request.IsCompleted ? Domain.Enums.EventAction.NFT_SOLD : Domain.Enums.EventAction.NFT_SOLD_FAIL,
+                    NFTId = request.NFTId
+                });
             }
+            else
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = request.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = request.IsCompleted,
+                    EventAction = request.IsCompleted ? Domain.Enums.EventAction.FUNDS_ADDED_FOR_NFT_SHOPPING : Domain.Enums.EventAction.FUNDS_ADDED_FOR_NFT_SHOPPING_FAIL,
+                    NFTId = request.NFTId
+                });
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

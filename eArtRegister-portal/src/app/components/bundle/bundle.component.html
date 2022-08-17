@@ -25,7 +25,7 @@
                 <p *ngIf="nft.buyer">Buyer: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.buyer}}">{{nft.buyer}}</a></p>
                 <button type="button" style="width:100%" class="btn btn-warning" 
                         (click)="setInStatusForSale(nft.id)" 
-                        *ngIf="wallet == nft.currentWallet && (nft.statusId == 'MINTED' || nft.statusId == 'SOLD')">
+                        *ngIf="wallet == nft.currentWallet && (nft.statusId == 'MINTED' || nft.statusId == 'SOLD' || nft.statusId == 'CANCELED')">
                     PREPARE FOR SALE
                 </button>
                 
@@ -43,8 +43,8 @@
                 <input class="form-control mr-sm-2" style="width:100%;" type="number" aria-label="Minimum participation" [(ngModel)]="minParticipation" *ngIf="wallet != nft.currentWallet && nft.statusId == 'ON_SALE'">
                 
                 <button type="button" style="width:100%" class="btn btn-warning" 
-                        (click)="withdraw(nft.purchaseContract)" 
-                        *ngIf="nft.balance != '0' && wallet == nft.currentWallet">
+                        (click)="withdraw(nft.purchaseContract, nft.id)" 
+                        *ngIf="nft.balance != '0'">
                     Withdraw: {{nft.balance / 1000000000000000000}}<img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: right" width="8%">
                 </button>
                 

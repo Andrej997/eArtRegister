@@ -44,6 +44,14 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
                     }
                 });
 
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    Wallet = request.Wallet,
+                    IsCompleted = true,
+                    EventAction = Domain.Enums.EventAction.USER_CREATED
+                });
+
                 await _context.SaveChangesAsync(cancellationToken);
             }
 

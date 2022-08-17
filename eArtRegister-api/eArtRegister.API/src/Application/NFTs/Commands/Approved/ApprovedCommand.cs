@@ -1,4 +1,5 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
+using eArtRegister.API.Domain.Entities;
 using Etherscan.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
@@ -12,6 +13,8 @@ namespace eArtRegister.API.Application.NFTs.Commands.Approved
     {
         public Guid Id { get; set; }
         public string Wallet { get; set; }
+        public string TransactionHash { get; set; }
+        public bool IsCompleted { get; set; }
     }
     public class ApprovedCommandHandler : IRequestHandler<ApprovedCommand>
     {
@@ -36,8 +39,18 @@ namespace eArtRegister.API.Application.NFTs.Commands.Approved
             if (nft == null)
                 throw new Exception("Unknown NFT");
 
-            nft.StatusId = Domain.Enums.NFTStatus.Approved;
+            if (request.IsCompleted)
+                nft.StatusId = Domain.Enums.NFTStatus.Approved;
 
+            _context.NFTActionHistories.Add(new NFTActionHistory
+            {
+                EventTimestamp = _dateTime.UtcNow.Ticks,
+                TransactionHash = request.TransactionHash,
+                Wallet = request.Wallet,
+                IsCompleted = request.IsCompleted,
+                EventAction = request.IsCompleted? Domain.Enums.EventAction.PURCHASE_CONTRACT_APPROVED : Domain.Enums.EventAction.PURCHASE_CONTRACT_APPROVED_FAIL,
+                NFTId = request.Id
+            });
 
             await _context.SaveChangesAsync(cancellationToken);
 

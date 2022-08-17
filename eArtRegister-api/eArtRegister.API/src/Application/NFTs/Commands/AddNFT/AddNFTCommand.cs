@@ -48,12 +48,35 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
             var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
-
-            var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
-
             if (!_context.Bundles.Any(b => b.OwnerId == user.Id))
             {
                 throw new InvalidOperationException("Can't mint in others bundles");
+            }
+
+            var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
+            var withdrawTransaction = await _etherscan.GetTransactionStatus(withdraw.TransactionHash, cancellationToken);
+            if (withdrawTransaction.IsError == false)
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = withdraw.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = true,
+                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT,
+                });
+            }
+            else
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = withdraw.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = false,
+                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT_FAIL,
+                });
+                throw new Exception("Failed to withdraw from deposit!");
             }
 
             var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
@@ -65,9 +88,12 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 );
 
             var transaction = await _etherscan.GetTransactionStatus(minted.TransactionHash, cancellationToken);
+            if (transaction.IsError == true)
+            {
+                throw new Exception("NFT not minted!");
+            }
 
             long tokenId = _context.NFTs.Where(t => t.BundleId == request.BundleId).Count();
-
 
             var entry = new NFT
             {
@@ -100,6 +126,33 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             };
 
             _context.NFTs.Add(entry);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            if (transaction.IsError == false)
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = minted.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = true,
+                    EventAction = Domain.Enums.EventAction.NFT_MINTED,
+                    NFTId = entry.Id
+                });
+            }
+            else
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = minted.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = false,
+                    EventAction = Domain.Enums.EventAction.NFT_MINTED_FAIL,
+                    NFTId = entry.Id
+                });
+            }
 
             await _context.SaveChangesAsync(cancellationToken);
 

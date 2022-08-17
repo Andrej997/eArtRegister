@@ -16,6 +16,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
         public Guid NFTId { get; set; }
         public string Wallet { get; set; }
         public string TransactionHash { get; set; }
+        public bool IsCompleted { get; set; }
     }
     public class SetOnSaleCommandHandler : IRequestHandler<SetOnSaleCommand, Unit>
     {
@@ -47,17 +48,18 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
 
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
-            //_context.NFTSales.Add(new NFTSale
-            //{
-            //    DateOfSet = _dateTime.UtcNow,
-            //    DateOfPurchase = _dateTime.UtcNow,
-            //    NFTId = request.NFTId,
-            //    TransactionHashSet = request.TransactionHash.ToLower(),
-            //    WalletSet = request.Wallet.ToLower(),
-            //    SaleContractAddress = nft.PurchaseContract.ToLower()
-            //});
+            _context.NFTActionHistories.Add(new NFTActionHistory
+            {
+                EventTimestamp = _dateTime.UtcNow.Ticks,
+                TransactionHash = request.TransactionHash,
+                Wallet = request.Wallet,
+                IsCompleted = request.IsCompleted,
+                EventAction = request.IsCompleted? Domain.Enums.EventAction.NFT_SET_ON_SALE : Domain.Enums.EventAction.NFT_SET_ON_SALE_FAIL,
+                NFTId = request.NFTId
+            });
 
-            nft.StatusId = Domain.Enums.NFTStatus.OnSale;
+            if (request.IsCompleted)
+                nft.StatusId = Domain.Enums.NFTStatus.OnSale;
 
             await _context.SaveChangesAsync(cancellationToken);
 

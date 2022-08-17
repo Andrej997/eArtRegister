@@ -390,7 +390,8 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     "PENDING",
                     "SOLD",
                     "APPROVED",
-                    "WAITING_FOR_APPROVAL"
+                    "WAITING_FOR_APPROVAL",
+                    "CANCELED"
                 });
 
             migrationBuilder.InsertData(

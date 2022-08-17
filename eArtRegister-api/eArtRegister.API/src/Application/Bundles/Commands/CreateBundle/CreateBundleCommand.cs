@@ -23,13 +23,15 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
         private readonly ICurrentUserService _currentUserService;
         private readonly INethereumBC _nethereum;
         private readonly IEtherscan _etherscan;
+        private readonly IDateTime _dateTime;
 
-        public CreateBundleCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, INethereumBC nethereum, IEtherscan etherscan)
+        public CreateBundleCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, INethereumBC nethereum, IEtherscan etherscan, IDateTime dateTime)
         {
             _context = context;
             _currentUserService = currentUserService;
             _nethereum = nethereum;
             _etherscan = etherscan;
+            _dateTime = dateTime;
         }
 
         public async Task<Guid> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
@@ -39,13 +41,58 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
                 throw new Exception("Name is already taken");
 
             var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
+            var withdrawTransaction = await _etherscan.GetTransactionStatus(withdraw.TransactionHash, cancellationToken);
+            if (withdrawTransaction.IsError == false)
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = withdraw.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = true,
+                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT,
+                });
+            }
+            else
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = withdraw.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = false,
+                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT_FAIL,
+                });
+                throw new Exception("Failed to withdraw from deposit!");
+            }
 
-            var transactionReceipt = await _nethereum.CreateContact(request.Name);
+            var erc721ContractReceipt = await _nethereum.CreateContact(request.Name);
 
-            var transaction = await _etherscan.GetTransactionStatus(transactionReceipt.TransactionHash, cancellationToken);
+            var transaction = await _etherscan.GetTransactionStatus(erc721ContractReceipt.TransactionHash, cancellationToken);
+            if (transaction.IsError == false)
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = erc721ContractReceipt.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = true,
+                    EventAction = Domain.Enums.EventAction.BUNDLE_CREATED
+                });
+            }
+            else
+            {
+                _context.NFTActionHistories.Add(new NFTActionHistory
+                {
+                    EventTimestamp = _dateTime.UtcNow.Ticks,
+                    TransactionHash = erc721ContractReceipt.TransactionHash,
+                    Wallet = request.Wallet,
+                    IsCompleted = false,
+                    EventAction = Domain.Enums.EventAction.BUNDLE_CREATED_FAIL
+                });
 
-            if (transaction.IsError == true)
                 throw new Exception("Bundle not created!");
+            }
 
             var entry = new Bundle
             {
@@ -54,10 +101,10 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
                 OwnerId = user.Id,
                 Order = _context.Bundles.Where(t => t.OwnerId == user.Id).Count() + 1,
                 IsObservable = false,
-                ContractAddress = transactionReceipt.ContractAddress,
-                From = transactionReceipt.From,
-                TransactionHash = transactionReceipt.TransactionHash,
-                BlockHash = transactionReceipt.BlockHash,
+                ContractAddress = erc721ContractReceipt.ContractAddress,
+                From = erc721ContractReceipt.From,
+                TransactionHash = erc721ContractReceipt.TransactionHash,
+                BlockHash = erc721ContractReceipt.BlockHash,
                 IsDeleted = false
             };
 

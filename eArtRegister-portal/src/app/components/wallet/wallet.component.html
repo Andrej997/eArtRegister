@@ -17,10 +17,6 @@
       <p>Deposit: </p><span> {{ depositValue }}</span>
     </div>
 
-    <!-- <div *ngIf="user" class="logged-div">
-      <p>Deposit server: </p><span> {{ depositServerValue }}</span>
-    </div> -->
-
     <button class="btn btn-warning btn-lg" (click)="createDeposit()" *ngIf="!depositContract">
       Create deposit
     </button>
@@ -28,10 +24,6 @@
     <button class="btn btn-warning btn-lg" (click)="addDeposit()">
       Deposit 0.02
     </button>
-
-    <!-- <button class="btn btn-warning btn-lg" (click)="depositToServer()">
-      Deposit server 0.01
-    </button> -->
 
     <span class="navbar-text" *ngIf="depositContract">
       <a class="nav-link" href="nfts">

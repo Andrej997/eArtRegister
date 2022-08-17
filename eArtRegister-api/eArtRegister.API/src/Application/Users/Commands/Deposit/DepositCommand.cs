@@ -13,8 +13,8 @@ namespace eArtRegister.API.Application.Users.Commands.Deposit
     public class DepositCommand : IRequest
     {
         public string Wallet { get; set; }
-        public long DepositValue { get; set; }
         public string TransactionHash { get; set; }
+        public bool IsCompleted { get; set; }
     }
     public class DepositCommandHandler : IRequestHandler<DepositCommand, Unit>
     {
@@ -44,12 +44,13 @@ namespace eArtRegister.API.Application.Users.Commands.Deposit
         {
             var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
-            _context.UserDeposits.Add(new UserDeposit
+            _context.NFTActionHistories.Add(new NFTActionHistory
             {
-                UserId = user.Id,
-                DepositeDate = _dateTime.UtcNow,
-                DepositValue = request.DepositValue,
-                TransactionHash = request.TransactionHash
+                EventTimestamp = _dateTime.UtcNow.Ticks,
+                TransactionHash = request.TransactionHash,
+                Wallet = request.Wallet,
+                IsCompleted = request.IsCompleted,
+                EventAction = request.IsCompleted? Domain.Enums.EventAction.USER_ADDED_DEPOSIT : Domain.Enums.EventAction.USER_ADDED_DEPOSIT_FAIL
             });
 
             await _context.SaveChangesAsync(cancellationToken);

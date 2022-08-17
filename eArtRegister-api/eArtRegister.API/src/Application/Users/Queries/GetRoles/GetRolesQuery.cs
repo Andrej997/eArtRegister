@@ -40,6 +40,13 @@ namespace eArtRegister.API.Application.Users.Queries.GetRoles
         public async Task<UserDto> Handle(GetRolesQuery request, CancellationToken cancellationToken)
         {
             var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            if (user == null)
+            {
+                return new UserDto
+                {
+                    RoleIds = new List<long>()
+                };
+            }
             var roles = _context.UserRoles.Where(ur => ur.UserId == user.Id).Select(u => u.RoleId).ToList();
             long balanace = 0;
             if (!string.IsNullOrEmpty(user.DepositContract))

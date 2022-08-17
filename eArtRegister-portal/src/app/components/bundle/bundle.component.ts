@@ -115,7 +115,8 @@ export class BundleComponent implements OnInit, OnDestroy {
           let body = {
             NFTId: nftId,
             Wallet: this.wallet,
-            TransactionHash: response
+            TransactionHash: response,
+            IsCompleted: true
           };
       
           this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
@@ -126,6 +127,17 @@ export class BundleComponent implements OnInit, OnDestroy {
         }
         else {
           this.toastr.error("Failed to set NFT on sale");
+          let body = {
+            NFTId: nftId,
+            Wallet: this.wallet,
+            TransactionHash: response,
+            IsCompleted: false
+          };
+      
+          this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
+          }, error => {
+              console.error(error);
+          });
         }
       });
     });
@@ -137,12 +149,12 @@ export class BundleComponent implements OnInit, OnDestroy {
       this.web3.getTransactionStatus(response).then(response2 => {
 
         if ((response2 as boolean) == true) {
-          this.toastr.success("NFT bought");
+          this.toastr.success("Funds transacted for NFT");
           let body = {
             NFTId: nftId,
             Wallet: this.wallet,
             TransactionHash: response,
-            Funds: valueToBuy
+            IsCompleted: true
           };
       
           this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
@@ -152,7 +164,18 @@ export class BundleComponent implements OnInit, OnDestroy {
           });
         }
         else {
-          this.toastr.error("Failed to buy NFT");
+          this.toastr.error("Failed to transact funds for NFT");
+          let body = {
+            NFTId: nftId,
+            Wallet: this.wallet,
+            TransactionHash: response,
+            IsCompleted: false
+          };
+      
+          this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
+          }, error => {
+              console.error(error);
+          });
         }
       });
     })
@@ -178,16 +201,38 @@ export class BundleComponent implements OnInit, OnDestroy {
     this.router.navigate([`/bundles/${this.bundleId}/mint`]);
   }
 
-  withdraw(purchaseContract: string) {
+  withdraw(purchaseContract: string, nftId: string) {
     this.web3.withdraw(purchaseContract).then(response =>{
       this.web3.getTransactionStatus(response).then(response2 => {
 
         if ((response2 as boolean) == true) {
           this.toastr.success("Funds withdrawed");
-          this.getNFTs(this.bundleId);
+          let body = {
+            NFTId: nftId,
+            Wallet: this.wallet,
+            TransactionHash: response,
+            IsCompleted: true
+          };
+      
+          this.http.post(environment.api + `NFT/withdrawFunds`, body).subscribe(result => {
+            this.getNFTs(this.bundleId);
+          }, error => {
+              console.error(error);
+          });
         }
         else {
           this.toastr.error("Failed to withdrawed funds");
+          let body = {
+            NFTId: nftId,
+            Wallet: this.wallet,
+            TransactionHash: response,
+            IsCompleted: false
+          };
+      
+          this.http.post(environment.api + `NFT/withdrawFunds`, body).subscribe(result => {
+          }, error => {
+              console.error(error);
+          });
         }
       });
     })
@@ -202,6 +247,8 @@ export class BundleComponent implements OnInit, OnDestroy {
           let body = {
             Id: nftId,
             Wallet: this.wallet,
+            TransactionHash: response,
+            IsCompleted: true
           };
       
           this.http.post(environment.api + `NFT/approved`, body).subscribe(result => {
@@ -212,6 +259,17 @@ export class BundleComponent implements OnInit, OnDestroy {
         }
         else {
           this.toastr.error("Failed to approve contract");
+          let body = {
+            Id: nftId,
+            Wallet: this.wallet,
+            TransactionHash: response,
+            IsCompleted: false
+          };
+      
+          this.http.post(environment.api + `NFT/approved`, body).subscribe(result => {
+          }, error => {
+              console.error(error);
+          });
         }
       });
     });
@@ -227,7 +285,8 @@ export class BundleComponent implements OnInit, OnDestroy {
               let body = {
                 NFTId: nftId,
                 Wallet: this.wallet,
-                TransactionHash: response
+                TransactionHash: response,
+                IsCompleted: true
               };
           
               this.http.post(environment.api + `NFT/cancel`, body).subscribe(result => {
@@ -238,6 +297,17 @@ export class BundleComponent implements OnInit, OnDestroy {
             }
             else {
               this.toastr.error("Failed to cancel");
+              let body = {
+                NFTId: nftId,
+                Wallet: this.wallet,
+                TransactionHash: response,
+                IsCompleted: false
+              };
+          
+              this.http.post(environment.api + `NFT/cancel`, body).subscribe(result => {
+              }, error => {
+                  console.error(error);
+              });
             }
           });
       });
@@ -251,7 +321,8 @@ export class BundleComponent implements OnInit, OnDestroy {
             let body = {
               NFTId: nftId,
               Wallet: this.wallet,
-              TransactionHash: response
+              TransactionHash: response,
+              IsCompleted: true
             };
         
             this.http.post(environment.api + `NFT/cancel`, body).subscribe(result => {
@@ -262,6 +333,17 @@ export class BundleComponent implements OnInit, OnDestroy {
           }
           else {
             this.toastr.error("Failed to cancel");
+            let body = {
+              NFTId: nftId,
+              Wallet: this.wallet,
+              TransactionHash: response,
+              IsCompleted: false
+            };
+        
+            this.http.post(environment.api + `NFT/cancel`, body).subscribe(result => {
+            }, error => {
+                console.error(error);
+            });
           }
         });
     });

@@ -9,16 +9,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.NFTs.Commands.Cancel
+namespace eArtRegister.API.Application.NFTs.Commands.WithdrawFunds
 {
-    public class CancelNFTCommand : IRequest
+    public class WithdrawFundsCommad : IRequest
     {
         public Guid NFTId { get; set; }
         public string Wallet { get; set; }
         public string TransactionHash { get; set; }
         public bool IsCompleted { get; set; }
     }
-    public class CancelNFTCommandHandler : IRequestHandler<CancelNFTCommand, Unit>
+    public class WithdrawFundsCommadHandler : IRequestHandler<WithdrawFundsCommad, Unit>
     {
         private readonly IApplicationDbContext _context;
         private readonly IDateTime _dateTime;
@@ -27,7 +27,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Cancel
         private readonly IMapper _mapper;
         private readonly INethereumBC _nethereum;
 
-        public CancelNFTCommandHandler(IApplicationDbContext context,
+        public WithdrawFundsCommadHandler(IApplicationDbContext context,
                                                IDateTime dateTime,
                                                ICurrentUserService currentUserService,
                                                IIPFSFile ipfs,
@@ -42,21 +42,17 @@ namespace eArtRegister.API.Application.NFTs.Commands.Cancel
             _nethereum = nethereum;
         }
 
-        public async Task<Unit> Handle(CancelNFTCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(WithdrawFundsCommad request, CancellationToken cancellationToken)
         {
-            var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
-
             _context.NFTActionHistories.Add(new NFTActionHistory
             {
                 EventTimestamp = _dateTime.UtcNow.Ticks,
                 TransactionHash = request.TransactionHash,
                 Wallet = request.Wallet,
                 IsCompleted = request.IsCompleted,
-                EventAction = request.IsCompleted ? Domain.Enums.EventAction.NFT_SALE_CANCELED : Domain.Enums.EventAction.NFT_SALE_CANCELED_FAIL,
+                EventAction = request.IsCompleted ? Domain.Enums.EventAction.WITHDRAW_FROM_SOLD_NFT : Domain.Enums.EventAction.WITHDRAW_FROM_SOLD_NFT_FAIL,
                 NFTId = request.NFTId
             });
-            if (request.IsCompleted)
-                nft.StatusId = Domain.Enums.NFTStatus.Canceled;
 
             await _context.SaveChangesAsync(cancellationToken);
 
