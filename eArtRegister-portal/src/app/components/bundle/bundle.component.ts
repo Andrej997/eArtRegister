@@ -65,7 +65,7 @@ export class BundleComponent implements OnInit, OnDestroy {
 
       this.nfts.forEach(element => {
         if (element.purchaseContract != null) {
-          if (element.statusId == "ON_SALE") {
+          if (element.statusId == "ON_SALE" || element.statusId == "CANCELED") {
             this.web3.getUserBalance(element.purchaseContract, element.currentWallet).then(response =>{
               element.balance = (response as number);
             });
