@@ -42,12 +42,12 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
 
             var bundle = _context.Bundles.Find(nft.BundleId);
 
-            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
             var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
             var withdrawTransaction = await _etherscan.GetTransactionStatus(withdraw.TransactionHash, cancellationToken);
             if (withdrawTransaction.IsError == false)
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = withdraw.TransactionHash,
@@ -58,7 +58,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = withdraw.TransactionHash,
@@ -73,7 +73,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
             var transaction = await _etherscan.GetTransactionStatus(purchaseContractTransaction.TransactionHash, cancellationToken);
             if (transaction.IsError == false)
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = purchaseContractTransaction.TransactionHash,
@@ -85,7 +85,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = purchaseContractTransaction.TransactionHash,

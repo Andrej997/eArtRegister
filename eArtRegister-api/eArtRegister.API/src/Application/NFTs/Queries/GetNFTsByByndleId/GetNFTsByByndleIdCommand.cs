@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
+namespace eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId
 {
     public class GetNFTsByByndleIdCommand : IRequest<List<NFTDto>>
     {
@@ -45,7 +45,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
         {
             var bundle = _context.Bundles.Find(request.BundleId);
 
-            var user = _context.Users.Where(u => u.Id == bundle.OwnerId).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Id == bundle.OwnerId).FirstOrDefault();
             var ipfsIds = await _nethereum.IPFSIds(_context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.ContractAddress).First());
 
             var ret = await _context.NFTs

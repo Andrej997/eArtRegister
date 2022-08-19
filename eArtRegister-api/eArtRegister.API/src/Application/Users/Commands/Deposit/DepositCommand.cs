@@ -42,9 +42,9 @@ namespace eArtRegister.API.Application.Users.Commands.Deposit
 
         public async Task<Unit> Handle(DepositCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
-            _context.NFTActionHistories.Add(new NFTActionHistory
+            _context.ServerActionHistories.Add(new NFTActionHistory
             {
                 EventTimestamp = _dateTime.UtcNow.Ticks,
                 TransactionHash = request.TransactionHash,

@@ -44,7 +44,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.WithdrawFunds
 
         public async Task<Unit> Handle(WithdrawFundsCommad request, CancellationToken cancellationToken)
         {
-            _context.NFTActionHistories.Add(new NFTActionHistory
+            _context.ServerActionHistories.Add(new NFTActionHistory
             {
                 EventTimestamp = _dateTime.UtcNow.Ticks,
                 TransactionHash = request.TransactionHash,

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId
+namespace eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId
 {
     public class NFTDto : IMapFrom<NFT>
     {

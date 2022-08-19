@@ -23,7 +23,7 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasColumnName("liked_date");
 
             builder.HasOne(d => d.User)
-                .WithMany(p => p.Liked)
+                .WithMany(p => p.NFTLikes)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 

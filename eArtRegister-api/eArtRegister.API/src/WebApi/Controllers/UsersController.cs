@@ -1,11 +1,9 @@
 ﻿using eArtRegister.API.Application.Users.Commands.CheckWallet;
 using eArtRegister.API.Application.Users.Commands.CreateDeposit;
 using eArtRegister.API.Application.Users.Commands.Deposit;
-using eArtRegister.API.Application.Users.Commands.DepositServer;
 using eArtRegister.API.Application.Users.Commands.RequestRolePermission;
 using eArtRegister.API.Application.Users.Queries.GetUser;
 using eArtRegister.API.Application.Users.Queries.GetUserHistoryActions;
-using eArtRegister.API.WebApi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,6 +20,21 @@ namespace eArtRegister.API.WebApi.Controllers
             try
             {
                 return await Mediator.Send(new GetUserQuery(wallet));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("checkWallet")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<IActionResult> CheckWallet(CheckWalletCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -73,39 +86,9 @@ namespace eArtRegister.API.WebApi.Controllers
             }
         }
 
-        [HttpPost("deposit/server")]
-        [ApiExplorerSettings(GroupName = "v1")]
-        public async Task<IActionResult> DepositServer(DepositServerCommand command)
-        {
-            try
-            {
-                await Mediator.Send(command);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost("requestRolePermission")]
         [ApiExplorerSettings(GroupName = "v1")]
         public async Task<IActionResult> RequestRolePermission(RequestRolePermissionCommand command)
-        {
-            try
-            {
-                await Mediator.Send(command);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("checkWallet")]
-        [ApiExplorerSettings(GroupName = "v1")]
-        public async Task<IActionResult> CheckWallet(CheckWalletCommand command)
         {
             try
             {

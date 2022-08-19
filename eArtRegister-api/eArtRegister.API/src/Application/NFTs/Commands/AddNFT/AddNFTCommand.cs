@@ -47,7 +47,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
             if (!_context.Bundles.Any(b => b.OwnerId == user.Id))
             {
                 throw new InvalidOperationException("Can't mint in others bundles");
@@ -57,7 +57,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             var withdrawTransaction = await _etherscan.GetTransactionStatus(withdraw.TransactionHash, cancellationToken);
             if (withdrawTransaction.IsError == false)
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = withdraw.TransactionHash,
@@ -68,7 +68,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = withdraw.TransactionHash,
@@ -131,7 +131,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
             if (transaction.IsError == false)
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = minted.TransactionHash,
@@ -143,7 +143,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = minted.TransactionHash,

@@ -24,14 +24,14 @@ namespace eArtRegister.API.Application.Users.Commands.RequestRolePermission
 
         public async Task<Unit> Handle(RequestRolePermissionCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Find(_currentUserService.UserId);
+            var user = _context.SystemUsers.Find(_currentUserService.UserId);
             if (user == null)
                 throw new Exception("Unknown user");
 
             if (request.RoleId < 1)
                 throw new Exception("Unknown role");
 
-            if (_context.UserRoles.Any(t => t.UserId == _currentUserService.UserId && t.RoleId == request.RoleId))
+            if (_context.SystemUserRoles.Any(t => t.UserId == _currentUserService.UserId && t.RoleId == request.RoleId))
                 throw new Exception("You already have that role");
 
             if (request.RoleId == (long)Domain.Enums.Role.Administrator)
@@ -47,7 +47,7 @@ namespace eArtRegister.API.Application.Users.Commands.RequestRolePermission
             //        throw new Exception("You need to register a wallet to be a seller");
             //}
 
-            _context.UserRoles.Add(new Domain.Entities.UserRole
+            _context.SystemUserRoles.Add(new Domain.Entities.UserRole
             {
                 UserId = _currentUserService.UserId,
                 RoleId = request.RoleId

@@ -28,10 +28,10 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
 
         public async Task<Unit> Handle(CheckWalletCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
             if (user == null)
             {
-                _context.Users.Add(new User
+                _context.SystemUsers.Add(new User
                 {
                     Wallet = request.Wallet.ToLower(),
                     DateWalletAdded = _dateTime.UtcNow,
@@ -44,7 +44,7 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
                     }
                 });
 
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     Wallet = request.Wallet,

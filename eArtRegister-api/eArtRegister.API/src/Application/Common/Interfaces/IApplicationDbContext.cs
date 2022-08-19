@@ -17,14 +17,11 @@ namespace eArtRegister.API.Application.Common.Interfaces
         DbSet<NFTLike> NFTLikes { get; set; }
         DbSet<NFTPriceHistory> NFTPriceHistory { get; set; }
         DbSet<NFTStatus> NFTStatuses { get; set; }
-        DbSet<NFTTransaction> NFTTransactions { get; set; }
-        DbSet<NFTSale> NFTSales { get; set; }
-        DbSet<NFTActionHistory> NFTActionHistories { get; set; }
-        DbSet<Role> Roles { get; set; }
-        DbSet<User> Users { get; set; }
-        DbSet<UserDeposit> UserDeposits { get; set; }
+        DbSet<NFTActionHistory> ServerActionHistories { get; set; }
+        DbSet<Role> SystemRoles { get; set; }
+        DbSet<User> SystemUsers { get; set; }
         DbSet<UserPortalNotification> UserPortalNotifications { get; set; }
-        DbSet<UserRole> UserRoles { get; set; }
+        DbSet<UserRole> SystemUserRoles { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

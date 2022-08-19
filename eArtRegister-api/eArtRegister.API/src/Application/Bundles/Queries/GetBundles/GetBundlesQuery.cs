@@ -57,7 +57,7 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
 
         public async Task<List<BundleDto>> Handle(GetBundlesQuery request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(x => x.Wallet.ToLower() == request.Wallet).FirstOrDefault();
+            var user = _context.SystemUsers.Where(x => x.Wallet.ToLower() == request.Wallet).FirstOrDefault();
             var bundlesQuery = _context.Bundles
                     .AsNoTracking();
 

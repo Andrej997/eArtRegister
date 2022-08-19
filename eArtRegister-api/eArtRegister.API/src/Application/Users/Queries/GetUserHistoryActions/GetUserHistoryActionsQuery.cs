@@ -44,7 +44,7 @@ namespace eArtRegister.API.Application.Users.Queries.GetUserHistoryActions
 
         public async Task<List<ActionHistoryDto>> Handle(GetUserHistoryActionsQuery request, CancellationToken cancellationToken)
         {
-            return await _context.NFTActionHistories
+            return await _context.ServerActionHistories
                     .AsNoTracking()
                     .Where(t => t.Wallet.ToLower() == request.Wallet.ToLower())
                     .OrderByDescending(t => t.EventTimestamp)

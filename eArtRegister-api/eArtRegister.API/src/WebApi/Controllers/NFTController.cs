@@ -2,12 +2,11 @@
 using eArtRegister.API.Application.NFTs.Commands.Approved;
 using eArtRegister.API.Application.NFTs.Commands.Bought;
 using eArtRegister.API.Application.NFTs.Commands.Cancel;
-using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
 using eArtRegister.API.Application.NFTs.Commands.PrepareForSale;
 using eArtRegister.API.Application.NFTs.Commands.SetOnSale;
-using eArtRegister.API.Application.NFTs.Commands.TransferNFT;
 using eArtRegister.API.Application.NFTs.Commands.WithdrawFunds;
 using eArtRegister.API.Application.NFTs.Queries.GetNFTs;
+using eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId;
 using eArtRegister.API.WebApi.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -83,21 +82,6 @@ namespace eArtRegister.API.WebApi.Controllers
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("withdrawFunds")]
         public async Task<IActionResult> WithdrawFunds(WithdrawFundsCommad command)
-        {
-            try
-            {
-                await Mediator.Send(command);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [ApiExplorerSettings(GroupName = "v1")]
-        [HttpPost("sendAsGift")]
-        public async Task<IActionResult> TransferNFT(TransferNFTCommand command)
         {
             try
             {
