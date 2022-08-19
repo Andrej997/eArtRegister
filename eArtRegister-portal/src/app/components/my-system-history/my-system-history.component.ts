@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Web3Service } from 'src/app/services/contract/web3.service';
 import { environment } from 'src/environments/environment';
-import { ScrollDispatcher } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-my-system-history',
