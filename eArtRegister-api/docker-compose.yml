@@ -14,12 +14,16 @@ services:
       context: .
       dockerfile: eArtRegister.API/src/WebApi/Dockerfile
     ports:
-      - 5001:80
-      - 5002:443
+      - 6001:80
+      - 6002:443
     environment:
       ConnectionStrings__DefaultConnection: "host=postgres;port=5432;database=eArtRegisterDb;username=postgres;password=admin"
+      IPFS__UrlStore: "http://127.0.0.1:5001"
+      IPFS__UrlRead: "http://127.0.0.1:9090"
     networks:
       - dockerapi-dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   postgres:
     container_name: postgres
