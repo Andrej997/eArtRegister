@@ -40,7 +40,7 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
                     .ProjectTo<BundleDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefault();
 
-            var user = _context.Users.Where(u => u.Id == bundle.OwnerId).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Id == bundle.OwnerId).FirstOrDefault();
 
             bundle.OwnerWallet = user.Wallet.ToLower();
 

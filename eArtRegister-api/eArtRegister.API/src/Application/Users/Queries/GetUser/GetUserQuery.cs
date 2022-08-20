@@ -1,11 +1,10 @@
 ﻿using eArtRegister.API.Application.Common.Interfaces;
+using eArtRegister.API.Domain.Entities;
 using Etherscan.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +38,7 @@ namespace eArtRegister.API.Application.Users.Queries.GetUser
 
         public async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
             if (user == null)
             {
                 return new UserDto
@@ -47,7 +46,7 @@ namespace eArtRegister.API.Application.Users.Queries.GetUser
                     RoleIds = new List<long>()
                 };
             }
-            var roles = _context.UserRoles.Where(ur => ur.UserId == user.Id).Select(u => u.RoleId).ToList();
+            var roles = _context.SystemUserRoles.Where(ur => ur.UserId == user.Id).Select(u => u.RoleId).ToList();
             long balanace = 0;
             if (!string.IsNullOrEmpty(user.DepositContract))
             {
@@ -57,9 +56,9 @@ namespace eArtRegister.API.Application.Users.Queries.GetUser
 
             if (!string.IsNullOrEmpty(user.DepositContract) && balanace > 0)
             {
-                if (!_context.UserRoles.Any(ur => ur.UserId == user.Id && ur.RoleId == (long)Domain.Enums.Role.Seller))
+                if (!_context.SystemUserRoles.Any(ur => ur.UserId == user.Id && ur.RoleId == (long)Domain.Enums.Role.Seller))
                 {
-                    _context.UserRoles.Add(new Domain.Entities.UserRole
+                    _context.SystemUserRoles.Add(new UserRole
                     {
                         UserId = user.Id,
                         RoleId = (long)Domain.Enums.Role.Seller
@@ -75,7 +74,6 @@ namespace eArtRegister.API.Application.Users.Queries.GetUser
                 RoleIds = roles,
                 DepositContract = user.DepositContract,
                 DepositBalance = balanace,
-                ServerBalance = user.ServerBalance,
                 WalletBalance = await _etherscan.GetBalance(user.Wallet, cancellationToken)
             };
         }

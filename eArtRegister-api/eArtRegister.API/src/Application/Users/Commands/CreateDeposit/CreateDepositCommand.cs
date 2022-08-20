@@ -46,13 +46,13 @@ namespace eArtRegister.API.Application.Users.Commands.CreateDeposit
         {
             var depositTransaction = await _nethereum.CreateDepositContract(request.Wallet);
 
-            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
             user.DepositContract = depositTransaction.ContractAddress;
 
             var transaction = await _etherscan.GetTransactionStatus(depositTransaction.TransactionHash, cancellationToken);
             if (transaction.IsError == false)
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = depositTransaction.TransactionHash,
@@ -63,7 +63,7 @@ namespace eArtRegister.API.Application.Users.Commands.CreateDeposit
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = depositTransaction.TransactionHash,

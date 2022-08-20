@@ -120,7 +120,7 @@ namespace NethereumAccess.Services
                     Gas = config.Gass,
                     ContractAddress = contractAddress,
                     TokenId = tokenId,
-                    Server = config.SenderAddress
+                    Server = config.ServerWallet
                 };
 
                 return await TraderService.DeployContractAndWaitForReceiptAsync(web3, traderDeployment);

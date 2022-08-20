@@ -46,7 +46,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Cancel
         {
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
-            _context.NFTActionHistories.Add(new NFTActionHistory
+            _context.ServerActionHistories.Add(new NFTActionHistory
             {
                 EventTimestamp = _dateTime.UtcNow.Ticks,
                 TransactionHash = request.TransactionHash,

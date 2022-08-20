@@ -44,7 +44,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
 
         public async Task<Unit> Handle(BoughtCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
@@ -55,7 +55,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
                 nft.CurrentWallet = request.Wallet;
                 nft.StatusId = Domain.Enums.NFTStatus.Sold;
 
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = request.TransactionHash,
@@ -67,7 +67,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = request.TransactionHash,

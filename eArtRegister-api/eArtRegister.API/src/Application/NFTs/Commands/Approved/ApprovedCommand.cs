@@ -42,7 +42,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.Approved
             if (request.IsCompleted)
                 nft.StatusId = Domain.Enums.NFTStatus.Approved;
 
-            _context.NFTActionHistories.Add(new NFTActionHistory
+            _context.ServerActionHistories.Add(new NFTActionHistory
             {
                 EventTimestamp = _dateTime.UtcNow.Ticks,
                 TransactionHash = request.TransactionHash,

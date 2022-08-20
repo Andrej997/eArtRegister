@@ -36,7 +36,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
 
         public async Task<Guid> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
             if (_context.Bundles.Any(t => t.Name == request.Name && t.OwnerId == _currentUserService.UserId))
                 throw new Exception("Name is already taken");
 
@@ -44,7 +44,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             var withdrawTransaction = await _etherscan.GetTransactionStatus(withdraw.TransactionHash, cancellationToken);
             if (withdrawTransaction.IsError == false)
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = withdraw.TransactionHash,
@@ -55,7 +55,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = withdraw.TransactionHash,
@@ -71,7 +71,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             var transaction = await _etherscan.GetTransactionStatus(erc721ContractReceipt.TransactionHash, cancellationToken);
             if (transaction.IsError == false)
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = erc721ContractReceipt.TransactionHash,
@@ -82,7 +82,7 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             }
             else
             {
-                _context.NFTActionHistories.Add(new NFTActionHistory
+                _context.ServerActionHistories.Add(new NFTActionHistory
                 {
                     EventTimestamp = _dateTime.UtcNow.Ticks,
                     TransactionHash = erc721ContractReceipt.TransactionHash,

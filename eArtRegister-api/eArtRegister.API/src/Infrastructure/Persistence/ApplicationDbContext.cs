@@ -41,14 +41,11 @@ namespace eArtRegister.API.Infrastructure.Persistence
         public DbSet<NFTLike> NFTLikes { get; set; }
         public DbSet<NFTPriceHistory> NFTPriceHistory { get; set; }
         public DbSet<NFTStatus> NFTStatuses { get; set; }
-        public DbSet<NFTTransaction> NFTTransactions { get; set; }
-        public DbSet<NFTSale> NFTSales { get; set; }
-        public DbSet<NFTActionHistory> NFTActionHistories { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserDeposit> UserDeposits { get; set; }
+        public DbSet<NFTActionHistory> ServerActionHistories { get; set; }
+        public DbSet<Role> SystemRoles { get; set; }
+        public DbSet<User> SystemUsers { get; set; }
         public DbSet<UserPortalNotification> UserPortalNotifications { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserRole> SystemUserRoles { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

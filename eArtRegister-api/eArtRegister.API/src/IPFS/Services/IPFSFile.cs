@@ -34,11 +34,19 @@ namespace IPFS.Services
 
         public async Task<RetVal> UploadAsync(string name, Stream data, CancellationToken cancellationToken)
         {
-            var retVal = await _ipfsStore.UploadAsync("add", cancellationToken, data, name);
+            try
+            {
+                var retVal = await _ipfsStore.UploadAsync("add", cancellationToken, data, name);
 
-            var result = JsonConvert.DeserializeObject<RetVal>(retVal);
+                var result = JsonConvert.DeserializeObject<RetVal>(retVal);
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            
         }
     }
 }

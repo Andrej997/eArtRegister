@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   infuraId: '',
   api : "https://localhost:44335/api/",
-  // api : "https://localhost:5002/api/",
+  // api : "https://localhost:6002/api/",
   serverAddress: '0x6009C754B4b625f32d3ad7de27363871F00BaBf8',
 };
 

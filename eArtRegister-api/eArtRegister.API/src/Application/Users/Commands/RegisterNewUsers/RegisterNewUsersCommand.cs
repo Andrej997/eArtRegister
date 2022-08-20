@@ -26,13 +26,13 @@ namespace eArtRegister.API.Application.Users.Commands.RegisterNewUsers
         {
             foreach (var id in request.Ids)
             {
-                _context.Users.Add(new Domain.Entities.User
+                _context.SystemUsers.Add(new Domain.Entities.User
                 {
                     Id = id,
                     IsDeleted = false
                 });
 
-                _context.UserRoles.Add(new Domain.Entities.UserRole
+                _context.SystemUserRoles.Add(new Domain.Entities.UserRole
                 {
                     UserId = id,
                     RoleId = (long)Domain.Enums.Role.Observer

@@ -24,7 +24,7 @@ namespace eArtRegister.API.Application.Users.Queries.GetUserIds
         public async Task<List<Guid>> Handle(GetUserIdsQuery request, CancellationToken cancellationToken)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            return _context.Users.Select(t => t.Id).ToList();
+            return _context.SystemUsers.Select(t => t.Id).ToList();
         }
     }
 }

@@ -43,9 +43,6 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<NFTLike> Likes { get; set; }
         public virtual ICollection<NFTRate> Rates { get; set; }
         public virtual ICollection<PriceOffer> PriceOffers { get; set; }
-        public virtual ICollection<BidPrice> Bids { get; set; }
-        public virtual ICollection<NFTSale> Sales { get; set; }
-        public virtual ICollection<NFTTransaction> Transactions { get; set; }
         //public virtual ICollection<NFTPriceHistory> PriceHistory { get; set; }
     }
 }

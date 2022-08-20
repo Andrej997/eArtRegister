@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using eArtRegister.API.Application.Common.Interfaces;
-using eArtRegister.API.Application.NFTs.Commands.GetNFTsByByndleId;
+using eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId;
 using IPFS.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NethereumAccess.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,7 +48,7 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTs
 
         public async Task<List<NFTDto>> Handle(GetNFTsQuery request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
             var ret = await _context.NFTs
                     .AsNoTracking()

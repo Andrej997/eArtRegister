@@ -29,7 +29,7 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasColumnName("comment");
 
             builder.HasOne(d => d.User)
-                .WithMany(p => p.RatedBundles)
+                .WithMany(p => p.BundleRates)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 

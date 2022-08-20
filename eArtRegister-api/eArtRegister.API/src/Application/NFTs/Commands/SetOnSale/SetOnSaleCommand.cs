@@ -44,11 +44,11 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
 
         public async Task<Unit> Handle(SetOnSaleCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.Users.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
+            var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
-            _context.NFTActionHistories.Add(new NFTActionHistory
+            _context.ServerActionHistories.Add(new NFTActionHistory
             {
                 EventTimestamp = _dateTime.UtcNow.Ticks,
                 TransactionHash = request.TransactionHash,

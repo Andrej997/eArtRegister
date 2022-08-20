@@ -11,9 +11,7 @@ namespace eArtRegister.API.Domain.Entities
         public string Wallet { get; set; }
         public DateTime? DateWalletAdded { get; set; }
         public string DepositContract { get; set; }
-        public long ServerBalance { get; set; }
 
-        //public virtual ICollection<Wallet> Wallets { get; set; }
         public virtual ICollection<UserRole> Roles { get; set; }
         public virtual ICollection<NFT> OwnedNFTs { get; set; }
         public virtual ICollection<NFT> MintedNFTs { get; set; }
@@ -21,12 +19,10 @@ namespace eArtRegister.API.Domain.Entities
         public virtual ICollection<FollowNFT> FollowingNFTs { get; set; }
         public virtual ICollection<FollowUser> FollowingUsers { get; set; }
         public virtual ICollection<FollowUser> Followers { get; set; }
-        public virtual ICollection<NFTLike> Liked { get; set; }
+        public virtual ICollection<NFTLike> NFTLikes { get; set; }
         public virtual ICollection<UserPortalNotification> Notifications { get; set; }
-        public virtual ICollection<BundleRate> RatedBundles { get; set; }
-        public virtual ICollection<NFTRate> RatedNFTs { get; set; }
-        public virtual ICollection<BidPrice> Bids { get; set; }
+        public virtual ICollection<BundleRate> BundleRates { get; set; }
+        public virtual ICollection<NFTRate> NFTRates { get; set; }
         public virtual ICollection<PriceOffer> Offers { get; set; }
-        public virtual ICollection<UserDeposit> Deposits { get; set; }
     }
 }
