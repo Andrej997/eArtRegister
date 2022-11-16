@@ -24,6 +24,15 @@ router.post('/erc721', async (req, res, next) => {
   res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
 });
 
+router.post('/purchase', async (req, res, next) => {
+  const erc721Address = req.body['erc721Address'];
+  const tokenId = req.body['tokenId'];
+  const minParticipation = req.body['minParticipation'];
+  const [abi, bytecode] = await build(purchaseContract, 'Purchase');
+  const address = await deploy(abi, bytecode, [erc721Address, tokenId, minParticipation]);
+  res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
+});
+
 function findImports(relativePath) {
   const absolutePath = path.resolve(__dirname, './../../node_modules', relativePath);
   const source = fs.readFileSync(absolutePath, 'utf8');
@@ -95,6 +104,68 @@ contract eArtRegister is ERC721, ERC721URIStorage, Ownable {
         returns (string memory)
     {
         return super.tokenURI(tokenId);
+    }
+}
+`;
+
+const depositContract = `
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.17;
+
+interface IPurchase {
+    function bid() payable external;
+    function participate(uint256) external;
+    function purchase(address) payable external;
+}
+
+contract Deposit {
+    address internal owner;
+    address internal server;
+    uint256 internal balance;
+
+    constructor(address _owner) {    
+        owner = _owner;  
+        server = msg.sender;
+    }
+
+    function deposit() public payable {
+        require(msg.sender == owner, "Only owner can deposit");
+        balance += msg.value;
+    }
+
+    function viewDeposit() public view returns(uint256) {
+        require(msg.sender == owner, "You are not the owner of this deposit");
+        return balance;
+    }
+
+    function withdraw(address payable _owner, uint256 amount) external {
+        require(owner == _owner, "Not owner");
+        require(msg.sender == _owner, "Not owner");
+        require(msg.sender == owner, "Not owner");
+        _owner.transfer(amount);
+        balance -= amount;
+    }
+
+    function serverWithdraw(uint256 amount, address payable _server) external {
+        require(server == _server, "Not server");
+        require(msg.sender == _server, "Not server");
+        require(msg.sender == server, "Not server");
+        _server.transfer(amount);
+        balance -= amount;
+    }
+
+    function sendBid(address _auction, uint256 _amount) external {
+        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
+        IPurchase(_auction).bid{value: transferableAmount}();
+    }
+
+    function receiveBidMoney() payable external {
+        balance += msg.value;
+    }
+
+    function purchase(address _purchaseContract, uint256 _amount) external {
+        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
+        IPurchase(_purchaseContract).purchase{value: transferableAmount}(owner);
     }
 }
 `;
@@ -397,67 +468,5 @@ contract Purchase is APurchase {
     event DeadlineChanged(uint timestampFrom, uint timestampTo, uint timestamp);
     event TokenPurhchased(address customer, uint timestamp);
     event BidAdded(address bidder, uint256 amount, uint timestamp);
-}
-`;
-
-const depositContract = `
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
-
-interface IPurchase {
-    function bid() payable external;
-    function participate(uint256) external;
-    function purchase(address) payable external;
-}
-
-contract Deposit {
-    address internal owner;
-    address internal server;
-    uint256 internal balance;
-
-    constructor(address _owner) {    
-        owner = _owner;  
-        server = msg.sender;
-    }
-
-    function deposit() public payable {
-        require(msg.sender == owner, "Only owner can deposit");
-        balance += msg.value;
-    }
-
-    function viewDeposit() public view returns(uint256) {
-        require(msg.sender == owner, "You are not the owner of this deposit");
-        return balance;
-    }
-
-    function withdraw(address payable _owner, uint256 amount) external {
-        require(owner == _owner, "Not owner");
-        require(msg.sender == _owner, "Not owner");
-        require(msg.sender == owner, "Not owner");
-        _owner.transfer(amount);
-        balance -= amount;
-    }
-
-    function serverWithdraw(uint256 amount, address payable _server) external {
-        require(server == _server, "Not server");
-        require(msg.sender == _server, "Not server");
-        require(msg.sender == server, "Not server");
-        _server.transfer(amount);
-        balance -= amount;
-    }
-
-    function sendBid(address _auction, uint256 _amount) external {
-        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
-        IPurchase(_auction).bid{value: transferableAmount}();
-    }
-
-    function receiveBidMoney() payable external {
-        balance += msg.value;
-    }
-
-    function purchase(address _purchaseContract, uint256 _amount) external {
-        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
-        IPurchase(_purchaseContract).purchase{value: transferableAmount}(owner);
-    }
 }
 `;
