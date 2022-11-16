@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ethereumjs/vm": "^6.2.0",
+    "@openzeppelin/contracts": "^4.8.0",
     "@truffle/hdwallet-provider": "^2.1.1",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
