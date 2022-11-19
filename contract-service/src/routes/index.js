@@ -11,26 +11,36 @@ const web3 = new Web3(provider);
 const router = express.Router();
 
 router.post('/deposit', async (req, res, next) => {
-  const ownerAddress = req.body['ownerAddress'];
-  const [abi, bytecode] = await build(depositContract, 'Deposit');
-  const address = await deploy(abi, bytecode, [ownerAddress]);
-  res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
+    const owner = req.body['owner'];
+
+    const [abi, bytecode] = await build(depositContract, 'Deposit');
+    const address = await deploy(abi, bytecode, [ownerAddress]);
+
+    res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
 });
 
 router.post('/erc721', async (req, res, next) => {
-  const bundleName = req.body['bundleName'];
-  const [abi, bytecode] = await build(erc721Contract, 'eArtRegister');
-  const address = await deploy(abi, bytecode, [bundleName]);
-  res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
+    const owner = req.body['owner'];
+    const bundleName = req.body['bundleName'];
+    const bundleSymbol = req.body['bundleSymbol'];
+
+    const [abi, bytecode] = await build(erc721Contract, 'eArtRegister');
+    const address = await deploy(abi, bytecode, [bundleName, bundleSymbol, owner]);
+
+    res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
 });
 
 router.post('/purchase', async (req, res, next) => {
-  const erc721Address = req.body['erc721Address'];
-  const tokenId = req.body['tokenId'];
-  const minParticipation = req.body['minParticipation'];
-  const [abi, bytecode] = await build(purchaseContract, 'Purchase');
-  const address = await deploy(abi, bytecode, [erc721Address, tokenId, minParticipation]);
-  res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
+    const erc721Address = req.body['erc721Address'];
+    const tokenId = req.body['tokenId'];
+    const repaymentInInstallments = req.body['repaymentInInstallments'];
+    const auction = req.body['auction'];
+    const entireAmount = req.body['entireAmount'];
+
+    const [abi, bytecode] = await build(purchaseContract, 'Purchase');
+    const address = await deploy(abi, bytecode, [erc721Address, tokenId, minParticipation]);
+
+    res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
 });
 
 function findImports(relativePath) {
@@ -80,20 +90,32 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract eArtRegister is ERC721, ERC721URIStorage, Ownable {
+    
     using Counters for Counters.Counter;
-
     Counters.Counter private _tokenIdCounter;
+    address private _owner;
 
-    constructor(string memory name) ERC721(name, "EART") {}
+    constructor(string memory name, string memory symbol, address owner) 
+        ERC721(name, symbol) 
+    {
+        _owner = owner;
+    }
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function safeMint(address to, string memory uri) 
+        public 
+        //onlyOwner 
+    {
+        require(_owner == msg.sender, "Caller is not the owner");
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId) 
+        internal 
+        override(ERC721, ERC721URIStorage) 
+    {
         super._burn(tokenId);
     }
 
@@ -114,7 +136,10 @@ pragma solidity ^0.8.17;
 
 interface IPurchase {
     function bid() payable external;
-    function participate(uint256) external;
+
+    function participate(address) payable external;
+    function payTheInstallment(address customer) payable external;
+
     function purchase(address) payable external;
 }
 
@@ -129,7 +154,6 @@ contract Deposit {
     }
 
     function deposit() public payable {
-        require(msg.sender == owner, "Only owner can deposit");
         balance += msg.value;
     }
 
@@ -167,6 +191,16 @@ contract Deposit {
         uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
         IPurchase(_purchaseContract).purchase{value: transferableAmount}(owner);
     }
+
+    function participate(address _purchaseContract, uint256 _amount) external {
+        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
+        IPurchase(_purchaseContract).participate{value: transferableAmount}(owner);
+    }
+
+    function payTheInstallment(address _purchaseContract, uint256 _amount) external {
+        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
+        IPurchase(_purchaseContract).payTheInstallment{value: transferableAmount}(owner);
+    }
 }
 `;
 
@@ -182,10 +216,13 @@ interface IDeposit {
 
 abstract contract APurchase {
     // methods
+    function setPrice(uint256 amount, uint daysOnSale, uint256 participation) virtual public returns(bool);
+    function editPrice(uint256 amount) virtual public returns(bool);
+    function editDeadline(uint moveDays) virtual public returns(bool);
     function bid() virtual payable external;
     function closeBid() virtual public;
     function participate(address) virtual payable public;
-    function payTheInstallment() virtual payable public;
+    function payTheInstallment(address) virtual payable public;
     function purchase(address) virtual payable public;
 
     // views
@@ -199,8 +236,12 @@ abstract contract APurchase {
 }
 
 contract Purchase is APurchase {
-    // privates
-    uint256 private balance;
+    // public
+    bool entireAmount;
+    bool repaymentInInstallments;
+    bool auction;
+
+    // private
     Listing private listing;
     bool private isPriceSet;
     bool private isSold;
@@ -216,11 +257,7 @@ contract Purchase is APurchase {
     uint256 private maxBid;
     uint private maxTimestamp;
 
-    bool private isInstallmentPayed;
-    uint256 private minParticipation;
-    address private participator;
-    uint private participated;
-    uint private lastInstallmentPayed;
+    Installemnt private installemntCustomer;
 
     // structs
     struct Listing {
@@ -228,6 +265,13 @@ contract Purchase is APurchase {
         address seller;
         uint listedTimestamp;
         uint deadlineTimestamp;
+        uint256 participation;
+    }
+
+    struct Installemnt {
+        uint256 amountPayed;
+        address buyer;
+        uint lastInstallemnt;
     }
 
     struct Bid {
@@ -236,19 +280,27 @@ contract Purchase is APurchase {
         uint bidTimestamp;
     }
 
-    constructor(address _erc721, uint256 _tokenId, uint256 _minParticipation) {
+    constructor(address _erc721, uint256 _tokenId, bool _entireAmount, bool _repaymentInInstallments, bool _auction) {
         erc721 = _erc721;
         tokenId = _tokenId;
         isPriceSet = false;
-        isInstallmentPayed = false;
-        minParticipation = _minParticipation;
+        isSold = false;
         token = ERC721(erc721);
+        entireAmount = _entireAmount;
+        repaymentInInstallments = _repaymentInInstallments;
+        auction = _auction;
     }
 
-    function setPrice(uint256 amount, uint daysOnSale) 
+    function setPrice(uint256 amount, uint daysOnSale, uint256 participation) 
+            override
             public 
             returns(bool) {
-        require(isPriceSet == false, "Price is alredy been set!");
+        require(!isPriceSet, "Price is alredy been set!");
+        require(!isSold, "NFT is sold!");
+
+        if (participation > 0)
+            require(repaymentInInstallments, "Action not available");
+        
         require(msg.sender == token.ownerOf(tokenId), "Caller must own given token");
         require(token.isApprovedForAll(msg.sender, address(this)), "Contract must be approved!");
         require(amount > 0, "Amount for sale must be greated that 0 (zero)");
@@ -258,7 +310,8 @@ contract Purchase is APurchase {
                     amount, 
                     msg.sender, 
                     block.timestamp,
-                    addDays(daysOnSale)
+                    addDays(daysOnSale),
+                    participation
                 );
 
         isPriceSet = true;
@@ -267,16 +320,19 @@ contract Purchase is APurchase {
     }
 
     function editPrice(uint256 amount) 
+            override
             public 
             returns(bool) {
+        require(!isSold, "NFT is sold!");
         require(isPriceSet, "Price is not been set!");
+
         require(msg.sender == token.ownerOf(tokenId), "Caller must own given token");
         require(token.isApprovedForAll(msg.sender, address(this)), "Contract must be approved!");
         require(amount > 0, "Amount for sale must be greated that 0 (zero)");
 
         require(checkDeadline(), "Deadline is passed");
 
-        // TODO: check if there is participation
+        require(installemntCustomer.amountPayed == 0, "Installment payments have already started!");
 
         listing.price = amount;
         emit PriceChanged(amount, block.timestamp);
@@ -285,14 +341,18 @@ contract Purchase is APurchase {
     }
 
     function editDeadline(uint moveDays) 
+            override
             public 
             returns(bool) {
+        require(!isSold, "NFT is sold!");
+        require(isPriceSet, "Price is not been set!");
+
         require(msg.sender == token.ownerOf(tokenId), "Caller must own given token");
         require(token.isApprovedForAll(msg.sender, address(this)), "Contract must be approved!");
 
         require(checkDeadline(), "Deadline is passed");
 
-        // TODO: check if there is participation
+        require(installemntCustomer.amountPayed == 0, "Installment payments have already started!");
 
         uint prevDeadline = listing.deadlineTimestamp;
         listing.deadlineTimestamp = addDays(moveDays);
@@ -301,11 +361,14 @@ contract Purchase is APurchase {
         return true;
     }
 
-    // override methods
+    // auction methods
     function bid() 
             override 
             payable 
             external {
+        require(!isSold, "NFT is sold!");
+        require(installemntCustomer.amountPayed == 0, "Participation is payed");
+
         newBid = Bid(
             msg.sender, 
             msg.value, 
@@ -329,6 +392,8 @@ contract Purchase is APurchase {
     function closeBid() 
             override 
             public {
+        require(!isSold, "NFT is sold!");
+
         for (uint i = 0; i < bidsCount; i++) {
             address bidderAddress = bids[i].bidder;
             uint256 bidValue = bids[i].amount; 
@@ -337,48 +402,62 @@ contract Purchase is APurchase {
         bidsCount = 0;
     }
 
+    // installment methods
     function participate(address customer) 
             override 
             payable 
             public {
-        require(msg.value >= minParticipation, "Insufficient funds");
-        require(!isInstallmentPayed, "Installemnt is payed");
-        isInstallmentPayed = true;
-        require(participator == address(0), "Installemnt is payed");
-        participator = customer;
-        participated = block.timestamp;
-        balance += msg.value;
+        require(!isSold, "NFT is sold!");
 
-        if (balance >= listing.price) {
-            token.safeTransferFrom(listing.seller, participator, tokenId);
-            payable(listing.seller).transfer(balance);
+        require(msg.value >= listing.participation, "Insufficient funds");
+        require(installemntCustomer.amountPayed == 0, "Participation is payed");
+        require(installemntCustomer.buyer == address(0), "Installemnt is payed");
+
+        installemntCustomer = Installemnt(
+                    msg.value, 
+                    customer, 
+                    block.timestamp
+                );
+
+        if (installemntCustomer.amountPayed >= listing.price) {
+            token.safeTransferFrom(listing.seller, installemntCustomer.buyer, tokenId);
+            payable(listing.seller).transfer(installemntCustomer.amountPayed);
         }
+
+        closeBid();
     }
 
-    function payTheInstallment() 
+    function payTheInstallment(address customer) 
             override 
             payable 
             public {
-        require(msg.sender == participator, "You are not the participator");
-        require(isInstallmentPayed, "Installemnt is not payed");
-        lastInstallmentPayed = block.timestamp;
-        balance += msg.value;
+        require(!isSold, "NFT is sold!");
 
-        if (balance >= listing.price) {
-            token.safeTransferFrom(listing.seller, participator, tokenId);
-            payable(listing.seller).transfer(balance);
+        require(customer == installemntCustomer.buyer, "You are not the participator");
+        require(installemntCustomer.amountPayed > 0, "Installemnt is not payed");
+        installemntCustomer.lastInstallemnt = block.timestamp;
+        installemntCustomer.amountPayed += msg.value;
+
+        if (installemntCustomer.amountPayed >= listing.price) {
+            token.safeTransferFrom(listing.seller, installemntCustomer.buyer, tokenId);
+            payable(listing.seller).transfer(installemntCustomer.amountPayed);
         }
     }
 
+    // full price methods
     function purchase(address customer) 
             override 
             payable 
             public {
+        require(!isSold, "NFT is sold!");
+        require(entireAmount, "Action not available");
+
+        require(installemntCustomer.amountPayed == 0, "Participation is payed");
         require(msg.value >= listing.price, "Insufficient funds");
-        require(!isSold, "NFT is sold");
 
         token.safeTransferFrom(listing.seller, customer, tokenId);
         payable(listing.seller).transfer(msg.value);
+
         isSold = true;
 
         emit TokenPurhchased(customer, block.timestamp);

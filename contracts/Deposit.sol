@@ -3,7 +3,10 @@ pragma solidity ^0.8.17;
 
 interface IPurchase {
     function bid() payable external;
-    function participate(uint256) external;
+
+    function participate(address) payable external;
+    function payTheInstallment(address customer) payable external;
+
     function purchase(address) payable external;
 }
 
@@ -18,7 +21,6 @@ contract Deposit {
     }
 
     function deposit() public payable {
-        require(msg.sender == owner, "Only owner can deposit");
         balance += msg.value;
     }
 
@@ -55,5 +57,15 @@ contract Deposit {
     function purchase(address _purchaseContract, uint256 _amount) external {
         uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
         IPurchase(_purchaseContract).purchase{value: transferableAmount}(owner);
+    }
+
+    function participate(address _purchaseContract, uint256 _amount) external {
+        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
+        IPurchase(_purchaseContract).participate{value: transferableAmount}(owner);
+    }
+
+    function payTheInstallment(address _purchaseContract, uint256 _amount) external {
+        uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
+        IPurchase(_purchaseContract).payTheInstallment{value: transferableAmount}(owner);
     }
 }
