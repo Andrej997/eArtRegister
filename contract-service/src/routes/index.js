@@ -4,6 +4,7 @@ const fs = require('fs');
 const solc = require('solc');
 const Web3 = require('Web3');
 const HDWalletProvider = require('@truffle/hdwallet-provider');
+const publicAddress = "0xdbAB2059F593D6Aa5c6c50A973ceE919c70A4d91";
 const mnemonic = 'season cross bless aspect speed suspect cross attitude income just link bomb'; 
 const providerOrUrl = 'https://goerli.infura.io/v3/dce7e8edfaff4084ae2f60b36b8cee6e';
 const provider = new HDWalletProvider({ mnemonic, providerOrUrl });
@@ -14,7 +15,7 @@ router.post('/deposit', async (req, res, next) => {
     const owner = req.body['owner'];
 
     const [abi, bytecode] = await build(depositContract, 'Deposit');
-    const address = await deploy(abi, bytecode, [ownerAddress]);
+    const address = await deploy(abi, bytecode, [owner]);
 
     res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
 });
@@ -549,3 +550,57 @@ contract Purchase is APurchase {
     event BidAdded(address bidder, uint256 amount, uint timestamp);
 }
 `;
+
+router.post('/safeMint', async (req, res, next) => {
+    const abi = req.body['abi'];
+    const address = req.body['address'];
+    const to = req.body['to'];
+    const uri = req.body['uri'];
+
+    const daiToken = new web3.eth.Contract(abi, address);
+    daiToken.methods.safeMint(to, uri)
+        .send({ from: publicAddress }, function (err, transactionHash) {
+            if (err) {
+                console.log("An error occured", err);
+                res.send({ error: "Failed to mint" });
+            }
+            console.log("Hash of the transaction: " + transactionHash);
+            res.send({ transactionHash: transactionHash });
+    });
+});
+
+router.post('/ownerOf', async (req, res, next) => {
+    const abi = req.body['abi'];
+    const address = req.body['address'];
+    const tokenId = req.body['tokenId'];
+
+    const daiToken = new web3.eth.Contract(abi, address);
+
+    daiToken.methods.ownerOf(tokenId)
+        .call(function (err, owner) {
+            if (err) {
+                console.log("An error occured", err);
+                return
+            }
+            console.log("Owner of is: ", owner);
+            res.send({ owner: owner });
+    });
+});
+
+router.post('/tokenURI', async (req, res, next) => {
+    const abi = req.body['abi'];
+    const address = req.body['address'];
+    const tokenId = req.body['tokenId'];
+
+    const daiToken = new web3.eth.Contract(abi, address);
+
+    daiToken.methods.tokenURI(tokenId)
+        .call(function (err, uri) {
+            if (err) {
+                console.log("An error occured", err);
+                return
+            }
+            console.log("Token URI is: ", uri);
+            res.send({ uri: uri });
+    });
+});
