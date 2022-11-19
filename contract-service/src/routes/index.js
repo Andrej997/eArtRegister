@@ -34,12 +34,12 @@ router.post('/erc721', async (req, res, next) => {
 router.post('/purchase', async (req, res, next) => {
     const erc721Address = req.body['erc721Address'];
     const tokenId = req.body['tokenId'];
+    const entireAmount = req.body['entireAmount'];
     const repaymentInInstallments = req.body['repaymentInInstallments'];
     const auction = req.body['auction'];
-    const entireAmount = req.body['entireAmount'];
 
     const [abi, bytecode] = await build(purchaseContract, 'Purchase');
-    const address = await deploy(abi, bytecode, [erc721Address, tokenId, minParticipation]);
+    const address = await deploy(abi, bytecode, [erc721Address, tokenId, entireAmount, repaymentInInstallments, auction]);
 
     res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
 });
@@ -564,7 +564,7 @@ router.post('/safeMint', async (req, res, next) => {
                 console.log("An error occured", err);
                 res.send({ error: "Failed to mint" });
             }
-            console.log("Hash of the transaction: " + transactionHash);
+            console.log("Hash of the transaction:" + transactionHash);
             res.send({ transactionHash: transactionHash });
     });
 });
@@ -582,7 +582,7 @@ router.post('/ownerOf', async (req, res, next) => {
                 console.log("An error occured", err);
                 return
             }
-            console.log("Owner of is: ", owner);
+            console.log("Owner of is:", owner);
             res.send({ owner: owner });
     });
 });
@@ -600,7 +600,25 @@ router.post('/tokenURI', async (req, res, next) => {
                 console.log("An error occured", err);
                 return
             }
-            console.log("Token URI is: ", uri);
+            console.log("Token URI is:", uri);
             res.send({ uri: uri });
+    });
+});
+
+router.post('/setApprovalForAll', async (req, res, next) => {
+    const abi = req.body['abi'];
+    const address = req.body['address'];
+    const operator = req.body['operator'];
+
+    const daiToken = new web3.eth.Contract(abi, address);
+
+    daiToken.methods.setApprovalForAll(operator, true)
+        .send({ from: publicAddress }, function (err, transactionHash) {
+            if (err) {
+                console.log("An error occured", err);
+                res.send({ error: "Failed to mint" });
+            }
+            console.log("Hash of the transaction:" + transactionHash);
+            res.send({ transactionHash: transactionHash });
     });
 });
