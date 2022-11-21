@@ -69,7 +69,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
                 throw new Exception("Failed to withdraw from deposit!");
             }
 
-            var purchaseContractTransaction = await _nethereum.CreatePurchaseContract(bundle.ContractAddress, nft.TokenId);
+            var purchaseContractTransaction = await _nethereum.CreatePurchaseContract(bundle.Address, nft.TokenId);
             var transaction = await _etherscan.GetTransactionStatus(purchaseContractTransaction.TransactionHash, cancellationToken);
             if (transaction.IsError == false)
             {

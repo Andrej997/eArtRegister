@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  openCollection(bundleId: any) {
-    this.router.navigate([`/bundles/${bundleId}`]);
+  openCollection(customRoot: any) {
+    this.router.navigate([`/bundles/${customRoot}`]);
   }
 }

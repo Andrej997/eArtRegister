@@ -19,17 +19,23 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
+            builder.Property(e => e.CustomRoot)
+                .HasColumnName("custom_root");
+
             builder.Property(e => e.Name)
                 .HasColumnName("name");
+
+            builder.Property(e => e.Symbol)
+                .HasColumnName("symbol");
 
             builder.Property(e => e.Description)
                 .HasColumnName("description");
 
-            builder.Property(e => e.Order)
-                .HasColumnName("order");
+            builder.Property(e => e.CreatedBy)
+                .HasColumnName("created_by");
 
-            builder.Property(e => e.IsObservable)
-                .HasColumnName("is_observable");
+            builder.Property(e => e.CreatedOn)
+                .HasColumnName("created_on");
 
             builder.Property(e => e.ModifiedBy)
                 .HasColumnName("modified_by");
@@ -40,17 +46,17 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.IsDeleted)
                 .HasColumnName("is_deleted");
 
-            builder.Property(e => e.ContractAddress)
-                .HasColumnName("contract_address");
+            builder.Property(e => e.Address)
+                .HasColumnName("address");
 
-            builder.Property(e => e.From)
-                .HasColumnName("from");
+            builder.Property(e => e.Abi)
+                .HasColumnName("abi");
 
-            builder.Property(e => e.TransactionHash)
-                .HasColumnName("transaction_hash");
+            builder.Property(e => e.Bytecode)
+                .HasColumnName("bytecode");
 
-            builder.Property(e => e.BlockHash)
-                .HasColumnName("block_hash");
+            builder.Property(e => e.Contract)
+                .HasColumnName("contract");
         }
     }
 }

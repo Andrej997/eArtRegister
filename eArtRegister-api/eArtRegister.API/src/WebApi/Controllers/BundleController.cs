@@ -23,13 +23,13 @@ namespace eArtRegister.API.WebApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{customRoot}")]
         [ApiExplorerSettings(GroupName = "v1")]
-        public async Task<ActionResult<BundleDto>> GetBundle(Guid id)
+        public async Task<ActionResult<BundleDto>> GetBundle(string customRoot)
         {
             try
             {
-                return await Mediator.Send(new GetBundleQuery(id));
+                return await Mediator.Send(new GetBundleQuery(customRoot));
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace eArtRegister.API.WebApi.Controllers
         [HttpPost]
         [Route("create")]
         [ApiExplorerSettings(GroupName = "v1")]
-        public async Task<ActionResult<Guid>> CreateBundle(CreateBundleCommand command)
+        public async Task<ActionResult<RetBundle>> CreateBundle(CreateBundleCommand command)
         {
             try
             {

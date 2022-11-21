@@ -3,21 +3,26 @@ using eArtRegister.API.Domain.Entities;
 using Etherscan.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
 {
-    public class CreateBundleCommand : IRequest<Guid>
+    public class CreateBundleCommand : IRequest<RetBundle>
     {
+        public string CustomRoute { get; set; }
         public string Name { get; set; }
+        public string Symbol { get; set; }
         public string Description { get; set; }
         public string Wallet { get; set; }
     }
 
-    public class CreateBundleCommandHandler : IRequestHandler<CreateBundleCommand, Guid>
+    public class CreateBundleCommandHandler : IRequestHandler<CreateBundleCommand, RetBundle>
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUserService _currentUserService;
@@ -34,85 +39,72 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             _dateTime = dateTime;
         }
 
-        public async Task<Guid> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
+        public async Task<RetBundle> Handle(CreateBundleCommand request, CancellationToken cancellationToken)
         {
             var user = _context.SystemUsers.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
-            if (_context.Bundles.Any(t => t.Name == request.Name && t.OwnerId == _currentUserService.UserId))
-                throw new Exception("Name is already taken");
 
-            var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
-            var withdrawTransaction = await _etherscan.GetTransactionStatus(withdraw.TransactionHash, cancellationToken);
-            if (withdrawTransaction.IsError == false)
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = withdraw.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = true,
-                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT,
-                });
-            }
-            else
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = withdraw.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = false,
-                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT_FAIL,
-                });
-                throw new Exception("Failed to withdraw from deposit!");
-            }
+            if (_context.Bundles.Any(t => t.CustomRoot == request.CustomRoute))
+                throw new Exception("That custom root is taken");
 
-            var erc721ContractReceipt = await _nethereum.CreateContact(request.Name);
+            if (_context.Bundles.Any(t => t.Name == request.Name && t.Symbol == request.Symbol))
+                throw new Exception("Combination of name and symbol is already been taken");
 
-            var transaction = await _etherscan.GetTransactionStatus(erc721ContractReceipt.TransactionHash, cancellationToken);
-            if (transaction.IsError == false)
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = erc721ContractReceipt.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = true,
-                    EventAction = Domain.Enums.EventAction.BUNDLE_CREATED
-                });
-            }
-            else
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = erc721ContractReceipt.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = false,
-                    EventAction = Domain.Enums.EventAction.BUNDLE_CREATED_FAIL
-                });
+            var client = new RestClient($"http://localhost:3000/erc721");
+            client.Timeout = -1;
+            var restRequest = new RestRequest(Method.POST);
+            restRequest.AddJsonBody(new ERC721Body(request.Wallet, request.Name, request.Symbol));
+            IRestResponse restResponse = client.Execute(restRequest);
 
-                throw new Exception("Bundle not created!");
-            }
+            var response = JsonSerializer.Deserialize<ERC721Response>(restResponse.Content);
 
             var entry = new Bundle
             {
                 Name = request.Name,
                 Description = request.Description,
                 OwnerId = user.Id,
-                Order = _context.Bundles.Where(t => t.OwnerId == user.Id).Count() + 1,
-                IsObservable = false,
-                ContractAddress = erc721ContractReceipt.ContractAddress,
-                From = erc721ContractReceipt.From,
-                TransactionHash = erc721ContractReceipt.TransactionHash,
-                BlockHash = erc721ContractReceipt.BlockHash,
-                IsDeleted = false
+                CustomRoot = request.CustomRoute,
+                Symbol = request.Symbol,
+                Abi = response.abi,
+                Bytecode =response.bytecode,
+                Address = response.address,
+                Contract = response.contract
             };
 
             _context.Bundles.Add(entry);
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entry.Id;
+            return new RetBundle
+            {
+                CustomRoute = entry.CustomRoot,
+            }; 
         }
+    }
+
+    public class RetBundle
+    {
+        public string CustomRoute { get; set; }
+    }
+
+    public class ERC721Body
+    {
+        public ERC721Body(string owner, string bundleName, string bundleSymbol)
+        {
+            this.owner = owner;
+            this.bundleName = bundleName;
+            this.bundleSymbol = bundleSymbol;
+        }
+
+        public string owner { get; set; }
+        public string bundleName { get; set; }
+        public string bundleSymbol { get; set; }
+    }
+
+    public class ERC721Response
+    {
+        public string abi { get; set; }
+        public string bytecode { get; set; }
+        public string address { get; set; }
+        public string contract { get; set; }
     }
 }

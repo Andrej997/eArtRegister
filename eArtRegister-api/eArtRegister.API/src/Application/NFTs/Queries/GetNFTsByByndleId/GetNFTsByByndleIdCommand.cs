@@ -15,7 +15,7 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId
 {
     public class GetNFTsByByndleIdCommand : IRequest<List<NFTDto>>
     {
-        public Guid BundleId { get; set; }
+        public string CustomRoute { get; set; }
     }
     public class GetNFTsByByndleIdCommandHandler : IRequestHandler<GetNFTsByByndleIdCommand, List<NFTDto>>
     {
@@ -43,37 +43,36 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId
 
         public async Task<List<NFTDto>> Handle(GetNFTsByByndleIdCommand request, CancellationToken cancellationToken)
         {
-            var bundle = _context.Bundles.Find(request.BundleId);
+            var bundle = _context.Bundles.FirstOrDefault(x => x.CustomRoot == request.CustomRoute);
 
             var user = _context.SystemUsers.Where(u => u.Id == bundle.OwnerId).FirstOrDefault();
-            var ipfsIds = await _nethereum.IPFSIds(_context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.ContractAddress).First());
+            //var ipfsIds = await _nethereum.IPFSIds(_context.Bundles.Where(bundle => bundle.CustomRoot == request.CustomRoute).Select(bundle => bundle.Address).First());
 
             var ret = await _context.NFTs
                     .AsNoTracking()
-                    .Where(t => t.BundleId == request.BundleId && ipfsIds.Contains("ipfs://" + t.IPFSId))
+                    //.Where(t => t.BundleId == bundle.Id && ipfsIds.Contains("ipfs://" + t.IPFSId))
+                    .Where(t => t.BundleId == bundle.Id)
                     .OrderBy(t => t.TokenId)
                     .ProjectTo<NFTDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-            var totalBigHex = await _nethereum.TotalSupply(bundle.ContractAddress);
-            long totalNFTs = Convert.ToInt64(totalBigHex.ToString(), 16);
+            //var totalBigHex = await _nethereum.TotalSupply(bundle.Address);
+            //long totalNFTs = Convert.ToInt64(totalBigHex.ToString(), 16);
 
-            for (long i = 0; i < totalNFTs; i++)
-            {
-                var wallet = await _nethereum.OwnerOf(bundle.ContractAddress, i);
-                ret.ForEach(r => {
-                    if (r.TokenId == i)
-                        r.CurrentWallet = wallet.ToLower();
-
-                });
-                //var uri = await _nethereum.TokenUri(bundle.ContractAddress, i);
-            }
+            //for (long i = 0; i < totalNFTs; i++)
+            //{
+            //    var wallet = await _nethereum.OwnerOf(bundle.Address, i);
+            //    ret.ForEach(r => {
+            //        if (r.TokenId == i)
+            //            r.CurrentWallet = wallet.ToLower();
+            //    });
+            //}
 
             foreach (var item in ret)
             {
                 item.Bytes = await _ipfs.DownloadAsync(item.IPFSId, cancellationToken);
                 item.BundleWalletOwner = user.Wallet;
-                item.ERC721ContractAddress = bundle.ContractAddress;
+                item.ERC721ContractAddress = bundle.Address;
             }
 
             return ret;

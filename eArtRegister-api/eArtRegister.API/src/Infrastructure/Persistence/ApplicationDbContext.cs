@@ -54,6 +54,8 @@ namespace eArtRegister.API.Infrastructure.Persistence
                 switch (entry.State)
                 {
                     case EntityState.Added:
+                        entry.Entity.CreatedBy = _currentUserService.UserId.ToString();
+                        entry.Entity.CreatedOn = _dateTime.UtcNow;
                         entry.Entity.ModifiedBy = _currentUserService.UserId.ToString();
                         entry.Entity.ModifiedOn = _dateTime.UtcNow;
                         entry.Entity.IsDeleted = false;

@@ -15,6 +15,7 @@ import { MintNftComponent } from './components/mint-nft/mint-nft.component';
 import { MyBundlesComponent } from './components/my-bundles/my-bundles.component';
 import { MyNftsComponent } from './components/my-nfts/my-nfts.component';
 import { MySystemHistoryComponent } from './components/my-system-history/my-system-history.component';
+import { SourceCodeContractViewComponent } from './components/source-code-contract-view/source-code-contract-view.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MySystemHistoryComponent } from './components/my-system-history/my-syst
     MyBundlesComponent,
     MyNftsComponent,
     MySystemHistoryComponent,
+    SourceCodeContractViewComponent,
   ],
   imports: [
     BrowserModule,

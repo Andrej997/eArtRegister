@@ -1,18 +1,19 @@
 <div class='container'>
-    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" (change)="changeSearch()" [(ngModel)]="searchInput">
+    <input class="form-control mr-sm-2" type="search" placeholder="Name / Symbol" aria-label="Search" (change)="changeSearch()" [(ngModel)]="searchInput">
 </div>
 
 <br/>
 
 <div>
     <div class="row" style='margin-left: 4px; margin-right: 4px; margin-top: 4px;'>
-        <div class="col-md-3 col-xs-6" *ngFor='let bundle of bundles' (click)='openCollection(bundle.id)' style='margin-top: 4px;'>
+        <div class="col-md-3 col-xs-6" *ngFor='let bundle of bundles' (click)='openCollection(bundle.customRoot)' style='margin-top: 4px;'>
             <div class="card">
                 <div class="card-block">
-                    <h4 class="card-title">Name: {{bundle.name}}</h4>
+                    <p class="card-text">Name: {{bundle.name}}</p>
+                    <p class="card-text">Symbol: {{bundle.symbol}}</p>
                     <p class="card-text">Description: {{bundle.description}}</p>
-                    <p class="card-text">Contract Address: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{bundle.contractAddress}}">{{bundle.contractAddress}}</a></p>
-                    <p class="card-text">Owner: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{bundle.ownerWallet}}">{{bundle.ownerWallet}}</a></p>
+                    <p class="card-text">Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{bundle.address}}">{{bundle.address}}</a></p>
+                    <p class="card-text">Owner: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{bundle.ownerWallet}}">{{bundle.ownerWallet}}</a></p>
                 </div>
             </div>
         </div>

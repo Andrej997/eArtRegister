@@ -29,6 +29,7 @@ export class BundleComponent implements OnInit, OnDestroy {
   wallet = "";
   bundle = null;
   minParticipation = 0;
+  showCode: boolean = false;
 
   constructor(private http: HttpClient, 
     private router: Router, 

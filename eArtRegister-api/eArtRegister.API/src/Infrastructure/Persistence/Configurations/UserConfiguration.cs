@@ -32,6 +32,12 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.DateWalletAdded)
                 .HasColumnName("date_wallet_added");
 
+            builder.Property(e => e.CreatedBy)
+                .HasColumnName("created_by");
+
+            builder.Property(e => e.CreatedOn)
+                .HasColumnName("created_on");
+
             builder.Property(e => e.ModifiedBy)
                 .HasColumnName("modified_by");
 

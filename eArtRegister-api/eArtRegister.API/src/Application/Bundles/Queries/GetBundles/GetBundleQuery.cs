@@ -13,11 +13,11 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
 {
     public class GetBundleQuery : IRequest<BundleDto>
     {
-        public Guid Id { get; set; }
+        public string CustomRoot { get; set; }
 
-        public GetBundleQuery(Guid id)
+        public GetBundleQuery(string customRoot)
         {
-            Id = id;
+            CustomRoot = customRoot;
         }
     }
     public class GetBundleQueryHandler : IRequestHandler<GetBundleQuery, BundleDto>
@@ -35,14 +35,11 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
         public async Task<BundleDto> Handle(GetBundleQuery request, CancellationToken cancellationToken)
         {
             var bundle = _context.Bundles
+                .Include(x => x.Owner)
                 .AsNoTracking()
-                    .Where(t => t.Id == request.Id)
-                    .ProjectTo<BundleDto>(_mapper.ConfigurationProvider)
-                    .FirstOrDefault();
-
-            var user = _context.SystemUsers.Where(u => u.Id == bundle.OwnerId).FirstOrDefault();
-
-            bundle.OwnerWallet = user.Wallet.ToLower();
+                .Where(t => t.CustomRoot == request.CustomRoot)
+                .ProjectTo<BundleDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
 
             return bundle;
         }

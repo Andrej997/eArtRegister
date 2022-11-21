@@ -28,7 +28,7 @@ router.post('/erc721', async (req, res, next) => {
     const [abi, bytecode] = await build(erc721Contract, 'eArtRegister');
     const address = await deploy(abi, bytecode, [bundleName, bundleSymbol, owner]);
 
-    res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
+    res.send({ abi: JSON.stringify(abi), bytecode: bytecode, address: address, contract: erc721Contract });
 });
 
 router.post('/purchase', async (req, res, next) => {
@@ -41,7 +41,7 @@ router.post('/purchase', async (req, res, next) => {
     const [abi, bytecode] = await build(purchaseContract, 'Purchase');
     const address = await deploy(abi, bytecode, [erc721Address, tokenId, entireAmount, repaymentInInstallments, auction]);
 
-    res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
+    res.send({ abi: abi, bytecode: bytecode, address: address, contract: purchaseContract });
 });
 
 function findImports(relativePath) {
@@ -96,16 +96,11 @@ contract eArtRegister is ERC721, ERC721URIStorage, Ownable {
     Counters.Counter private _tokenIdCounter;
     address private _owner;
 
-    constructor(string memory name, string memory symbol, address owner) 
-        ERC721(name, symbol) 
-    {
+    constructor(string memory name, string memory symbol, address owner) ERC721(name, symbol) {
         _owner = owner;
     }
 
-    function safeMint(address to, string memory uri) 
-        public 
-        //onlyOwner 
-    {
+    function safeMint(address to, string memory uri) public {
         require(_owner == msg.sender, "Caller is not the owner");
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
@@ -113,19 +108,11 @@ contract eArtRegister is ERC721, ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, uri);
     }
 
-    function _burn(uint256 tokenId) 
-        internal 
-        override(ERC721, ERC721URIStorage) 
-    {
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
 }
@@ -221,7 +208,6 @@ abstract contract APurchase {
     function editPrice(uint256 amount) virtual public returns(bool);
     function editDeadline(uint moveDays) virtual public returns(bool);
     function bid() virtual payable external;
-    function closeBid() virtual public;
     function participate(address) virtual payable public;
     function payTheInstallment(address) virtual payable public;
     function purchase(address) virtual payable public;
@@ -237,10 +223,10 @@ abstract contract APurchase {
 }
 
 contract Purchase is APurchase {
-    // public
-    bool entireAmount;
-    bool repaymentInInstallments;
-    bool auction;
+    // internal
+    bool internal entireAmount;
+    bool internal repaymentInInstallments;
+    bool internal auction;
 
     // private
     Listing private listing;
@@ -368,6 +354,9 @@ contract Purchase is APurchase {
             payable 
             external {
         require(!isSold, "NFT is sold!");
+
+        require(auction, "Action not available");
+
         require(installemntCustomer.amountPayed == 0, "Participation is payed");
 
         newBid = Bid(
@@ -391,8 +380,7 @@ contract Purchase is APurchase {
     }
 
     function closeBid() 
-            override 
-            public {
+            private {
         require(!isSold, "NFT is sold!");
 
         for (uint i = 0; i < bidsCount; i++) {
@@ -409,6 +397,8 @@ contract Purchase is APurchase {
             payable 
             public {
         require(!isSold, "NFT is sold!");
+
+        require(repaymentInInstallments, "Action not available");
 
         require(msg.value >= listing.participation, "Insufficient funds");
         require(installemntCustomer.amountPayed == 0, "Participation is payed");
@@ -433,6 +423,8 @@ contract Purchase is APurchase {
             payable 
             public {
         require(!isSold, "NFT is sold!");
+
+        require(repaymentInInstallments, "Action not available");
 
         require(customer == installemntCustomer.buyer, "You are not the participator");
         require(installemntCustomer.amountPayed > 0, "Installemnt is not payed");

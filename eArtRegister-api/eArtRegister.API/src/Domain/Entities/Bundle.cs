@@ -7,15 +7,15 @@ namespace eArtRegister.API.Domain.Entities
     public class Bundle : AuditableEntity
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public long Order { get; set; }
-        public bool IsObservable { get; set; }
         public Guid OwnerId { get; set; }
-        public string ContractAddress { get; set; }
-        public string From { get; set; }
-        public string TransactionHash { get; set; }
-        public string BlockHash { get; set; }
+        public string CustomRoot { get; set; }
+        public string Name { get; set; }
+        public string Symbol { get; set; }
+        public string Description { get; set; }
+        public string Address { get; set; }
+        public string Abi { get; set; }
+        public string Bytecode { get; set; }
+        public string Contract { get; set; }
 
         public virtual User Owner { get; set; }
         public virtual ICollection<NFT> NFTs { get; set; }

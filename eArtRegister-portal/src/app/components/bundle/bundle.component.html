@@ -1,8 +1,13 @@
 <div *ngIf="bundle">
     <h1>Name: {{bundle.name}}</h1>
     <h1>Description: {{bundle.description}}</h1>
-    <h1>Bundle owner: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{bundle.ownerWallet}}">{{bundle.ownerWallet}}</a></h1>
-    <h1>Contract Address: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{bundle.contractAddress}}">{{bundle.contractAddress}}</a></h1>
+    <h1>Bundle owner: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{bundle.ownerWallet}}">{{bundle.ownerWallet}}</a></h1>
+    <h1>Contract Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{bundle.address}}">{{bundle.address}}</a></h1>
+    <button (click)="showCode = !showCode">Show code</button>
+    <div *ngIf="showCode">
+        <app-source-code-contract-view [contract]="bundle.contract"></app-source-code-contract-view>
+    </div>
+    
     <button type="button" *ngIf="wallet == bundle.ownerWallet" style="width:100%" class="btn btn-warning" (click)="mintNFT()" >MINT</button>
 </div>
 
@@ -16,13 +21,13 @@
                 <h4 class="card-title">Name: {{nft.name}}</h4>
                 <p class="card-text">Description: {{nft.description}}</p>
                 <p class="card-text">Status: {{nft.statusId}}</p>
-                <p class="card-text">Owner: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.currentWallet}}">{{nft.currentWallet}}</a></p>
+                <p class="card-text">Owner: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.currentWallet}}">{{nft.currentWallet}}</a></p>
                 <span><span class="card-text" style="float: left">Price {{nft.currentPrice / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br>
                 <span><span class="card-text" style="float: left">Minimum participation {{nft.minimumParticipation / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br>
                 <p class="card-text">Days to pay full price: {{nft.daysToPay}}</p>
-                <p class="card-text">Purchase contract: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.purchaseContract}}">{{nft.purchaseContract}}</a></p>
+                <p class="card-text">Purchase contract: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.purchaseContract}}">{{nft.purchaseContract}}</a></p>
                 <p *ngIf="nft.balance != '0'">Balance: {{nft.balance / 1000000000000000000}}</p>
-                <p *ngIf="nft.buyer">Buyer: <a style="color: rgb(35, 113, 187)" href="https://rinkeby.etherscan.io/address/{{nft.buyer}}">{{nft.buyer}}</a></p>
+                <p *ngIf="nft.buyer">Buyer: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.buyer}}">{{nft.buyer}}</a></p>
                 <button type="button" style="width:100%" class="btn btn-warning" 
                         (click)="setInStatusForSale(nft.id)" 
                         *ngIf="wallet == nft.currentWallet && (nft.statusId == 'MINTED' || nft.statusId == 'SOLD' || nft.statusId == 'CANCELED')">

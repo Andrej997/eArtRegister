@@ -82,7 +82,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
 
             var minted = await _nethereum.SafeMint(
-                _context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.ContractAddress).First(),
+                _context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.Address).First(),
                 request.Wallet,
                 "ipfs://" + retVal.Hash
                 );
@@ -118,8 +118,6 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 BlockNumber = Convert.ToInt64(minted.BlockNumber.ToString(), 16),
                 GasUsed = Convert.ToInt64(minted.GasUsed.ToString(), 16),
                 EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16),
-                ModifiedBy = user.Id.ToString(),
-                ModifiedOn = _dateTime.UtcNow,
                 CurrentWallet = request.Wallet.ToLower(),
                 MinimumParticipation = request.MinimumParticipation,
                 DaysToPay = request.DaysToPay

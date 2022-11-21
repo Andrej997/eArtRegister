@@ -28,7 +28,9 @@ export class CreateBundleComponent implements OnInit {
 
   ngOnInit(): void {
     this.bundleForm = this.fb.group({
+      customRoute: ['', Validators.required],
       name: ['', Validators.required],
+      symbol: ['', Validators.required],
       description: ['', Validators.required],
     });
   }
@@ -36,14 +38,16 @@ export class CreateBundleComponent implements OnInit {
   onFirstSubmit() {
     this.web3.connectAccount().then(response => {
       let body = {
+        CustomRoute: this.bundleForm.value.customRoute,
         Name: this.bundleForm.value.name,
+        Symbol: this.bundleForm.value.symbol,
         Description: this.bundleForm.value.description,
         Wallet: (response as string[])[0]
       };
   
       this.http.post(environment.api + `Bundle/create`, body).subscribe(result => {
         this.toastr.success("Bundle created");
-        this.router.navigate([`/bundles/${result}`]);
+        this.router.navigate([`/bundles/${(result as any).customRoute}`]);
       }, error => {
           console.error(error);
           this.toastr.error("Failed to create bundle");

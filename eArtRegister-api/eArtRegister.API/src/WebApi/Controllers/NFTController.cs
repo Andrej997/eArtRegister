@@ -19,14 +19,14 @@ namespace eArtRegister.API.WebApi.Controllers
     public class NFTController : ApiControllerBase
     {
         [ApiExplorerSettings(GroupName = "v1")]
-        [HttpGet("bundle/{bundleId}")]
-        public async Task<ActionResult<List<NFTDto>>> GetNFTsByByndleId(Guid bundleId)
+        [HttpGet("bundle/{customRoute}")]
+        public async Task<ActionResult<List<NFTDto>>> GetNFTsByByndleId(string customRoute)
         {
             try
             {
                 return await Mediator.Send(new GetNFTsByByndleIdCommand
                 {
-                    BundleId = bundleId
+                    CustomRoute = customRoute
                 });
             }
             catch (Exception e)

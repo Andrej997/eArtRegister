@@ -59,16 +59,16 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
         {
             var user = _context.SystemUsers.Where(x => x.Wallet.ToLower() == request.Wallet).FirstOrDefault();
             var bundlesQuery = _context.Bundles
+                    .Include(x => x.Owner)
                     .AsNoTracking();
 
             if (!string.IsNullOrEmpty(request.Search))
-                bundlesQuery = bundlesQuery.Where(t => t.Name.Contains(request.Search));
+                bundlesQuery = bundlesQuery.Where(t => t.Name.ToLower().Contains(request.Search.ToLower()) || t.Symbol.ToLower().Contains(request.Search.ToLower()));
 
             if (request.Mine)
                 bundlesQuery = bundlesQuery.Where(t => t.OwnerId == user.Id);
 
             var bundles = await bundlesQuery
-                    .OrderBy(t => t.Order)
                     .ProjectTo<BundleDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
