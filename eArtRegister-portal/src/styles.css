@@ -129,3 +129,21 @@
   --tw-bg-opacity: 1;
   background-color: rgba(18, 17, 17, var(--tw-bg-opacity));
 }
+
+::-webkit-scrollbar-track
+{
+	border: 5px solid white;
+	background-color: #b2bec3;
+}
+
+::-webkit-scrollbar
+{
+	width: 15px;
+	background-color: #dfe6e9;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #74b9ff;
+	border-radius: 10px;
+}

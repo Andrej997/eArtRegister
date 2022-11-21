@@ -63,7 +63,13 @@ namespace eArtRegister.API.Application.Bundles.Queries.GetBundles
                     .AsNoTracking();
 
             if (!string.IsNullOrEmpty(request.Search))
-                bundlesQuery = bundlesQuery.Where(t => t.Name.ToLower().Contains(request.Search.ToLower()) || t.Symbol.ToLower().Contains(request.Search.ToLower()));
+                bundlesQuery = bundlesQuery.Where(t => 
+                    t.Name.ToLower().Contains(request.Search.ToLower()) || 
+                    t.Symbol.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Description.ToLower().Contains(request.Search.ToLower()) ||
+                    t.CustomRoot.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Address.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Owner.Wallet.ToLower().Contains(request.Search.ToLower()));
 
             if (request.Mine)
                 bundlesQuery = bundlesQuery.Where(t => t.OwnerId == user.Id);
