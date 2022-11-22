@@ -15,25 +15,9 @@ namespace eArtRegister.API.Domain.Entities
         public Guid BundleId { get; set; }
         public Guid CreatorId { get; set; }
         public DateTime MintedAt { get; set; }
-        public double CurrentPrice { get; set; }
-        public DateTime CurrentPriceDate { get; set; }
         public double CreatorRoyalty { get; set; }
-        public string CurrentWallet { get; set; }
-        public bool FixedPrice { get; set; }
-        public double MinBidPrice { get; set; }
         public string TransactionHash { get; set; }
-        public long TransactionIndex { get; set; }
-        public string BlockHash { get; set; }
-        public long BlockNumber { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
-        public long CumulativeGasUsed { get; set; }
-        public long GasUsed { get; set; }
-        public long EffectiveGasPrice { get; set; }
-        public long MintStatus { get; set; }
         public string PurchaseContract { get; set; }
-        public double MinimumParticipation { get; set; }
-        public long DaysToPay { get; set; }
 
         public virtual NFTStatus Status { get; set; }
         public virtual Bundle Bundle { get; set; }

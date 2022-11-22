@@ -44,26 +44,9 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.MintedAt)
                .HasColumnName("minted_at");
 
-            builder.Property(e => e.CurrentPrice)
-                .HasColumnName("current_price");
-
-            builder.Property(e => e.CurrentPriceDate)
-                .HasColumnName("current_price_date");
-
             builder.Property(e => e.CreatorRoyalty)
                 .HasColumnName("creator_royality")
                 .HasDefaultValue(0);
-
-            builder.Property(e => e.CurrentWallet)
-                .HasColumnName("current_wallet");
-
-            builder.Property(e => e.FixedPrice)
-               .HasColumnName("fixed_price")
-               .HasDefaultValue(false);
-
-            builder.Property(e => e.MinBidPrice)
-               .HasColumnName("min_bid_price")
-               .HasDefaultValue(0);
 
             builder.Property(e => e.CreatedBy)
                 .HasColumnName("created_by");
@@ -83,43 +66,8 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.TransactionHash)
                 .HasColumnName("transaction_hash");
 
-            builder.Property(e => e.TransactionIndex)
-                .HasColumnName("transaction_index");
-
-            builder.Property(e => e.BlockHash)
-                .HasColumnName("block_hash");
-
-            builder.Property(e => e.BlockNumber)
-                .HasColumnName("block_number");
-
-            builder.Property(e => e.From)
-                .HasColumnName("from");
-
-            builder.Property(e => e.To)
-                .HasColumnName("to");
-
-            builder.Property(e => e.CumulativeGasUsed)
-                .HasColumnName("cumulative_gas_used");
-
-            builder.Property(e => e.GasUsed)
-                .HasColumnName("gas_used");
-
-            builder.Property(e => e.EffectiveGasPrice)
-                .HasColumnName("effective_gas_price");
-
-            builder.Property(e => e.MintStatus)
-                .HasColumnName("mint_status");
-
             builder.Property(e => e.PurchaseContract)
                 .HasColumnName("purchase_contract");
-
-            builder.Property(e => e.MinimumParticipation)
-                .HasDefaultValue(0)
-                .HasColumnName("minimum_participation");
-
-            builder.Property(e => e.DaysToPay)
-                .HasDefaultValue(0)
-                .HasColumnName("days_to_pay");
 
             builder.HasOne(d => d.Status)
                 .WithMany()
@@ -136,15 +84,15 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.AfterUpdate(trigger => trigger
-                .Action(action => action
-                .Condition((transactionBeforeUpdate, transactionAfterUpdate) => transactionBeforeUpdate.CurrentPrice != transactionAfterUpdate.CurrentPrice)
-                .Insert((oldValues, newValues) => new NFTPriceHistory()
-                {
-                    ParentId = oldValues.Id,
-                    Price = oldValues.CurrentPrice,
-                    DateOfPrice = oldValues.CurrentPriceDate
-                })));
+            //builder.AfterUpdate(trigger => trigger
+            //    .Action(action => action
+            //    .Condition((transactionBeforeUpdate, transactionAfterUpdate) => transactionBeforeUpdate.CurrentPrice != transactionAfterUpdate.CurrentPrice)
+            //    .Insert((oldValues, newValues) => new NFTPriceHistory()
+            //    {
+            //        ParentId = oldValues.Id,
+            //        Price = oldValues.CurrentPrice,
+            //        DateOfPrice = oldValues.CurrentPriceDate
+            //    })));
         }
     }
 }

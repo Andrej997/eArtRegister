@@ -5,26 +5,39 @@ using Etherscan.Interfaces;
 using IPFS.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
+using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 {
+    public class AddNFTData
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public Guid BundleId { get; set; }
+        public string Wallet { get; set; }
+        public string ExternalUrl { get; set; }
+        public List<string> AttributeKeys { get; set; }
+        public List<string> AttributeValues { get; set; }
+    }
+
     public class AddNFTCommand : IRequest<Guid>
     {
         public UploadedFileModel File { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public Guid BundleId { get; set; }
-        public double Price { get; set; }
-        public double Royality { get; set; }
-        public List<string> Categories { get; set; }
+        public string ExternalUrl { get; set; }
         public string Wallet { get; set; }
-        public double MinimumParticipation { get; set; }
-        public long DaysToPay { get; set; }
+        public List<string> AttributeKeys { get; set; }
+        public List<string> AttributeValues { get; set; }
     }
     public class AddNFTCommandHandler : IRequestHandler<AddNFTCommand, Guid>
     {
@@ -48,46 +61,42 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
             var user = _context.SystemUsers.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
-            if (!_context.Bundles.Any(b => b.OwnerId == user.Id))
-            {
-                throw new InvalidOperationException("Can't mint in others bundles");
-            }
 
-            var withdraw = await _nethereum.WithdrawDepositContract(user.DepositContract);
-            var withdrawTransaction = await _etherscan.GetTransactionStatus(withdraw.TransactionHash, cancellationToken);
-            if (withdrawTransaction.IsError == false)
+            var bundle = _context.Bundles.Where(x => x.Id == request.BundleId).FirstOrDefault();
+
+            var retVal = await _ipfs.UploadAsync(request.File.Title + request.File.Extension, request.File.Content, cancellationToken);
+
+            var attributes = new List<NFTAttribute>(request.AttributeKeys.Count);
+            for (int i = 0; i < request.AttributeKeys.Count; i++)
             {
-                _context.ServerActionHistories.Add(new NFTActionHistory
+                attributes.Add(new NFTAttribute
                 {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = withdraw.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = true,
-                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT,
+                    TraitType = request.AttributeKeys[i],
+                    Value = request.AttributeValues[i]
                 });
             }
-            else
+
+            var nftData = new NFTData
             {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = withdraw.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = false,
-                    EventAction = Domain.Enums.EventAction.WITHDRAW_FROM_DEPOSIT_FAIL,
-                });
-                throw new Exception("Failed to withdraw from deposit!");
-            }
+                Description = request.Description,
+                Name = request.Name,
+                ExternalUrl = request.ExternalUrl,
+                Image = "http://localhost:8080/ipfs/" + retVal.Hash,
+                Attributes = attributes
+            };
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(nftData);
+            byte[] byteArray = Encoding.UTF8.GetBytes(json);
+            MemoryStream stream = new MemoryStream(byteArray);
+            var retValData = await _ipfs.UploadAsync(request.Name + ".json", stream, cancellationToken);
 
-            var retVal = await _ipfs.UploadAsync(request.Name, request.File.Content, cancellationToken);
+            var client = new RestClient($"http://localhost:3000/safeMint");
+            client.Timeout = -1;
+            var restRequest = new RestRequest(Method.POST);
+            restRequest.AddJsonBody(new SafeMintBody(bundle.Abi, bundle.Address, request.Wallet, "ipfs://" + retVal.Hash));
+            IRestResponse restResponse = client.Execute(restRequest);
+            var response = JsonSerializer.Deserialize<SafeMintResponse>(restResponse.Content);
 
-            var minted = await _nethereum.SafeMint(
-                _context.Bundles.Where(bundle => bundle.Id == request.BundleId).Select(bundle => bundle.Address).First(),
-                request.Wallet,
-                "ipfs://" + retVal.Hash
-                );
-
-            var transaction = await _etherscan.GetTransactionStatus(minted.TransactionHash, cancellationToken);
+            var transaction = await _etherscan.GetTransactionStatus(response.transactionHash, cancellationToken);
             if (transaction.IsError == true)
             {
                 throw new Exception("NFT not minted!");
@@ -95,6 +104,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
             long tokenId = _context.NFTs.Where(t => t.BundleId == request.BundleId).Count();
 
+            // TODO: save json file hash
             var entry = new NFT
             {
                 IPFSId = retVal.Hash,
@@ -105,56 +115,54 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 StatusId = Domain.Enums.NFTStatus.Minted,
                 CreatorId = user.Id,
                 MintedAt = _dateTime.UtcNow,
-                CurrentPrice = request.Price,
-                CurrentPriceDate = _dateTime.UtcNow,
-                CreatorRoyalty = request.Royality,
-                TransactionHash = minted.TransactionHash,
-                To = minted.To,
-                TransactionIndex = Convert.ToInt64(minted.TransactionIndex.ToString(), 16),
-                From = minted.From,
-                CumulativeGasUsed = Convert.ToInt64(minted.CumulativeGasUsed.ToString(), 16),
-                MintStatus = Convert.ToInt64(minted.Status.ToString(), 16),
-                BlockHash = minted.BlockHash,
-                BlockNumber = Convert.ToInt64(minted.BlockNumber.ToString(), 16),
-                GasUsed = Convert.ToInt64(minted.GasUsed.ToString(), 16),
-                EffectiveGasPrice = Convert.ToInt64(minted.EffectiveGasPrice.ToString(), 16),
-                CurrentWallet = request.Wallet.ToLower(),
-                MinimumParticipation = request.MinimumParticipation,
-                DaysToPay = request.DaysToPay
+                TransactionHash = response.transactionHash,
             };
 
             _context.NFTs.Add(entry);
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            if (transaction.IsError == false)
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = minted.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = true,
-                    EventAction = Domain.Enums.EventAction.NFT_MINTED,
-                    NFTId = entry.Id
-                });
-            }
-            else
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = minted.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = false,
-                    EventAction = Domain.Enums.EventAction.NFT_MINTED_FAIL,
-                    NFTId = entry.Id
-                });
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-
             return entry.Id;
         }
+    }
+    public class NFTData
+    {
+        [Newtonsoft.Json.JsonProperty("description")]
+        public string Description { get; set; }
+        [Newtonsoft.Json.JsonProperty("external_url")]
+        public string ExternalUrl { get; set; }
+        [Newtonsoft.Json.JsonProperty("image")]
+        public string Image { get; set; }
+        [Newtonsoft.Json.JsonProperty("name")]
+        public string Name { get; set; }
+        [Newtonsoft.Json.JsonProperty("attributes")]
+        public List<NFTAttribute> Attributes { get; set; }
+    }
+    public class NFTAttribute 
+    {
+        [Newtonsoft.Json.JsonProperty("trait_type")]
+        public string TraitType { get; set; }
+        [Newtonsoft.Json.JsonProperty("value")]
+        public string Value { get; set; }
+    }
+
+    public class SafeMintBody
+    {
+        public SafeMintBody(string abi, string address, string to, string uri)
+        {
+            this.abi = abi;
+            this.address = address;
+            this.to = to;
+            this.uri = uri;
+        }
+
+        public string abi { get; set; }
+        public string address { get; set; }
+        public string to { get; set; }
+        public string uri { get; set; }
+    }
+    public class SafeMintResponse
+    {
+        public string transactionHash { get; set; }
     }
 }

@@ -48,36 +48,6 @@ namespace eArtRegister.API.Application.NFTs.Commands.Bought
 
             var nft = _context.NFTs.Where(nft => nft.Id == request.NFTId).FirstOrDefault();
 
-            var balance = await _nethereum.BalanceOfTrader(nft.PurchaseContract, nft.CurrentWallet);
-
-            if ((double)balance >= nft.CurrentPrice)
-            {
-                nft.CurrentWallet = request.Wallet;
-                nft.StatusId = Domain.Enums.NFTStatus.Sold;
-
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = request.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = request.IsCompleted,
-                    EventAction = request.IsCompleted ? Domain.Enums.EventAction.NFT_SOLD : Domain.Enums.EventAction.NFT_SOLD_FAIL,
-                    NFTId = request.NFTId
-                });
-            }
-            else
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = request.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = request.IsCompleted,
-                    EventAction = request.IsCompleted ? Domain.Enums.EventAction.FUNDS_ADDED_FOR_NFT_SHOPPING : Domain.Enums.EventAction.FUNDS_ADDED_FOR_NFT_SHOPPING_FAIL,
-                    NFTId = request.NFTId
-                });
-            }
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

@@ -54,7 +54,6 @@ namespace eArtRegister.API.Application.Bundles.Commands.CreateBundle
             var restRequest = new RestRequest(Method.POST);
             restRequest.AddJsonBody(new ERC721Body(request.Wallet, request.Name, request.Symbol));
             IRestResponse restResponse = client.Execute(restRequest);
-
             var response = JsonSerializer.Deserialize<ERC721Response>(restResponse.Content);
 
             var entry = new Bundle

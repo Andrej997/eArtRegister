@@ -52,7 +52,7 @@ namespace eArtRegister.API.WebApi.Controllers
 
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("add")]
-        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, string name, string description, Guid bundleId, double price, double minimumParticipation, long daysToPay, string wallet)
+        public async Task<ActionResult<Guid>> AddNFT(IFormFile file, [FromQuery] AddNFTData data)
         {
             if (file == null)
             {
@@ -63,14 +63,14 @@ namespace eArtRegister.API.WebApi.Controllers
             {
                 return await Mediator.Send(new AddNFTCommand
                 {
-                    Name = name,
-                    Description = description,
-                    BundleId = bundleId,
-                    Price = price,
-                    MinimumParticipation = minimumParticipation,
-                    DaysToPay = daysToPay,
-                    Wallet = wallet,
-                    File = file.GetUploadFileModel()
+                    Name = data.Name,
+                    Description = data.Description,
+                    BundleId = data.BundleId,
+                    Wallet = data.Wallet,
+                    File = file.GetUploadFileModel(),
+                    AttributeKeys = data.AttributeKeys,
+                    AttributeValues = data.AttributeValues,
+                    ExternalUrl = data.ExternalUrl,
                 });
             }
             catch (Exception e)

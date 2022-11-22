@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eArtRegister.API.Infrastructure.Persistence;
@@ -11,9 +12,10 @@ using eArtRegister.API.Infrastructure.Persistence;
 namespace eArtRegister.API.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221122193405_NFTDeleteFields")]
+    partial class NFTDeleteFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -416,9 +418,33 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasDefaultValue(0.0)
                         .HasColumnName("creator_royality");
 
+                    b.Property<double>("CurrentPrice")
+                        .HasColumnType("double precision")
+                        .HasColumnName("current_price");
+
+                    b.Property<DateTime>("CurrentPriceDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("current_price_date");
+
+                    b.Property<string>("CurrentWallet")
+                        .HasColumnType("text")
+                        .HasColumnName("current_wallet");
+
+                    b.Property<long>("DaysToPay")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L)
+                        .HasColumnName("days_to_pay");
+
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<bool>("FixedPrice")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("fixed_price");
 
                     b.Property<string>("IPFSId")
                         .HasColumnType("text")
@@ -427,6 +453,18 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<double>("MinBidPrice")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double precision")
+                        .HasDefaultValue(0.0)
+                        .HasColumnName("min_bid_price");
+
+                    b.Property<double>("MinimumParticipation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double precision")
+                        .HasDefaultValue(0.0)
+                        .HasColumnName("minimum_participation");
 
                     b.Property<DateTime>("MintedAt")
                         .HasColumnType("timestamp with time zone")
@@ -480,6 +518,8 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasDatabaseName("ix_nft_user_id");
 
                     b.ToTable("nft", "eart");
+
+                    b.HasAnnotation("LC_TRIGGER_AFTER_UPDATE_NFT", "CREATE FUNCTION LC_TRIGGER_AFTER_UPDATE_NFT() RETURNS trigger as $LC_TRIGGER_AFTER_UPDATE_NFT$\r\nBEGIN\r\n  IF OLD.current_price <> NEW.current_price THEN \r\n    INSERT INTO eart.nft_price_history (\"parent_id\", \"price\", \"date_of_price\") SELECT OLD.id, \r\n    OLD.current_price, \r\n    OLD.current_price_date;\r\n  END IF;\r\nRETURN NEW;\r\nEND;\r\n$LC_TRIGGER_AFTER_UPDATE_NFT$ LANGUAGE plpgsql;\r\nCREATE TRIGGER LC_TRIGGER_AFTER_UPDATE_NFT AFTER UPDATE\r\nON \"eart.nft\"\r\nFOR EACH ROW EXECUTE PROCEDURE LC_TRIGGER_AFTER_UPDATE_NFT();");
                 });
 
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.NFTActionHistory", b =>

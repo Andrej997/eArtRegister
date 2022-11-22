@@ -544,7 +544,7 @@ contract Purchase is APurchase {
 `;
 
 router.post('/safeMint', async (req, res, next) => {
-    const abi = req.body['abi'];
+    const abi = JSON.parse(req.body['abi']);
     const address = req.body['address'];
     const to = req.body['to'];
     const uri = req.body['uri'];
