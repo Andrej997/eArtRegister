@@ -24,10 +24,21 @@ namespace eArtRegister.API.WebApi.Controllers
         {
             try
             {
-                return await Mediator.Send(new GetNFTsByByndleIdCommand
-                {
-                    CustomRoute = customRoute
-                });
+                return await Mediator.Send(new GetNFTsByByndleIdCommand(customRoute));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpGet("{customRoute}/{tokenId}")]
+        public async Task<ActionResult<List<NFTDto>>> GetNFTsByName(string customRoute, long tokenId)
+        {
+            try
+            {
+                return await Mediator.Send(new GetNFTsByByndleIdCommand(customRoute, tokenId));
             }
             catch (Exception e)
             {
@@ -65,13 +76,28 @@ namespace eArtRegister.API.WebApi.Controllers
                 {
                     Name = data.Name,
                     Description = data.Description,
-                    BundleId = data.BundleId,
+                    CustomRouth = data.CustomRouth,
                     Wallet = data.Wallet,
                     File = file.GetUploadFileModel(),
                     AttributeKeys = data.AttributeKeys,
                     AttributeValues = data.AttributeValues,
                     ExternalUrl = data.ExternalUrl,
                 });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("setOnSale")]
+        public async Task<IActionResult> SetOnSale(SetOnSaleCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -97,21 +123,6 @@ namespace eArtRegister.API.WebApi.Controllers
         [ApiExplorerSettings(GroupName = "v1")]
         [HttpPost("cancel")]
         public async Task<IActionResult> CancelNFT(CancelNFTCommand command)
-        {
-            try
-            {
-                await Mediator.Send(command);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [ApiExplorerSettings(GroupName = "v1")]
-        [HttpPost("setOnSale")]
-        public async Task<IActionResult> SetOnSale(SetOnSaleCommand command)
         {
             try
             {

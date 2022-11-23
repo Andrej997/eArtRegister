@@ -3,32 +3,33 @@
     <h1>Description: {{bundle.description}}</h1>
     <h1>Bundle owner: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{bundle.ownerWallet}}">{{bundle.ownerWallet}}</a></h1>
     <h1>Contract Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{bundle.address}}">{{bundle.address}}</a></h1>
-    <button (click)="showCode = !showCode">Show code</button>
+    <button class="btn btn-info" (click)="showCode = !showCode">Show source code</button>
     <div *ngIf="showCode">
         <app-source-code-contract-view [contract]="bundle.contract"></app-source-code-contract-view>
     </div>
     
-    <button type="button" *ngIf="wallet == bundle.ownerWallet" style="width:100%" class="btn btn-warning" (click)="mintNFT()" >MINT</button>
+    <button *ngIf="wallet == bundle.ownerWallet" style="float: right;" class="btn btn-primary" (click)="mintNFT()" >MINT</button>
 </div>
 
 <br/>
 <div class="row" style='margin-left: 4px; margin-right: 4px; margin-top: 4px;'>
     <div class="col-md-3 col-xs-6" *ngFor='let nft of nfts' style='margin-top: 4px; '>
-        <div class="card">
-            <img class="card-img-top img-fluid" width="100px" height="100px" src="data:image/png;base64,{{nft.bytes}}" alt="Card image cap">
+        <div class="card" (click)='openNFT(bundle.customRoot, nft.tokenId)'>
+            <img class="card-img-top img-fluid" width="100px" height="100px" src="{{ipdsPublicGateway}}{{nft.ipfsImageHash}}" alt="Card image cap">
             <div class="card-block">
-                <p class="card-text"><small class="text-muted">Minted at {{nft.mintedAt}}</small></p>
-                <h4 class="card-title">Name: {{nft.name}}</h4>
-                <p class="card-text">Description: {{nft.description}}</p>
-                <p class="card-text">Status: {{nft.statusId}}</p>
-                <p class="card-text">Owner: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.currentWallet}}">{{nft.currentWallet}}</a></p>
-                <span><span class="card-text" style="float: left">Price {{nft.currentPrice / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br>
-                <span><span class="card-text" style="float: left">Minimum participation {{nft.minimumParticipation / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br>
-                <p class="card-text">Days to pay full price: {{nft.daysToPay}}</p>
-                <p class="card-text">Purchase contract: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.purchaseContract}}">{{nft.purchaseContract}}</a></p>
-                <p *ngIf="nft.balance != '0'">Balance: {{nft.balance / 1000000000000000000}}</p>
-                <p *ngIf="nft.buyer">Buyer: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.buyer}}">{{nft.buyer}}</a></p>
-                <button type="button" style="width:100%" class="btn btn-warning" 
+                <p class="card-text"><small class="text-muted">Minted at {{nft.createdOn}}</small></p>
+                <h4 class="card-text">Name: {{nft.nftData?.name}}</h4>
+                <p class="card-text">Token: #{{nft.tokenId}}</p>
+                <!-- <p class="card-text">External url: <a href="{{nft.nftData?.external_url}}" class="card-text">{{nft.nftData?.external_url}}</a></p> -->
+                <!-- <p class="card-text">Status: {{nft.statusId}}</p> -->
+                <!-- <p class="card-text">Creator: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.creatorWallet}}">{{nft.creatorWallet}}</a></p> -->
+                <!-- <span><span class="card-text" style="float: left">Price {{nft.currentPrice / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br> -->
+                <!-- <span><span class="card-text" style="float: left">Minimum participation {{nft.minimumParticipation / 1000000000000000000}}</span><img src="../../../assets/images/ethereum.png" alt="ethereum" style="float: left" width="5%"></span><br> -->
+                <!-- <p class="card-text">Days to pay full price: {{nft.daysToPay}}</p> -->
+                <!-- <p class="card-text">Purchase contract: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.purchaseContract}}">{{nft.purchaseContract}}</a></p> -->
+                <!-- <p *ngIf="nft.balance != '0'">Balance: {{nft.balance / 1000000000000000000}}</p> -->
+                <!-- <p *ngIf="nft.buyer">Buyer: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.buyer}}">{{nft.buyer}}</a></p> -->
+                <!-- <button type="button" style="width:100%" class="btn btn-warning" 
                         (click)="setInStatusForSale(nft.id)" 
                         *ngIf="wallet == nft.currentWallet && (nft.statusId == 'MINTED' || nft.statusId == 'SOLD' || nft.statusId == 'CANCELED')">
                     PREPARE FOR SALE
@@ -61,7 +62,7 @@
                         (click)="cancel(nft.purchaseContract, nft.buyer, nft.currentWallet, nft.minimumParticipation, nft.id)" 
                         *ngIf="nft.statusId == 'ON_SALE'">
                     CANCEL
-                </button>
+                </button> -->
             </div>
         </div>
     </div>

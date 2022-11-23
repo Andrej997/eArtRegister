@@ -41,6 +41,6 @@ export class HomeComponent implements OnInit {
   }
 
   openCollection(customRoot: any) {
-    this.router.navigate([`/bundles/${customRoot}`]);
+    this.router.navigate([`/${customRoot}`]);
   }
 }

@@ -16,6 +16,8 @@ import { MyBundlesComponent } from './components/my-bundles/my-bundles.component
 import { MyNftsComponent } from './components/my-nfts/my-nfts.component';
 import { MySystemHistoryComponent } from './components/my-system-history/my-system-history.component';
 import { SourceCodeContractViewComponent } from './components/source-code-contract-view/source-code-contract-view.component';
+import { NftProfileComponent } from './components/nft-profile/nft-profile.component';
+import { SerOnSaleComponent } from './components/ser-on-sale/ser-on-sale.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { SourceCodeContractViewComponent } from './components/source-code-contra
     MyNftsComponent,
     MySystemHistoryComponent,
     SourceCodeContractViewComponent,
+    NftProfileComponent,
+    SerOnSaleComponent,
   ],
   imports: [
     BrowserModule,

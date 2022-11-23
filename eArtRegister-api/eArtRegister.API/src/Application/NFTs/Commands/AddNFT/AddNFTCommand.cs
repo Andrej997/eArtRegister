@@ -21,7 +21,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public Guid BundleId { get; set; }
+        public string CustomRouth { get; set; }
         public string Wallet { get; set; }
         public string ExternalUrl { get; set; }
         public List<string> AttributeKeys { get; set; }
@@ -33,7 +33,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         public UploadedFileModel File { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Guid BundleId { get; set; }
+        public string CustomRouth { get; set; }
         public string ExternalUrl { get; set; }
         public string Wallet { get; set; }
         public List<string> AttributeKeys { get; set; }
@@ -60,20 +60,25 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
 
         public async Task<Guid> Handle(AddNFTCommand request, CancellationToken cancellationToken)
         {
-            var user = _context.SystemUsers.Where(x => x.Wallet == request.Wallet.ToLower()).FirstOrDefault();
+            await ValidateRequest(request);
+            var user = _context.SystemUsers.Where(x => x.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
-            var bundle = _context.Bundles.Where(x => x.Id == request.BundleId).FirstOrDefault();
+            var bundle = _context.Bundles.Where(x => x.CustomRoot == request.CustomRouth).FirstOrDefault();
 
             var retVal = await _ipfs.UploadAsync(request.File.Title + request.File.Extension, request.File.Content, cancellationToken);
 
-            var attributes = new List<NFTAttribute>(request.AttributeKeys.Count);
-            for (int i = 0; i < request.AttributeKeys.Count; i++)
+            var attributes = new List<NFTAttribute>();
+            if (request.AttributeKeys != null && request.AttributeKeys.Any())
             {
-                attributes.Add(new NFTAttribute
+                attributes = new List<NFTAttribute>(request.AttributeKeys.Count);
+                for (int i = 0; i < request.AttributeKeys.Count; i++)
                 {
-                    TraitType = request.AttributeKeys[i],
-                    Value = request.AttributeValues[i]
-                });
+                    attributes.Add(new NFTAttribute
+                    {
+                        TraitType = request.AttributeKeys[i],
+                        Value = request.AttributeValues[i]
+                    });
+                }
             }
 
             var nftData = new NFTData
@@ -84,6 +89,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
                 Image = "http://localhost:8080/ipfs/" + retVal.Hash,
                 Attributes = attributes
             };
+
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(nftData);
             byte[] byteArray = Encoding.UTF8.GetBytes(json);
             MemoryStream stream = new MemoryStream(byteArray);
@@ -99,23 +105,23 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             var transaction = await _etherscan.GetTransactionStatus(response.transactionHash, cancellationToken);
             if (transaction.IsError == true)
             {
+                // TODO: delete from IPFS, both files
                 throw new Exception("NFT not minted!");
             }
 
-            long tokenId = _context.NFTs.Where(t => t.BundleId == request.BundleId).Count();
+            long tokenId = _context.NFTs.Where(t => t.BundleId == bundle.Id).Count();
 
-            // TODO: save json file hash
             var entry = new NFT
             {
-                IPFSId = retVal.Hash,
-                Name = request.Name,
-                Description = request.Description,
+                IPFSImageHash = retVal.Hash,
                 TokenId = tokenId,
-                BundleId = request.BundleId,
+                BundleId = bundle.Id,
                 StatusId = Domain.Enums.NFTStatus.Minted,
-                CreatorId = user.Id,
-                MintedAt = _dateTime.UtcNow,
                 TransactionHash = response.transactionHash,
+                IPFSNFTHash = retValData.Hash,
+                IPFSImageSize = retVal.Size,
+                IPFSNFTSize = retValData.Size,
+                TokenStandard = "ERC721"
             };
 
             _context.NFTs.Add(entry);
@@ -123,6 +129,29 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             await _context.SaveChangesAsync(cancellationToken);
 
             return entry.Id;
+        }
+
+        private async Task ValidateRequest(AddNFTCommand request)
+        {
+            if (request == null) throw new Exception("Missing NFT data!");
+
+            if (request.AttributeKeys?.Count != request.AttributeValues?.Count) throw new Exception("Invalid NFT attribute data!");
+
+            if (request.AttributeKeys?.Distinct().Count() != request.AttributeKeys?.Count()) throw new Exception("Invalid NFT attribute data!");
+
+            if (string.IsNullOrEmpty(request.Name)) throw new Exception("Missing name of NFT!");
+
+            if (request.AttributeKeys != null && request.AttributeKeys.Any())
+                foreach (var key in request.AttributeKeys)
+                {
+                    if (string.IsNullOrEmpty(key)) throw new Exception("Invalid NFT attribute data!");
+                }
+
+            if (request.AttributeValues != null && request.AttributeValues.Any())
+                foreach (var value in request.AttributeValues)
+                {
+                    if (string.IsNullOrEmpty(value)) throw new Exception("Invalid NFT attribute data!");
+                }
         }
     }
     public class NFTData

@@ -56,14 +56,6 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTs
                     .ProjectTo<NFTDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-            foreach (var item in ret)
-            {
-                var bundle = _context.Bundles.Where(b => b.Id == item.BundleId).FirstOrDefault();
-                item.Bytes = await _ipfs.DownloadAsync(item.IPFSId, cancellationToken);
-                item.BundleWalletOwner = user.Wallet;
-                item.ERC721ContractAddress = bundle.Address;
-            }
-
             return ret;
         }
     }

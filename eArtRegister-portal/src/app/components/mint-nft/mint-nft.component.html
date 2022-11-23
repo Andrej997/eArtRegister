@@ -18,27 +18,24 @@
         </div>
 
         <div class="form-outline mb-3">
-            <input type="number" id="price" class="form-control form-control-lg"
-                placeholder="Enter price" formControlName="price"/>
-            <label class="form-label" for="price">Price</label>
+            <input type="text" id="external_url" class="form-control form-control-lg"
+                placeholder="Enter external url" formControlName="external_url"/>
+            <label class="form-label" for="external_url">External url</label>
         </div>
 
         <div class="form-outline mb-3">
-            <input type="number" id="minimumParticipation" class="form-control form-control-lg"
-                placeholder="Enter minimum participation" formControlName="minimumParticipation"/>
-            <label class="form-label" for="minimumParticipation">Minimum participation</label>
+            <label class="form-label">Attributes <button type="button" (click)="addAttribute()">+</button></label>
+            <div *ngFor="let i of numOfAttributesArr">
+                <input type="text" id="key_{{i}}" class="form-control form-control-lg" placeholder="Enter key {{i}}"/>
+                <input type="text" id="value_{{i}}" class="form-control form-control-lg" placeholder="Enter value {{i}}"/>
+            </div>
+            
         </div>
 
-        <div class="form-outline mb-3">
-            <input type="number" id="daysToPay" class="form-control form-control-lg"
-                placeholder="Enter days to pay" formControlName="daysToPay"/>
-            <label class="form-label" for="daysToPay">Days to pay</label>
-        </div>
-
-        <input type="file" (change)="fileChange($event)" placeholder="Upload file" accept=".png">
+        <input type="file" (change)="fileChange($event)" placeholder="Upload file">
 
         <div class="text-center text-lg-start mt-4 pt-2">
-            <button type="submit" class="btn btn-primary btn-lg"
+            <button type="submit" class="btn btn-warning btn-lg"
             style="padding-left: 2.5rem; padding-right: 2.5rem; margin-left: 10%;">Mint</button>
         </div>
     </form>

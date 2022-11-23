@@ -12,8 +12,6 @@ namespace eArtRegister.API.Domain.Entities
         public string DepositContract { get; set; }
 
         public virtual ICollection<UserRole> Roles { get; set; }
-        public virtual ICollection<NFT> OwnedNFTs { get; set; }
-        public virtual ICollection<NFT> MintedNFTs { get; set; }
         public virtual ICollection<FollowBundle> FollowingBundles { get; set; }
         public virtual ICollection<FollowNFT> FollowingNFTs { get; set; }
         public virtual ICollection<FollowUser> FollowingUsers { get; set; }

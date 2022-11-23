@@ -18,6 +18,12 @@ export class MintNftComponent implements OnInit, OnDestroy {
   bundleId = "";
   private routeSub: Subscription;
 
+  numOfAttributes = 0;
+  numOfAttributesArr: number[] = [];
+
+  attributeKeys: string[] = [];
+  attributeValues: string[] = [];
+
   constructor(private fb: FormBuilder, private router: Router,
     private http: HttpClient,
     private web3: Web3Service,
@@ -29,14 +35,17 @@ export class MintNftComponent implements OnInit, OnDestroy {
     this.mintForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      price: [0, Validators.required],
-      minimumParticipation: [0, Validators.required],
-      daysToPay: [0, Validators.required],
+      external_url: [''],
     });
 
     this.routeSub = this.route.params.subscribe(params => {
       this.bundleId = params['bundleId'];
     });
+  }
+
+  addAttribute() {
+    this.numOfAttributesArr.push(this.numOfAttributes);
+    ++this.numOfAttributes;
   }
 
   ngOnDestroy() {
@@ -53,20 +62,28 @@ export class MintNftComponent implements OnInit, OnDestroy {
 }
 
   onFirstSubmit() {
+    for (let index = 0; index < this.numOfAttributes; index++) {
+      let key = (document.querySelector("#key_" +  index) as any).value;
+      this.attributeKeys.push(key);
+      let value = (document.querySelector("#value_" + index) as any).value;
+      this.attributeValues.push(value);
+    }
+    
     this.web3.connectAccount().then(response => {
-      let params = new HttpParams()
-        .set('name', this.mintForm.value.name)
-        .set('description', this.mintForm.value.description)
-        .set('bundleId', this.bundleId)
-        .set('price', this.mintForm.value.price * 1000000000000000000)
-        .set('minimumParticipation', this.mintForm.value.minimumParticipation * 1000000000000000000)
-        .set('daysToPay', this.mintForm.value.daysToPay)
-        .set('wallet', (response as string[])[0])
-        ;
+      let params: any = {};
+      params.name = this.mintForm.value.name;
+      params.description = this.mintForm.value.description;
+      params.customRouth = this.bundleId;
+      params.externalUrl = this.mintForm.value.external_url;
+      params.wallet = (response as string[])[0];
+      if (this.attributeKeys.length > 1) {
+        params.attributeKeys = this.attributeKeys;
+        params.attributeValues = this.attributeValues;
+      }
 
       this.http.post(environment.api + `NFT/add`, this.formData, { params: params }).subscribe(result => {
         this.toastr.success("Image minted");
-        this.router.navigate([`/bundles/${this.bundleId}`]);
+        this.router.navigate([`/${this.bundleId}`]);
       }, error => {
           console.error(error);
           this.toastr.error("Failed to mint");

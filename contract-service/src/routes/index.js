@@ -17,7 +17,7 @@ router.post('/deposit', async (req, res, next) => {
     const [abi, bytecode] = await build(depositContract, 'Deposit');
     const address = await deploy(abi, bytecode, [owner]);
 
-    res.send({ abi: abi, bytecode: bytecode, address: address, contract: depositContract });
+    res.send({ abi: JSON.stringify(abi), bytecode: bytecode, address: address, contract: depositContract });
 });
 
 router.post('/erc721', async (req, res, next) => {
@@ -41,7 +41,7 @@ router.post('/purchase', async (req, res, next) => {
     const [abi, bytecode] = await build(purchaseContract, 'Purchase');
     const address = await deploy(abi, bytecode, [erc721Address, tokenId, entireAmount, repaymentInInstallments, auction]);
 
-    res.send({ abi: abi, bytecode: bytecode, address: address, contract: purchaseContract });
+    res.send({ abi: JSON.stringify(abi), bytecode: bytecode, address: address, contract: purchaseContract });
 });
 
 function findImports(relativePath) {

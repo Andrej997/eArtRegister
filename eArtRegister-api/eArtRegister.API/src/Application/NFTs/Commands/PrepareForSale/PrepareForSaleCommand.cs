@@ -99,7 +99,6 @@ namespace eArtRegister.API.Application.NFTs.Commands.PrepareForSale
 
             if (transaction.IsError == false)
             {
-                nft.PurchaseContract = purchaseContractTransaction.ContractAddress;
                 nft.StatusId = Domain.Enums.NFTStatus.WaitingForApproval;
             }
 

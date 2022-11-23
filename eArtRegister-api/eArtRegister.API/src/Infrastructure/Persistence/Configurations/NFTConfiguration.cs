@@ -1,5 +1,4 @@
 ﻿using eArtRegister.API.Domain.Entities;
-using Laraue.EfCoreTriggers.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,14 +19,17 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
-            builder.Property(e => e.IPFSId)
-                .HasColumnName("ipfs_id");
+            builder.Property(e => e.IPFSImageHash)
+                .HasColumnName("ipfs_image_hash");
 
-            builder.Property(e => e.Name)
-                .HasColumnName("name");
+            builder.Property(e => e.IPFSNFTHash)
+                .HasColumnName("ipfs_nft_hash");
 
-            builder.Property(e => e.Description)
-                .HasColumnName("description");
+            builder.Property(e => e.IPFSImageSize)
+                .HasColumnName("ipfs_image_size");
+
+            builder.Property(e => e.IPFSNFTSize)
+                .HasColumnName("ipfs_nft_size");
 
             builder.Property(e => e.TokenId)
                 .HasColumnName("token_id");
@@ -37,16 +39,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.BundleId)
                .HasColumnName("bundle_id");
-
-            builder.Property(e => e.CreatorId)
-                .HasColumnName("creator_id");
-
-            builder.Property(e => e.MintedAt)
-               .HasColumnName("minted_at");
-
-            builder.Property(e => e.CreatorRoyalty)
-                .HasColumnName("creator_royality")
-                .HasDefaultValue(0);
 
             builder.Property(e => e.CreatedBy)
                 .HasColumnName("created_by");
@@ -66,8 +58,8 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.TransactionHash)
                 .HasColumnName("transaction_hash");
 
-            builder.Property(e => e.PurchaseContract)
-                .HasColumnName("purchase_contract");
+            builder.Property(e => e.TokenStandard)
+                .HasColumnName("token_standard");
 
             builder.HasOne(d => d.Status)
                 .WithMany()
@@ -77,11 +69,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.Bundle)
                 .WithMany(p => p.NFTs)
                 .HasForeignKey(d => d.BundleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(d => d.Creator)
-                .WithMany(p => p.MintedNFTs)
-                .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //builder.AfterUpdate(trigger => trigger

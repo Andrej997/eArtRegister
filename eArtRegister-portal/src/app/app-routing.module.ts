@@ -7,6 +7,8 @@ import { MintNftComponent } from './components/mint-nft/mint-nft.component';
 import { MyBundlesComponent } from './components/my-bundles/my-bundles.component';
 import { MyNftsComponent } from './components/my-nfts/my-nfts.component';
 import { MySystemHistoryComponent } from './components/my-system-history/my-system-history.component';
+import { NftProfileComponent } from './components/nft-profile/nft-profile.component';
+import { SerOnSaleComponent } from './components/ser-on-sale/ser-on-sale.component';
 
 const routes: Routes = [
   {
@@ -15,7 +17,7 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'bundles/:bundleId',
+    path: ':bundleId',
     component: BundleComponent,
     pathMatch: 'full',
   },
@@ -30,8 +32,18 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'bundles/:bundleId/mint',
+    path: 'bundle/:bundleId/mint',
     component: MintNftComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: ':bundleId/:tokenId',
+    component: NftProfileComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: ':bundleId/:tokenId/set-on-sale',
+    component: SerOnSaleComponent,
     pathMatch: 'full',
   },
   {

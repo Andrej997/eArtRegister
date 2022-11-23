@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eArtRegister.API.Infrastructure.Persistence;
@@ -11,9 +12,10 @@ using eArtRegister.API.Infrastructure.Persistence;
 namespace eArtRegister.API.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221123160813_NFTNewFields2")]
+    partial class NFTNewFields2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -442,10 +444,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("token_id");
 
-                    b.Property<string>("TokenStandard")
-                        .HasColumnType("text")
-                        .HasColumnName("token_standard");
-
                     b.Property<string>("TransactionHash")
                         .HasColumnType("text")
                         .HasColumnName("transaction_hash");
@@ -560,87 +558,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                         .HasColumnName("price");
 
                     b.ToTable("nft_price_history", "eart");
-                });
-
-            modelBuilder.Entity("eArtRegister.API.Domain.Entities.NFTPurchase", b =>
-                {
-                    b.Property<string>("Address")
-                        .HasColumnType("text")
-                        .HasColumnName("address");
-
-                    b.Property<string>("Abi")
-                        .HasColumnType("text")
-                        .HasColumnName("abi");
-
-                    b.Property<double>("AmountInETH")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0)
-                        .HasColumnName("amount_in_eth");
-
-                    b.Property<bool>("Auction")
-                        .HasColumnType("boolean")
-                        .HasColumnName("auction");
-
-                    b.Property<string>("Bytecode")
-                        .HasColumnType("text")
-                        .HasColumnName("bytecode");
-
-                    b.Property<string>("Contract")
-                        .HasColumnType("text")
-                        .HasColumnName("contract");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on");
-
-                    b.Property<int>("DaysOnSale")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1)
-                        .HasColumnName("days_on_sale");
-
-                    b.Property<bool>("EntireAmount")
-                        .HasColumnType("boolean")
-                        .HasColumnName("entire_amount");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<double>("MinParticipation")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0)
-                        .HasColumnName("min_participation");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text")
-                        .HasColumnName("modified_by");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("modified_on");
-
-                    b.Property<Guid>("NFTId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("nft_id");
-
-                    b.Property<bool>("RepaymentInInstallments")
-                        .HasColumnType("boolean")
-                        .HasColumnName("repayment_in_installments");
-
-                    b.HasKey("Address")
-                        .HasName("nft_purchase_pkey");
-
-                    b.HasIndex("NFTId")
-                        .HasDatabaseName("ix_nft_purchase_nft_id");
-
-                    b.ToTable("nft_purchase", "eart");
                 });
 
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.NFTRate", b =>
@@ -1307,18 +1224,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("eArtRegister.API.Domain.Entities.NFTPurchase", b =>
-                {
-                    b.HasOne("eArtRegister.API.Domain.Entities.NFT", "NFT")
-                        .WithMany("PurchaseContracts")
-                        .HasForeignKey("NFTId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_nft_purchase_nf_ts_nft_id");
-
-                    b.Navigation("NFT");
-                });
-
             modelBuilder.Entity("eArtRegister.API.Domain.Entities.NFTRate", b =>
                 {
                     b.HasOne("eArtRegister.API.Domain.Entities.NFT", "NFT")
@@ -1469,8 +1374,6 @@ namespace eArtRegister.API.Infrastructure.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("PriceOffers");
-
-                    b.Navigation("PurchaseContracts");
 
                     b.Navigation("Rates");
                 });

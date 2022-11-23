@@ -1,0 +1,13 @@
+body {margin:25px;}
+
+div.polaroid {
+  width: 30%;
+  height: 30%;
+  background-color: white;
+  margin-bottom: 25px;
+}
+
+div.container {
+  text-align: center;
+  padding: 10px 20px;
+}

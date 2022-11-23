@@ -22,6 +22,8 @@ class Buyer {
 })
 export class BundleComponent implements OnInit, OnDestroy {
 
+  ipdsPublicGateway = environment.ipfs;
+
   nfts: any[] = [];
   private bundleId = "";
   private routeSub: Subscription;
@@ -65,6 +67,9 @@ export class BundleComponent implements OnInit, OnDestroy {
       this.nfts = result as any[];
 
       this.nfts.forEach(element => {
+        this.http.get(this.ipdsPublicGateway + element.ipfsnftHash).subscribe(resultData => {
+          element.nftData = resultData;
+        });
         if (element.purchaseContract != null) {
           if (element.statusId == "ON_SALE" || element.statusId == "CANCELED") {
             this.web3.getUserBalance(element.purchaseContract, element.currentWallet).then(response =>{
@@ -86,6 +91,10 @@ export class BundleComponent implements OnInit, OnDestroy {
     }, error => {
         console.error(error);
     });
+  }
+
+  openNFT(bundleCustomRoot, tokenId) {
+    this.router.navigate([`/${bundleCustomRoot}/${tokenId}`]);
   }
 
   ngOnDestroy() {
@@ -199,7 +208,7 @@ export class BundleComponent implements OnInit, OnDestroy {
   }
 
   mintNFT() {
-    this.router.navigate([`/bundles/${this.bundleId}/mint`]);
+    this.router.navigate([`/bundle/${this.bundleId}/mint`]);
   }
 
   withdraw(purchaseContract: string, nftId: string) {

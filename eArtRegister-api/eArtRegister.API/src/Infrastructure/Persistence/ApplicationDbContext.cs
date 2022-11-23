@@ -37,6 +37,7 @@ namespace eArtRegister.API.Infrastructure.Persistence
         public DbSet<FollowNFT> FollowNFTs { get; set; }
         public DbSet<FollowUser> FollowUsers { get; set; }
         public DbSet<NFTCategory> NFTCategories { get; set; }
+        public DbSet<NFTPurchase> NFTPurchases { get; set; }
         public DbSet<NFT> NFTs { get; set; }
         public DbSet<NFTLike> NFTLikes { get; set; }
         public DbSet<NFTPriceHistory> NFTPriceHistory { get; set; }
