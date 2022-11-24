@@ -1,0 +1,11 @@
+<div *ngIf="user">
+    <p>Wallet: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{wallet}}">{{wallet}}</a></p>
+    <p>Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{user.depositAddress}}">{{user.depositAddress}}</a></p>
+    <p>Balance: {{balance}} ETH</p>
+    <p>Created: {{user.depositCreated}}</p>
+    <button class="btn btn-success" (click)='addDeposit()'>Deposit 0.0001</button>
+    <button class="btn btn-info" (click)="showCode = !showCode">Show source code</button>
+    <div *ngIf="showCode">
+        <app-source-code-contract-view [contract]="user.depositContract"></app-source-code-contract-view>
+    </div>
+</div>

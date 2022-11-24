@@ -12,7 +12,7 @@ import { take } from 'rxjs/operators';
 
 let tokenAbi = require('./transferAbi.json');
 let erc271Abi = require('./erc271Abi.json');
-let depositAbi = require('./depositAbi.json');
+//let depositAbi = require('./depositAbi.json');
 
 @Injectable({
   providedIn: 'root'
@@ -327,15 +327,15 @@ export class Web3Service {
 
   // DEPOSIT CONTRACT ---------------------------------------------------------------
 
-  public async deposit(depositContract: string): Promise<string> {
-    const weiValue = Web3.utils.toWei('0.02', 'ether');
+  public async deposit(depositContract: string, depositAbi: string): Promise<string> {
+    const weiValue = Web3.utils.toWei('0.0001', 'ether');
 
     this.provider = await this.web3Modal.connect();
     if (this.provider) {
       this.web3js = new Web3(this.provider);
     } 
     this.accounts = await this.web3js.eth.getAccounts();
-    this._depositContract = await new this.web3js.eth.Contract(depositAbi, depositContract);
+    this._depositContract = await new this.web3js.eth.Contract(JSON.parse(depositAbi), depositContract);
 
     return new Promise((resolve, reject) => {
       
@@ -350,7 +350,28 @@ export class Web3Service {
     }) as Promise<string>;
   }
 
-  public async withdrawDeposit(depositContract: string): Promise<string> {
+  public async viewDeposit(depositContract: string, depositAbi: string): Promise<string> {
+    this.provider = await this.web3Modal.connect();
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    } 
+    this.accounts = await this.web3js.eth.getAccounts();
+    this._depositContract = await new this.web3js.eth.Contract(JSON.parse(depositAbi), depositContract);
+
+    return new Promise((resolve, reject) => {
+      
+      this._depositContract.methods.viewDeposit().call({from: (this.accounts as string[])[0]}, function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<string>;
+  }
+
+  public async withdrawDeposit(depositContract: string, depositAbi: string): Promise<string> {
     const weiValue = Web3.utils.toWei('0.01', 'ether');
 
     this.provider = await this.web3Modal.connect();

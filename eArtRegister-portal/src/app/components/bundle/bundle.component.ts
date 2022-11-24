@@ -62,7 +62,7 @@ export class BundleComponent implements OnInit, OnDestroy {
 
   private getNFTs(bundleId: string) {
     this.nfts = [];
-    this.http.get(environment.api + `NFT/bundle/` + bundleId).subscribe(result => {
+    this.http.get(environment.api + `NFT/` + bundleId).subscribe(result => {
       console.log(result);
       this.nfts = result as any[];
 
@@ -94,7 +94,7 @@ export class BundleComponent implements OnInit, OnDestroy {
   }
 
   openNFT(bundleCustomRoot, tokenId) {
-    this.router.navigate([`/${bundleCustomRoot}/${tokenId}`]);
+    this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}`]);
   }
 
   ngOnDestroy() {

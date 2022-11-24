@@ -18,6 +18,7 @@ import { MySystemHistoryComponent } from './components/my-system-history/my-syst
 import { SourceCodeContractViewComponent } from './components/source-code-contract-view/source-code-contract-view.component';
 import { NftProfileComponent } from './components/nft-profile/nft-profile.component';
 import { SerOnSaleComponent } from './components/ser-on-sale/ser-on-sale.component';
+import { DepositComponent } from './components/deposit/deposit.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SerOnSaleComponent } from './components/ser-on-sale/ser-on-sale.compone
     SourceCodeContractViewComponent,
     NftProfileComponent,
     SerOnSaleComponent,
+    DepositComponent,
   ],
   imports: [
     BrowserModule,

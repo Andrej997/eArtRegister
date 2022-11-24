@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BundleComponent } from './components/bundle/bundle.component';
 import { CreateBundleComponent } from './components/create-bundle/create-bundle.component';
+import { DepositComponent } from './components/deposit/deposit.component';
 import { HomeComponent } from './components/home/home.component';
 import { MintNftComponent } from './components/mint-nft/mint-nft.component';
 import { MyBundlesComponent } from './components/my-bundles/my-bundles.component';
@@ -17,18 +18,18 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':bundleId',
+    path: 'deposit',
+    component: DepositComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'create',
+    component: CreateBundleComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'bundle/:bundleId',
     component: BundleComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'bundles',
-    component: MyBundlesComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'nfts',
-    component: MyNftsComponent,
     pathMatch: 'full',
   },
   {
@@ -37,20 +38,25 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':bundleId/:tokenId',
+    path: 'bundle/:bundleId/:tokenId',
     component: NftProfileComponent,
     pathMatch: 'full',
   },
   {
-    path: ':bundleId/:tokenId/set-on-sale',
+    path: 'bundle/:bundleId/:tokenId/set-on-sale',
     component: SerOnSaleComponent,
     pathMatch: 'full',
   },
-  {
-    path: 'create',
-    component: CreateBundleComponent,
-    pathMatch: 'full',
-  },
+  // {
+  //   path: 'bundles',
+  //   component: MyBundlesComponent,
+  //   pathMatch: 'full',
+  // },
+  // {
+  //   path: 'nfts',
+  //   component: MyNftsComponent,
+  //   pathMatch: 'full',
+  // },
   {
     path: 'my-history',
     component: MySystemHistoryComponent,

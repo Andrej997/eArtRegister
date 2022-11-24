@@ -34,7 +34,6 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
                 _context.SystemUsers.Add(new User
                 {
                     Wallet = request.Wallet.ToLower(),
-                    DateWalletAdded = _dateTime.UtcNow,
                     Roles = new List<UserRole>
                     {
                         new UserRole
@@ -42,14 +41,6 @@ namespace eArtRegister.API.Application.Users.Commands.CheckWallet
                             RoleId = (long)Domain.Enums.Role.Observer
                         }
                     }
-                });
-
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    Wallet = request.Wallet,
-                    IsCompleted = true,
-                    EventAction = Domain.Enums.EventAction.USER_CREATED
                 });
 
                 await _context.SaveChangesAsync(cancellationToken);

@@ -25,8 +25,17 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.DepositContract)
                 .HasColumnName("deposit_contract");
 
-            builder.Property(e => e.DateWalletAdded)
-                .HasColumnName("date_wallet_added");
+            builder.Property(e => e.DepositAddress)
+                .HasColumnName("deposit_address");
+
+            builder.Property(e => e.DepositAbi)
+                .HasColumnName("deposit_abi");
+
+            builder.Property(e => e.DepositBytecode)
+                .HasColumnName("deposit_bytecode");
+
+            builder.Property(e => e.DepositCreated)
+                .HasColumnName("deposit_created");
 
             builder.Property(e => e.CreatedBy)
                 .HasColumnName("created_by");

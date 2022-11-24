@@ -2,7 +2,7 @@
     <img src="../../../assets/images/metamask.png" alt="MetaMask" width="100%">
 
     <div *ngIf="user" class="logged-div">
-      <p>Logged user: </p><span> {{ user }}</span>
+      <p>Logged user: </p><span> {{ wallet }}</span>
     </div>
 
     <div *ngIf="user" class="logged-div">
@@ -10,7 +10,7 @@
     </div>
 
     <div *ngIf="user" class="logged-div">
-      <p>Deposit contract: </p><span> {{ depositContract }}</span>
+      <p>Deposit address: </p><span> {{ depositContract }}</span>
     </div>
 
     <div *ngIf="user" class="logged-div">
@@ -21,11 +21,11 @@
       Create deposit
     </button>
 
-    <button class="btn btn-warning btn-lg" (click)="addDeposit()">
-      Deposit 0.02
+    <button class="btn btn-warning btn-lg" (click)="openDeposit()">
+      Open deposit
     </button>
 
-    <span class="navbar-text" *ngIf="depositContract">
+    <!-- <span class="navbar-text" *ngIf="depositContract">
       <a class="nav-link" href="nfts">
         My NFTs
       </a>
@@ -34,15 +34,15 @@
       <a class="nav-link" href="bundles">
         My bundles
       </a>
-    </span>
+    </span> -->
     <span class="navbar-text" *ngIf="depositContract">
       <a class="nav-link" href="create">
         Create bundle
       </a>
     </span>
-    <span class="navbar-text">
+    <!-- <span class="navbar-text">
       <a class="nav-link" href="my-history">
         My system history
       </a>
-    </span>
+    </span> -->
 </div>

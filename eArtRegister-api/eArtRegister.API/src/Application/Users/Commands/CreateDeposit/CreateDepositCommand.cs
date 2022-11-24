@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using eArtRegister.API.Application.Bundles.Commands.CreateBundle;
 using eArtRegister.API.Application.Common.Interfaces;
 using eArtRegister.API.Domain.Entities;
 using Etherscan.Interfaces;
 using IPFS.Interfaces;
 using MediatR;
 using NethereumAccess.Interfaces;
+using RestSharp;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,38 +47,33 @@ namespace eArtRegister.API.Application.Users.Commands.CreateDeposit
 
         public async Task<Unit> Handle(CreateDepositCommand request, CancellationToken cancellationToken)
         {
-            var depositTransaction = await _nethereum.CreateDepositContract(request.Wallet);
+            var client = new RestClient($"http://localhost:3000/deposit");
+            client.Timeout = -1;
+            var restRequest = new RestRequest(Method.POST);
+            restRequest.AddJsonBody(new DepositBody(request.Wallet));
+            IRestResponse restResponse = client.Execute(restRequest);
+            var response = JsonSerializer.Deserialize<CreateContractResponse>(restResponse.Content);
 
             var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
-            user.DepositContract = depositTransaction.ContractAddress;
-
-            var transaction = await _etherscan.GetTransactionStatus(depositTransaction.TransactionHash, cancellationToken);
-            if (transaction.IsError == false)
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = depositTransaction.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = true,
-                    EventAction = Domain.Enums.EventAction.USER_DEPOSIT_CREATED
-                });
-            }
-            else
-            {
-                _context.ServerActionHistories.Add(new NFTActionHistory
-                {
-                    EventTimestamp = _dateTime.UtcNow.Ticks,
-                    TransactionHash = depositTransaction.TransactionHash,
-                    Wallet = request.Wallet,
-                    IsCompleted = false,
-                    EventAction = Domain.Enums.EventAction.USER_DEPOSIT_CREATED_FAIL
-                });
-            }
+            user.DepositContract = response.contract;
+            user.DepositAbi = response.abi;
+            user.DepositBytecode = response.bytecode;
+            user.DepositAddress = response.address;
+            user.DepositCreated = _dateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
+        }
+    }
+
+    public class DepositBody
+    {
+        public string owner { get; set; }
+
+        public DepositBody(string owner)
+        {
+            this.owner = owner;
         }
     }
 }

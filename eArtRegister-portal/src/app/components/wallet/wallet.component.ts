@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Web3Service } from 'src/app/services/contract/web3.service';
 import { environment } from 'src/environments/environment';
@@ -11,6 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class WalletComponent implements OnInit {
 
+  wallet: any;
   user: any;
   isSellet: boolean = false;
   balance: any = '';
@@ -19,6 +21,7 @@ export class WalletComponent implements OnInit {
   depositServerValue: any = '';
 
   constructor(private web3: Web3Service, private http: HttpClient,
+    private router: Router, 
     private toastr: ToastrService,) { }
 
   ngOnInit(): void {
@@ -28,19 +31,19 @@ export class WalletComponent implements OnInit {
   signInWithMetaMask(){
     this.web3.connectAccount().then(response => {
       console.log(response);
-      this.user = response
+      this.wallet = response
       this.getUser();
     });
   }
 
   getUser(){
-    this.http.get(environment.api + `Users/getUser/` + this.user[0]).subscribe(result => {
-      console.log(result);
-      this.isSellet = ((result as any).roleIds.includes(4));
-      this.depositValue = (result as any).depositBalance / 1000000000000000000;
-      this.depositContract = (result as any).depositContract;
-      this.depositServerValue = (result as any).serverBalance / 1000000000000000000;
-      this.balance = (result as any).walletBalance / 1000000000000000000;
+    this.http.get(environment.api + `Users/getUser/` + this.wallet[0]).subscribe(result => {
+      this.user = result;
+      this.web3.viewDeposit(this.user.depositAddress, this.user.depositAbi).then(response =>{
+        this.depositValue = (response as any) / 1000000000000000000;
+      });
+      this.depositValue = 0 / 1000000000000000000;
+      this.depositContract = (result as any).depositAddress;
     }, error => {
         console.error(error);
     });
@@ -48,7 +51,7 @@ export class WalletComponent implements OnInit {
 
   createDeposit() {
     let body = {
-      Wallet: this.user[0],
+      Wallet: this.wallet[0],
     };
 
     this.http.post(environment.api + `Users/createDeposit`, body).subscribe(result => {
@@ -59,40 +62,7 @@ export class WalletComponent implements OnInit {
     });
   }
 
-  addDeposit() {
-    this.web3.deposit(this.depositContract).then(response => {
-      this.web3.getTransactionStatus(response).then(response2 => {
-        if ((response2 as boolean) == true) {
-          this.signInWithMetaMask();
-          this.toastr.success("Add to your private deposit");
-          let body = {
-            Wallet: this.user[0],
-            IsCompleted : true,
-            TransactionHash: response
-          };
-      
-          this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
-            
-          }, error => {
-              console.error(error);
-          });
-        }
-        else {
-          this.toastr.error("Failed to add to deposit");
-
-          let body = {
-            Wallet: this.user[0],
-            IsCompleted : false,
-            TransactionHash: response
-          };
-      
-          this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
-            
-          }, error => {
-              console.error(error);
-          });
-        }
-      });
-    });
+  openDeposit() {
+    this.router.navigate([`/deposit`]);
   }
 }

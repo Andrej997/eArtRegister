@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.post('/deposit', async (req, res, next) => {
     const owner = req.body['owner'];
+    console.log(owner);
 
     const [abi, bytecode] = await build(depositContract, 'Deposit');
     const address = await deploy(abi, bytecode, [owner]);

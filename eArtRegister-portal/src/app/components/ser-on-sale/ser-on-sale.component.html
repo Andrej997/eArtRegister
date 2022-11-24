@@ -1,1 +1,37 @@
-<p>ser-on-sale works!</p>
+<div class='container'>
+    <form [formGroup]="bundleForm" (ngSubmit)="onFirstSubmit()">
+        <h1>Purchase contract</h1>
+
+        <div class="divider d-flex align-items-center my-4">
+        </div>
+
+        <div class="form-outline mb-4">
+            <input type="number" id="amountInETH" class="form-control form-control-lg"
+                placeholder="Enter amount" formControlName="amountInETH"/>
+            <label class="form-label" for="amountInETH">Amount</label>
+        </div>
+
+        <div class="form-outline mb-4">
+            <input type="number" id="daysOnSale" class="form-control form-control-lg"
+                placeholder="Enter days on sale" formControlName="daysOnSale"/>
+            <label class="form-label" for="daysOnSale">Days on sale</label>
+        </div>
+
+        <div class="form-outline mb-4">
+            <input type="number" id="minParticipation" class="form-control form-control-lg"
+                placeholder="Enter minimum participation" formControlName="minParticipation"/>
+            <label class="form-label" for="minParticipation">Minimum participation</label>
+        </div>
+
+        <!-- <div class="form-outline mb-3">
+            <input type="text" id="description" class="form-control form-control-lg"
+                placeholder="Enter description" formControlName="description"/>
+            <label class="form-label" for="description">Description</label>
+        </div> -->
+
+        <div class="text-center text-lg-start mt-4 pt-2">
+            <button type="submit" class="btn btn-primary btn-lg"
+            style="padding-left: 2.5rem; padding-right: 2.5rem; margin-left: 10%;">Create</button>
+        </div>
+    </form>
+</div>

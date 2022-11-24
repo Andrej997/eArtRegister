@@ -47,7 +47,7 @@ export class CreateBundleComponent implements OnInit {
   
       this.http.post(environment.api + `Bundle/create`, body).subscribe(result => {
         this.toastr.success("Bundle created");
-        this.router.navigate([`/${(result as any).customRoute}`]);
+        this.router.navigate([`bundle/${(result as any).customRoute}`]);
       }, error => {
           console.error(error);
           this.toastr.error("Failed to create bundle");

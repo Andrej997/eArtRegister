@@ -19,7 +19,7 @@ namespace eArtRegister.API.WebApi.Controllers
     public class NFTController : ApiControllerBase
     {
         [ApiExplorerSettings(GroupName = "v1")]
-        [HttpGet("bundle/{customRoute}")]
+        [HttpGet("{customRoute}")]
         public async Task<ActionResult<List<NFTDto>>> GetNFTsByByndleId(string customRoute)
         {
             try

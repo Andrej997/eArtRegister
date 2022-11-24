@@ -8,8 +8,11 @@ namespace eArtRegister.API.Domain.Entities
     {
         public Guid Id { get; set; }
         public string Wallet { get; set; }
-        public DateTime? DateWalletAdded { get; set; }
         public string DepositContract { get; set; }
+        public string DepositAddress { get; set; }
+        public string DepositAbi { get; set; }
+        public string DepositBytecode { get; set; }
+        public DateTime? DepositCreated { get; set; }
 
         public virtual ICollection<UserRole> Roles { get; set; }
         public virtual ICollection<FollowBundle> FollowingBundles { get; set; }

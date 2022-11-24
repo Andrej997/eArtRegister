@@ -43,7 +43,7 @@ export class NftProfileComponent implements OnInit {
   }
 
   setOnSale(bundleCustomRoot, tokenId) {
-    this.router.navigate([`/${bundleCustomRoot}/${tokenId}/set-on-sale`]);
+    this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/set-on-sale`]);
   }
 
   private getBundle(bundleId: string) {
