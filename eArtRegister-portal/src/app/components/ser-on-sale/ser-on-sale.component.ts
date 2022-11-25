@@ -19,6 +19,12 @@ export class SerOnSaleComponent implements OnInit {
   bundleId: any;
   tokenId: any;
   private routeSub: Subscription;
+  nft: any;
+  private nfts: any[] = [];
+  purchaseContract: any = null;
+  setOnSale: boolean = false;
+  editPrice: boolean = false;
+  editDate: boolean = false;
 
   constructor(private fb: FormBuilder, 
     private router: Router,
@@ -32,6 +38,14 @@ export class SerOnSaleComponent implements OnInit {
     this.routeSub = this.route.params.subscribe(params => {
       this.bundleId = params['bundleId'];
       this.tokenId = params['tokenId'];
+      if (this.router.url.includes('set-on-sale')) this.setOnSale = true;
+      else if (this.router.url.includes('edit-price')) this.editPrice = true;
+      else if (this.router.url.includes('edit-date')) this.editDate = true;
+    });
+
+    this.web3.connectAccount().then(response => {
+      this.wallet = (response as string[])[0].toLowerCase();
+      this.getNFTs(this.bundleId);
     });
 
     this.bundleForm = this.fb.group({
@@ -41,25 +55,63 @@ export class SerOnSaleComponent implements OnInit {
     });
   }
 
-  onFirstSubmit() {
-    this.web3.connectAccount().then(response => {
-      let body = {
-        CustomRouth: this.bundleId,
-        TokenId: this.tokenId,
-        AmountInETH: this.bundleForm.value.amountInETH,
-        DaysOnSale: this.bundleForm.value.daysOnSale,
-        MinParticipation: this.bundleForm.value.minParticipation,
-        Wallet: (response as string[])[0]
-      };
-  
-      // this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
-      //   this.toastr.success("Purchase contract created");
-      //   this.router.navigate([`bundle/${(result as any).customRoute}`]);
-      // }, error => {
-      //     console.error(error);
-      //     this.toastr.error("Failed to create bundle");
-      // });
+  private getNFTs(bundleId: string) {
+    this.http.get(environment.api + `NFT/${bundleId}/${this.tokenId}`).subscribe(result => {
+      this.nfts = result as any[];
+      if (this.nfts.length > 0) {
+        this.nft = this.nfts[0];
+        this.purchaseContract = this.nft.purchaseContracts[0];
+      }
+    }, error => {
+        console.error(error);
     });
   }
 
+  onFirstSubmit() {
+    let priceWei = this.bundleForm.value.amountInETH * 1000000000000000000;
+    let minParticipationWei = this.bundleForm.value.minParticipation * 1000000000000000000;
+    
+    if (this.setOnSale) this.setPrice(priceWei, minParticipationWei);
+    else if (this.editPrice) this.editPriceF(priceWei);
+    else if (this.editDate) this.editDeadline();
+  }
+
+  private setPrice(priceWei, minParticipationWei) {
+    this.web3.setPrice(this.purchaseContract.abi, this.purchaseContract.address, priceWei, minParticipationWei, this.bundleForm.value.daysOnSale).then(response => {
+      this.web3.getTransactionStatus(response).then(response2 => {
+        if ((response2 as boolean) == true) {
+          this.toastr.success("NFT is successfully set on sale");
+        }
+        else {
+          this.toastr.error("Failed to set NFT on sale");
+        }
+      });
+    });
+  }
+
+  private editPriceF(priceWei) {
+    this.web3.editPrice(this.purchaseContract.abi, this.purchaseContract.address, priceWei).then(response => {
+      this.web3.getTransactionStatus(response).then(response2 => {
+        if ((response2 as boolean) == true) {
+          this.toastr.success("NFT is successfully set on sale");
+        }
+        else {
+          this.toastr.error("Failed to set NFT on sale");
+        }
+      });
+    });
+  }
+
+  private editDeadline() {
+    this.web3.editDeadline(this.purchaseContract.abi, this.purchaseContract.address, this.bundleForm.value.daysOnSale).then(response => {
+      this.web3.getTransactionStatus(response).then(response2 => {
+        if ((response2 as boolean) == true) {
+          this.toastr.success("NFT is successfully set on sale");
+        }
+        else {
+          this.toastr.error("Failed to set NFT on sale");
+        }
+      });
+    });
+  }
 }

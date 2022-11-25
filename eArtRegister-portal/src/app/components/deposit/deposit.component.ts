@@ -49,32 +49,9 @@ export class DepositComponent implements OnInit {
         if ((response2 as boolean) == true) {
           this.signInWithMetaMask();
           this.toastr.success("Add to your private deposit");
-          // let body = {
-          //   Wallet: this.user[0],
-          //   IsCompleted : true,
-          //   TransactionHash: response
-          // };
-      
-          // this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
-            
-          // }, error => {
-          //     console.error(error);
-          // });
         }
         else {
           this.toastr.error("Failed to add to deposit");
-
-          let body = {
-            Wallet: this.user[0],
-            IsCompleted : false,
-            TransactionHash: response
-          };
-      
-          this.http.post(environment.api + `Users/deposit`, body).subscribe(result => {
-            
-          }, error => {
-              console.error(error);
-          });
         }
       });
     });

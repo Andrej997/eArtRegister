@@ -53,6 +53,16 @@ const routes: Routes = [
     component: SerOnSaleComponent,
     pathMatch: 'full',
   },
+  {
+    path: 'bundle/:bundleId/:tokenId/edit-price',
+    component: SerOnSaleComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'bundle/:bundleId/:tokenId/edit-date',
+    component: SerOnSaleComponent,
+    pathMatch: 'full',
+  },
   // {
   //   path: 'bundles',
   //   component: MyBundlesComponent,

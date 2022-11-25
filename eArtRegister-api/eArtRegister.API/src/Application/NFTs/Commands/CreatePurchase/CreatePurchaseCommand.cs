@@ -87,12 +87,12 @@ namespace eArtRegister.API.Application.NFTs.Commands.CreatePurchase
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            var client2 = new RestClient($"http://localhost:3000/setApprovalForAll");
-            client2.Timeout = -1;
-            var restRequest2 = new RestRequest(Method.POST);
-            restRequest2.AddJsonBody(new SetApprovalForAllBody(bundle.Abi, bundle.Address, response.address));
-            IRestResponse restResponse2 = client2.Execute(restRequest2);
-            var response2 = JsonSerializer.Deserialize<ActionResponse>(restResponse2.Content);
+            //var client2 = new RestClient($"http://localhost:3000/setApprovalForAll");
+            //client2.Timeout = -1;
+            //var restRequest2 = new RestRequest(Method.POST);
+            //restRequest2.AddJsonBody(new SetApprovalForAllBody(bundle.Abi, bundle.Address, response.address));
+            //IRestResponse restResponse2 = client2.Execute(restRequest2);
+            //var response2 = JsonSerializer.Deserialize<ActionResponse>(restResponse2.Content);
 
             return Unit.Value;
         }

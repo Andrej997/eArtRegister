@@ -66,7 +66,7 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId
 
             if (request.TokenId >= 0)
                 query = query
-                    .Include(x => x.PurchaseContracts.OrderBy(y => y.CreatedOn))
+                    .Include(x => x.PurchaseContracts)
                     .Where(x => x.TokenId == request.TokenId);
 
             var ret = await query
@@ -74,6 +74,9 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId
                     .Include(t => t.PurchaseContracts)
                     .ProjectTo<NFTDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
+
+            if (request.TokenId >= 0 && ret.Any() && ret[0].PurchaseContracts.Any())
+                ret[0].PurchaseContracts = ret[0].PurchaseContracts.OrderByDescending(x => x.CreatedOn).ToList();
 
             return ret;
         }

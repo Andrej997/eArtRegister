@@ -115,44 +115,6 @@ export class BundleComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  setNFTOnSale(purchaseContract: string, price: number, minParticipation: number, daysToPay: number, nftId: any) {
-    this.web3.setNftOnSale(purchaseContract, price, minParticipation, daysToPay).then(response =>{
-      this.web3.getTransactionStatus(response).then(response2 => {
-
-        if ((response2 as boolean) == true) {
-          this.toastr.success("NFT set on sale");
-          let body = {
-            NFTId: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: true
-          };
-      
-          this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
-            this.getNFTs(this.bundleId);
-          }, error => {
-              console.error(error);
-          });
-        }
-        else {
-          this.toastr.error("Failed to set NFT on sale");
-          let body = {
-            NFTId: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: false
-          };
-      
-          this.http.post(environment.api + `NFT/setOnSale`, body).subscribe(result => {
-          }, error => {
-              console.error(error);
-          });
-        }
-      });
-    });
-  }
-
   buyNFT(purchaseContract: string, nftId: any) {
     let valueToBuy = this.minParticipation * 1000000000000000000;
     this.web3.purchaseNft(purchaseContract, valueToBuy).then(response =>{
@@ -188,22 +150,6 @@ export class BundleComponent implements OnInit, OnDestroy {
           });
         }
       });
-    })
-  }
-
-  sendNFTasGift(nftId: any, erc721: string, tokenId: number) {
-    this.web3.sendNftAsGift(erc721, this.wallet, this.toWallet, tokenId).then(response =>{
-      // let body = {
-      //   NFTId: nftId,
-      //   From: this.wallet,
-      //   To: this.toWallet,
-      //   TransactionHash: response
-      // };
-  
-      // this.http.post(environment.api + `NFT/sendAsGift`, body).subscribe(result => {
-      // }, error => {
-      //     console.error(error);
-      // });
     })
   }
 
@@ -246,43 +192,6 @@ export class BundleComponent implements OnInit, OnDestroy {
         }
       });
     })
-  }
-
-  approve(nftId: string, purchaseContract: string) {
-    this.web3.setApprovalForAll((this.bundle as any).contractAddress, purchaseContract).then(response => {
-      this.web3.getTransactionStatus(response).then(response2 => {
-
-        if ((response2 as boolean) == true) {
-          this.toastr.success("Contract approved");
-          let body = {
-            Id: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: true
-          };
-      
-          this.http.post(environment.api + `NFT/approved`, body).subscribe(result => {
-            this.getNFTs(this.bundleId);
-          }, error => {
-              console.error(error);
-          });
-        }
-        else {
-          this.toastr.error("Failed to approve contract");
-          let body = {
-            Id: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: false
-          };
-      
-          this.http.post(environment.api + `NFT/approved`, body).subscribe(result => {
-          }, error => {
-              console.error(error);
-          });
-        }
-      });
-    });
   }
 
   cancel(purchaseContract: string, buyerAddress: string, currentWallet: string, minParticipation: number, nftId: string) {

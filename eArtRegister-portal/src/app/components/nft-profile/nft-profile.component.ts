@@ -18,10 +18,17 @@ export class NftProfileComponent implements OnInit {
   private tokenId = -1;
   private routeSub: Subscription;
   wallet = "";
-  bundle = null;
+  bundle;
   nft: any;
   private nfts: any[] = [];
   purchaseContract: any = null;
+  amountInETH;
+  minParticipation;
+  saleEnds;
+  seller;
+  biggestBid;
+  listedDate;
+  isPurchaseApproved: boolean = false;
 
   constructor(private http: HttpClient, 
     private router: Router, 
@@ -46,8 +53,92 @@ export class NftProfileComponent implements OnInit {
     this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/set-on-sale`]);
   }
 
+  editPrice(bundleCustomRoot, tokenId) {
+    this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/edit-price`]);
+  }
+
+  editDate(bundleCustomRoot, tokenId) {
+    this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/edit-date`]);
+  }
+
   createPurchase(bundleCustomRoot, tokenId) {
     this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/create-purchase`]);
+  }
+
+  appropve() {
+    this.web3.setApprovalForAll(this.bundle.abi, this.bundle.address, this.purchaseContract.address).then(response => {
+      this.web3.getTransactionStatus(response).then(response2 => {
+        if ((response2 as boolean) == true) {
+          this.toastr.success("Purchase is approved successfully");
+        }
+        else {
+          this.toastr.error("Failed to approved");
+        }
+      });
+    });
+  }
+
+  buy() {
+    
+  }
+
+  private callPurchaseContractViews() {
+    this.isApprovedForAll();
+    this.getPrice();
+    this.getSeller();
+    this.getListedDate();
+    this.getEndSellDate();
+    this.getBiggestBid();
+  }
+
+  private isApprovedForAll() {
+    if (this.purchaseContract) {
+      this.web3.isApprovedForAll(this.bundle.abi, this.bundle.address, this.bundle.ownerWallet, this.purchaseContract.address).then(response => {
+        this.isPurchaseApproved = response;
+      });
+    }
+  }
+
+  private getPrice() {
+    if (this.purchaseContract) {
+      this.web3.getPrice(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.amountInETH = response / 1000000000000000000;
+      });
+    }
+  }
+
+  private getSeller() {
+    if (this.purchaseContract) {
+      this.web3.getSeller(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.seller = response;
+      });
+    }
+  }
+
+  private getListedDate() {
+    if (this.purchaseContract) {
+      this.web3.getListedDate(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        var date = new Date(response * 1000);
+        this.listedDate = date;
+      });
+    }
+  }
+
+  private getEndSellDate() {
+    if (this.purchaseContract) {
+      this.web3.getEndSellDate(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        var date = new Date(response * 1000);
+        this.saleEnds = date;
+      });
+    }
+  }
+
+  private getBiggestBid() {
+    if (this.purchaseContract) {
+      this.web3.getBiggestBid(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.biggestBid = response;
+      });
+    }
   }
 
   private getBundle(bundleId: string) {
@@ -87,10 +178,13 @@ export class NftProfileComponent implements OnInit {
       
       if (this.nfts.length > 0) {
         this.nft = this.nfts[0];
-        this.purchaseContract = this.nft.purchaseContracts[0];
+        if (this.nft.purchaseContracts?.length > 0) {
+          this.purchaseContract = this.nft.purchaseContracts[0];
+          console.log(this.nft);
+          
+          this.callPurchaseContractViews();
+        }
       }
-        console.log(this.nft);
-        
     }, error => {
         console.error(error);
     });

@@ -119,51 +119,52 @@ export class Web3Service {
     return this.balance;
   }
 
-  // ERC721 CONTACT -----------------------------------------------------------------
+  // ERC721 CONTRACT ----------------------------------------------------------------
 
-  async sendNftAsGift(contractAddress: string, from: string, to: string, tokenId: number): Promise<number> {
-    this.provider = await this.web3Modal.connect(); 
+  async setApprovalForAll(abi: string, address: string, operator: string): Promise<string> {
+
+    this.provider = await this.web3Modal.connect();
     if (this.provider) {
       this.web3js = new Web3(this.provider);
     } 
 
     this.accounts = await this.web3js.eth.getAccounts();
-    this._erc271Contract = await new this.web3js.eth.Contract(erc271Abi, contractAddress);
-    
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+
     return new Promise((resolve, reject) => {
-      this._erc271Contract.methods.safeTransferFrom(from, to, tokenId).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
+      contract.methods.setApprovalForAll(operator, true).send({ from: (this.accounts as string[])[0], gas: 3000000 }, function (err, result) {
         
         if(err != null) {
           reject(err);
         }
-  
-        resolve((result));
+
+        resolve(result);
       });
-    }) as Promise<number>;
+    }) as Promise<string>;
   }
 
-  async setApprovalForAll(contractAddress: string, purchaseContractAddress: string): Promise<number> {
+  public async isApprovedForAll(abi: string, address: string, ownerAddress: string, purchaseAddress: string): Promise<any> {
     this.provider = await this.web3Modal.connect(); 
     if (this.provider) {
       this.web3js = new Web3(this.provider);
-    } 
+    }
 
     this.accounts = await this.web3js.eth.getAccounts();
-    this._erc271Contract = await new this.web3js.eth.Contract(erc271Abi, contractAddress);
-    
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
     return new Promise((resolve, reject) => {
-      this._erc271Contract.methods.setApprovalForAll(purchaseContractAddress, true).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
+      contract.methods.isApprovedForAll(ownerAddress, purchaseAddress).call(function (err, result) {
         
         if(err != null) {
           reject(err);
         }
   
-        resolve((result));
+        resolve(result);
       });
-    }) as Promise<number>;
+    }) as Promise<any>;
   }
 
-  // TRANSER CONTRACT ---------------------------------------------------------------
+  // PURCHASE CONTRACT ---------------------------------------------------------------
 
   public async getUserBalance(purchaseContract: string, wallet: string): Promise<number> {
     this.provider = await this.web3Modal.connect(); 
@@ -207,7 +208,7 @@ export class Web3Service {
     }) as Promise<number>;
   }
 
-  async setNftOnSale(purchaseContract: string, price: number, minParticipation: number, daysToPay: number): Promise<string> {
+  async setPrice(abi: string, address: string, price: number, minParticipation: number, daysToPay: number): Promise<string> {
     const etherValue = Web3.utils.fromWei(price.toString(), 'ether');
     const weiValue = Web3.utils.toWei(etherValue, 'ether');
 
@@ -220,10 +221,55 @@ export class Web3Service {
     } 
 
     this.accounts = await this.web3js.eth.getAccounts();
-    this._traderContract = await new this.web3js.eth.Contract(tokenAbi, purchaseContract);
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
 
     return new Promise((resolve, reject) => {
-      this._traderContract.methods.setPrice(weiValue, weiValueMP, daysToPay).send({ from: (this.accounts as string[])[0], gas: 3000000 }, function (err, result) {
+      contract.methods.setPrice(weiValue, daysToPay, weiValueMP).send({ from: (this.accounts as string[])[0], gas: 3000000 }, function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    }) as Promise<string>;
+  }
+
+  async editPrice(abi: string, address: string, price: number): Promise<string> {
+    const etherValue = Web3.utils.fromWei(price.toString(), 'ether');
+    const weiValue = Web3.utils.toWei(etherValue, 'ether');
+
+    this.provider = await this.web3Modal.connect();
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    } 
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+
+    return new Promise((resolve, reject) => {
+      contract.methods.editPrice(weiValue).send({ from: (this.accounts as string[])[0], gas: 3000000 }, function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    }) as Promise<string>;
+  }
+
+  async editDeadline(abi: string, address: string, daysToPay: number): Promise<string> {
+    this.provider = await this.web3Modal.connect();
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    } 
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+
+    return new Promise((resolve, reject) => {
+      contract.methods.editDeadline(daysToPay).send({ from: (this.accounts as string[])[0], gas: 3000000 }, function (err, result) {
         
         if(err != null) {
           reject(err);
@@ -323,6 +369,112 @@ export class Web3Service {
         resolve(result);
       });
     }) as Promise<string>;
+  }
+
+  // views
+  public async getPrice(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getPrice().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
+  public async getSeller(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getSeller().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
+  public async getListedDate(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getListedDate().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
+  public async getEndSellDate(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getEndSellDate().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
+  public async getBiggestBid(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getBiggestBid().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
   }
 
   // DEPOSIT CONTRACT ---------------------------------------------------------------
