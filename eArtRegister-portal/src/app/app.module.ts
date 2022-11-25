@@ -19,6 +19,7 @@ import { SourceCodeContractViewComponent } from './components/source-code-contra
 import { NftProfileComponent } from './components/nft-profile/nft-profile.component';
 import { SerOnSaleComponent } from './components/ser-on-sale/ser-on-sale.component';
 import { DepositComponent } from './components/deposit/deposit.component';
+import { CreatePurchaseComponent } from './components/create-purchase/create-purchase.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { DepositComponent } from './components/deposit/deposit.component';
     NftProfileComponent,
     SerOnSaleComponent,
     DepositComponent,
+    CreatePurchaseComponent,
   ],
   imports: [
     BrowserModule,

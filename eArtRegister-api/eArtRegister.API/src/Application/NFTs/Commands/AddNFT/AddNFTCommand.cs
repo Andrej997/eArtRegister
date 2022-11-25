@@ -100,7 +100,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
             var restRequest = new RestRequest(Method.POST);
             restRequest.AddJsonBody(new SafeMintBody(bundle.Abi, bundle.Address, request.Wallet, "ipfs://" + retVal.Hash));
             IRestResponse restResponse = client.Execute(restRequest);
-            var response = JsonSerializer.Deserialize<SafeMintResponse>(restResponse.Content);
+            var response = JsonSerializer.Deserialize<ActionResponse>(restResponse.Content);
 
             var transaction = await _etherscan.GetTransactionStatus(response.transactionHash, cancellationToken);
             if (transaction.IsError == true)
@@ -190,7 +190,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.AddNFT
         public string to { get; set; }
         public string uri { get; set; }
     }
-    public class SafeMintResponse
+    public class ActionResponse
     {
         public string transactionHash { get; set; }
     }

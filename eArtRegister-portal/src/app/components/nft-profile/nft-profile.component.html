@@ -1,5 +1,6 @@
 <div *ngIf="nft">
     <p class="h1">{{nft.nftData?.name}}</p> 
+    <button (click)='createPurchase(bundle.customRoot, nft.tokenId)' style="float: right; margin-right: 5%;" class="btn btn-primary">CREATE PURCHASE</button>
     <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' style="float: right; margin-right: 5%;" class="btn btn-primary">SET ON SALE</button>
     <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' style="float: right; margin-right: 5%;" class="btn btn-primary">BUY</button>
     <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' style="float: right; margin-right: 5%;" class="btn btn-primary">PAY PARTICIPATION</button>
@@ -89,6 +90,10 @@
               </button>
             </h2>
             <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
+              <p>Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{purchaseContract.address}}">{{purchaseContract.address}}</a></p>
+              <p>Entire amount: {{purchaseContract.entireAmount}}</p>
+              <p>Repayment in installments: {{purchaseContract.repaymentInInstallments}}</p>
+              <p>Auction: {{purchaseContract.auction}}</p>
               <app-source-code-contract-view *ngIf="purchaseContract" [contract]="purchaseContract.contract"></app-source-code-contract-view>
             </div>
           </div>

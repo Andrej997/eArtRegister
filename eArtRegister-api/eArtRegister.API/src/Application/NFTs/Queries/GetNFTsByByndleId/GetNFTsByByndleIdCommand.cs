@@ -71,6 +71,7 @@ namespace eArtRegister.API.Application.NFTs.Queries.GetNFTsByByndleId
 
             var ret = await query
                     .OrderBy(t => t.TokenId)
+                    .Include(t => t.PurchaseContracts)
                     .ProjectTo<NFTDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 

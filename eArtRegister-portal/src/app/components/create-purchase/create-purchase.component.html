@@ -1,0 +1,29 @@
+<div class='container'>
+    <form [formGroup]="bundleForm" (ngSubmit)="onFirstSubmit()">
+        <h1>Purchase contract</h1>
+
+        <div class="divider d-flex align-items-center my-4">
+        </div>
+
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="entireAmount" value="option1" (change)="entireAmountChange($event)" formControlName="entireAmount">
+            <label class="form-check-label" for="entireAmount">Entire amount?</label>
+        </div>
+
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="repaymentInInstallments" (change)="repaymentInInstallmentsChange($event)" value="option2" formControlName="repaymentInInstallments">
+            <label class="form-check-label" for="repaymentInInstallments">Repayment in installments?</label>
+        </div>
+        
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="auction" value="option3" (change)="auctionChange($event)" formControlName="auction">
+            <label class="form-check-label" for="auction">Auction?</label>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary btn-lg">
+                Create
+            </button>
+        </div>
+    </form>
+</div>

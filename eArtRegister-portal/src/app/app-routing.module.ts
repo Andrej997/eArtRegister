@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BundleComponent } from './components/bundle/bundle.component';
 import { CreateBundleComponent } from './components/create-bundle/create-bundle.component';
+import { CreatePurchaseComponent } from './components/create-purchase/create-purchase.component';
 import { DepositComponent } from './components/deposit/deposit.component';
 import { HomeComponent } from './components/home/home.component';
 import { MintNftComponent } from './components/mint-nft/mint-nft.component';
@@ -40,6 +41,11 @@ const routes: Routes = [
   {
     path: 'bundle/:bundleId/:tokenId',
     component: NftProfileComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'bundle/:bundleId/:tokenId/create-purchase',
+    component: CreatePurchaseComponent,
     pathMatch: 'full',
   },
   {

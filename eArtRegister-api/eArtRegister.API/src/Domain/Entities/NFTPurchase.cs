@@ -13,10 +13,6 @@ namespace eArtRegister.API.Domain.Entities
         public bool EntireAmount { get; set; }
         public bool RepaymentInInstallments { get; set; }
         public bool Auction { get; set; }
-        public double AmountInETH { get; set; }
-        public int DaysOnSale { get; set; }
-        public double MinParticipation { get; set; }
-        public DateTime? CreatedOn { get; set; }
 
         public virtual NFT NFT { get; set; }
     }

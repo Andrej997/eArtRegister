@@ -8,26 +8,24 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NethereumAccess.Interfaces;
 using RestSharp;
+using System;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
+namespace eArtRegister.API.Application.NFTs.Commands.CreatePurchase
 {
-    public class SetOnSaleCommand : IRequest
+    public class CreatePurchaseCommand : IRequest
     {
         public string CustomRouth { get; set; }
         public long TokenId { get; set; }
         public bool EntireAmount { get; set; }
         public bool RepaymentInInstallments { get; set; }
         public bool Auction { get; set; }
-        public double AmountInETH { get; set; }
-        public int DaysOnSale { get; set; }
-        public double MinParticipation { get; set; }
         public string Wallet { get; set; }
     }
-    public class SetOnSaleCommandHandler : IRequestHandler<SetOnSaleCommand, Unit>
+    public class CreatePurchaseCommandHandler : IRequestHandler<CreatePurchaseCommand, Unit>
     {
         private readonly IApplicationDbContext _context;
         private readonly IDateTime _dateTime;
@@ -36,7 +34,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
         private readonly IMapper _mapper;
         private readonly INethereumBC _nethereum;
 
-        public SetOnSaleCommandHandler(
+        public CreatePurchaseCommandHandler(
                 IApplicationDbContext context,
                 IDateTime dateTime,
                 ICurrentUserService currentUserService,
@@ -52,8 +50,10 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
             _nethereum = nethereum;
         }
 
-        public async Task<Unit> Handle(SetOnSaleCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreatePurchaseCommand request, CancellationToken cancellationToken)
         {
+            if (!request.EntireAmount && !request.RepaymentInInstallments && !request.Auction) throw new Exception("You need to select at least one action");
+
             var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
 
             var bundle = _context.Bundles
@@ -93,13 +93,6 @@ namespace eArtRegister.API.Application.NFTs.Commands.SetOnSale
             restRequest2.AddJsonBody(new SetApprovalForAllBody(bundle.Abi, bundle.Address, response.address));
             IRestResponse restResponse2 = client2.Execute(restRequest2);
             var response2 = JsonSerializer.Deserialize<ActionResponse>(restResponse2.Content);
-
-            var client3 = new RestClient($"http://localhost:3000/setPrice");
-            client3.Timeout = -1;
-            var restRequest3 = new RestRequest(Method.POST);
-            restRequest3.AddJsonBody(new SetPriceBody(response.abi, response.address, request.AmountInETH, request.DaysOnSale, request.MinParticipation));
-            IRestResponse restResponse3 = client3.Execute(restRequest3);
-            var response3 = JsonSerializer.Deserialize<ActionResponse>(restResponse3.Content);
 
             return Unit.Value;
         }

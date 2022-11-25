@@ -2,6 +2,7 @@
 using eArtRegister.API.Application.NFTs.Commands.Approved;
 using eArtRegister.API.Application.NFTs.Commands.Bought;
 using eArtRegister.API.Application.NFTs.Commands.Cancel;
+using eArtRegister.API.Application.NFTs.Commands.CreatePurchase;
 using eArtRegister.API.Application.NFTs.Commands.PrepareForSale;
 using eArtRegister.API.Application.NFTs.Commands.SetOnSale;
 using eArtRegister.API.Application.NFTs.Commands.WithdrawFunds;
@@ -83,6 +84,21 @@ namespace eArtRegister.API.WebApi.Controllers
                     AttributeValues = data.AttributeValues,
                     ExternalUrl = data.ExternalUrl,
                 });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [ApiExplorerSettings(GroupName = "v1")]
+        [HttpPost("createPurchase")]
+        public async Task<IActionResult> CreatePurchase(CreatePurchaseCommand command)
+        {
+            try
+            {
+                await Mediator.Send(command);
+                return Ok();
             }
             catch (Exception e)
             {

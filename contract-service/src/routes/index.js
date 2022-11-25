@@ -563,7 +563,7 @@ router.post('/safeMint', async (req, res, next) => {
 });
 
 router.post('/ownerOf', async (req, res, next) => {
-    const abi = req.body['abi'];
+    const abi = JSON.parse(req.body['abi']);
     const address = req.body['address'];
     const tokenId = req.body['tokenId'];
 
@@ -581,7 +581,7 @@ router.post('/ownerOf', async (req, res, next) => {
 });
 
 router.post('/tokenURI', async (req, res, next) => {
-    const abi = req.body['abi'];
+    const abi = JSON.parse(req.body['abi']);
     const address = req.body['address'];
     const tokenId = req.body['tokenId'];
 
@@ -599,9 +599,9 @@ router.post('/tokenURI', async (req, res, next) => {
 });
 
 router.post('/setApprovalForAll', async (req, res, next) => {
-    const abi = req.body['abi'];
+    const abi = JSON.parse(req.body['abi']);
     const address = req.body['address'];
-    const operator = req.body['operator'];
+    const operator = req.body['operatorAddress'];
 
     const daiToken = new web3.eth.Contract(abi, address);
 
@@ -609,7 +609,27 @@ router.post('/setApprovalForAll', async (req, res, next) => {
         .send({ from: publicAddress }, function (err, transactionHash) {
             if (err) {
                 console.log("An error occured", err);
-                res.send({ error: "Failed to mint" });
+                res.send({ error: "Failed to set approval" });
+            }
+            console.log("Hash of the transaction:" + transactionHash);
+            res.send({ transactionHash: transactionHash });
+    });
+});
+
+router.post('/setPrice', async (req, res, next) => {
+    const abi = JSON.parse(req.body['abi']);
+    const address = req.body['address'];
+    const amount = req.body['amount'] * 1000000000000000000;
+    const daysOnSale = req.body['daysOnSale'];
+    const participation = req.body['participation'] * 1000000000000000000;
+
+    const daiToken = new web3.eth.Contract(abi, address);
+
+    daiToken.methods.setPrice(amount, daysOnSale, participation)
+        .send({ from: publicAddress }, function (err, transactionHash) {
+            if (err) {
+                console.log("An error occured", err);
+                res.send({ error: "Failed to set price" });
             }
             console.log("Hash of the transaction:" + transactionHash);
             res.send({ transactionHash: transactionHash });

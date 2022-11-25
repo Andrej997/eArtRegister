@@ -46,6 +46,10 @@ export class NftProfileComponent implements OnInit {
     this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/set-on-sale`]);
   }
 
+  createPurchase(bundleCustomRoot, tokenId) {
+    this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/create-purchase`]);
+  }
+
   private getBundle(bundleId: string) {
     this.http.get(environment.api + `Bundle/` + bundleId).subscribe(result => {
       console.log(result);

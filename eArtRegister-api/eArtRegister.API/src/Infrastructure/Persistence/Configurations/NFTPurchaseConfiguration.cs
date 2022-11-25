@@ -38,18 +38,6 @@ namespace eArtRegister.API.Infrastructure.Persistence.Configurations
             builder.Property(e => e.Auction)
                .HasColumnName("auction");
 
-            builder.Property(e => e.AmountInETH)
-                .HasDefaultValue(0)
-                .HasColumnName("amount_in_eth");
-
-            builder.Property(e => e.DaysOnSale)
-                .HasDefaultValue(1)
-                .HasColumnName("days_on_sale");
-
-            builder.Property(e => e.MinParticipation)
-                .HasDefaultValue(0)
-                .HasColumnName("min_participation");
-
             builder.Property(e => e.CreatedBy)
                 .HasColumnName("created_by");
 

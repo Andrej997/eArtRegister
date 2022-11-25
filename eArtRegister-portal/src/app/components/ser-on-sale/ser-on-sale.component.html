@@ -1,6 +1,6 @@
 <div class='container'>
     <form [formGroup]="bundleForm" (ngSubmit)="onFirstSubmit()">
-        <h1>Purchase contract</h1>
+        <h1>Set NFT on sale</h1>
 
         <div class="divider d-flex align-items-center my-4">
         </div>
@@ -23,15 +23,10 @@
             <label class="form-label" for="minParticipation">Minimum participation</label>
         </div>
 
-        <!-- <div class="form-outline mb-3">
-            <input type="text" id="description" class="form-control form-control-lg"
-                placeholder="Enter description" formControlName="description"/>
-            <label class="form-label" for="description">Description</label>
-        </div> -->
-
-        <div class="text-center text-lg-start mt-4 pt-2">
-            <button type="submit" class="btn btn-primary btn-lg"
-            style="padding-left: 2.5rem; padding-right: 2.5rem; margin-left: 10%;">Create</button>
+        <div>
+            <button type="submit" class="btn btn-primary btn-lg">
+                SET ON SALE
+            </button>
         </div>
     </form>
 </div>
