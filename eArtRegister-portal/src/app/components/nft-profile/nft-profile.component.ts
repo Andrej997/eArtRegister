@@ -78,6 +78,20 @@ export class NftProfileComponent implements OnInit {
     });
   }
 
+  participate() {
+    this.web3.participate(this.user.depositAbi, this.user.depositAddress, this.purchaseContract.address, this.minParticipation * 1000000000000000000).then(response => {
+      this.web3.getTransactionStatus(response).then(response2 => {
+        if ((response2 as boolean) == true) {
+          this.toastr.success("Successfully payed participation of NFT");
+          this.callPurchaseContractViews();
+        }
+        else {
+          this.toastr.error("Failed to pay participation NFT");
+        }
+      });
+    });
+  }
+
   setOnSale(bundleCustomRoot, tokenId) {
     this.router.navigate([`bundle/${bundleCustomRoot}/${tokenId}/set-on-sale`]);
   }

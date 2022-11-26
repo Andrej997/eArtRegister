@@ -325,6 +325,30 @@ export class Web3Service {
     }) as Promise<string>;
   }
 
+  async participate(abiDeposit: string, addressDeposit: string, addressPurchase: string, amount: number): Promise<string> {
+    const etherValue = Web3.utils.fromWei(amount.toString(), 'ether');
+    const weiValue = Web3.utils.toWei(etherValue, 'ether');
+
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abiDeposit), addressDeposit);
+    
+    return new Promise((resolve, reject) => {
+      contract.methods.participate(addressPurchase, weiValue).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+
+        resolve(result);
+      });
+    }) as Promise<string>;
+  }
+
   async sendBid(abiDeposit: string, addressDeposit: string, addressPurchase: string, amount: number): Promise<string> {
     const etherValue = Web3.utils.fromWei(amount.toString(), 'ether');
     const weiValue = Web3.utils.toWei(etherValue, 'ether');
