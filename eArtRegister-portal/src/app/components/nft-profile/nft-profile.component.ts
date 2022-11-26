@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -13,6 +14,8 @@ import { environment } from 'src/environments/environment';
 })
 export class NftProfileComponent implements OnInit {
 
+  bidForm: FormGroup;
+  payTheInstallmentForm: FormGroup;
   ipdsPublicGateway = environment.ipfs;
   user;
   private bundleId = "";
@@ -38,6 +41,7 @@ export class NftProfileComponent implements OnInit {
   contractOwner;
 
   constructor(private http: HttpClient, 
+    private fb: FormBuilder,
     private router: Router, 
     private toastr: ToastrService,
     private route: ActivatedRoute, 
@@ -55,6 +59,14 @@ export class NftProfileComponent implements OnInit {
         this.getUser();
       });
     });
+
+    this.bidForm = this.fb.group({
+      value: [0, Validators.required],
+    });
+
+    this.payTheInstallmentForm = this.fb.group({
+      value: [0, Validators.required],
+    });
   }
 
   getUser(){
@@ -67,7 +79,7 @@ export class NftProfileComponent implements OnInit {
   }
 
   setOnBid() {
-    this.web3.sendBid(this.user.depositAbi, this.user.depositAddress, this.purchaseContract.address, 0.0001 * 1000000000000000000).then(response => {
+    this.web3.sendBid(this.user.depositAbi, this.user.depositAddress, this.purchaseContract.address, this.bidForm.value.value * 1000000000000000000).then(response => {
       this.web3.getTransactionStatus(response).then(response2 => {
         if ((response2 as boolean) == true) {
           this.toastr.success("Successfully bought NFT");
@@ -95,7 +107,7 @@ export class NftProfileComponent implements OnInit {
   }
 
   payTheInstallment() {
-    this.web3.payTheInstallment(this.user.depositAbi, this.user.depositAddress, this.purchaseContract.address, 0.001 * 1000000000000000000).then(response => {
+    this.web3.payTheInstallment(this.user.depositAbi, this.user.depositAddress, this.purchaseContract.address, this.payTheInstallmentForm.value.value * 1000000000000000000).then(response => {
       this.web3.getTransactionStatus(response).then(response2 => {
         if ((response2 as boolean) == true) {
           this.toastr.success("Successfully payed participation of NFT");
@@ -254,7 +266,7 @@ export class NftProfileComponent implements OnInit {
         this.biggestBid[0] = (this.biggestBid[0] as string).toLowerCase();
         this.biggestBid[1] = this.biggestBid[1] / 1000000000000000000;
         let date = new Date((this.biggestBid[2] as number) * 1000);
-        this.biggestBid[2] = date
+        this.biggestBid[2] = date;
       });
     }
   }
@@ -266,7 +278,7 @@ export class NftProfileComponent implements OnInit {
         this.installmentUser[0] = (this.installmentUser[0] as string).toLowerCase();
         this.installmentUser[1] = this.installmentUser[1] / 1000000000000000000;
         let date = new Date((this.installmentUser[2] as number) * 1000);
-        this.installmentUser[2] = date
+        this.installmentUser[2] = date;
       });
     }
   }

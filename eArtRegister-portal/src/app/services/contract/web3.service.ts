@@ -208,27 +208,6 @@ export class Web3Service {
     }) as Promise<number>;
   }
 
-  public async withdraw(purchaseContract: string): Promise<number> {
-    this.provider = await this.web3Modal.connect(); 
-    if (this.provider) {
-      this.web3js = new Web3(this.provider);
-    }
-
-    this.accounts = await this.web3js.eth.getAccounts();
-    this._traderContract = await new this.web3js.eth.Contract(tokenAbi, purchaseContract);
-  
-    return new Promise((resolve, reject) => {
-      this._traderContract.methods.withdraw((this.accounts as string[])[0]).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
-        
-        if(err != null) {
-          reject(err);
-        }
-  
-        resolve(result);
-      });
-    }) as Promise<number>;
-  }
-
   async setPrice(abi: string, address: string, price: number, minParticipation: number, daysToPay: number): Promise<string> {
     const etherValue = Web3.utils.fromWei(price.toString(), 'ether');
     const weiValue = Web3.utils.toWei(etherValue, 'ether');
@@ -677,19 +656,42 @@ export class Web3Service {
 
   // DEPOSIT CONTRACT ---------------------------------------------------------------
 
-  public async deposit(depositContract: string, depositAbi: string): Promise<string> {
-    const weiValue = Web3.utils.toWei('0.02', 'ether');
+  public async deposit(depositContract: string, depositAbi: string, amount: number): Promise<string> {
+    const weiValue = Web3.utils.toWei(amount.toString(), 'ether');
 
     this.provider = await this.web3Modal.connect();
     if (this.provider) {
       this.web3js = new Web3(this.provider);
     } 
     this.accounts = await this.web3js.eth.getAccounts();
-    this._depositContract = await new this.web3js.eth.Contract(JSON.parse(depositAbi), depositContract);
+    let contract = await new this.web3js.eth.Contract(JSON.parse(depositAbi), depositContract);
 
     return new Promise((resolve, reject) => {
       
-      this._depositContract.methods.deposit().send({ from: (this.accounts as string[])[0], gas: 3000000, value: weiValue},function (err, result) {
+      contract.methods.deposit().send({ from: (this.accounts as string[])[0], gas: 3000000, value: weiValue},function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<string>;
+  }
+
+  public async withdraw(depositContract: string, depositAbi: string, amount: number): Promise<string> {
+    const weiValue = Web3.utils.toWei(amount.toString(), 'ether');
+
+    this.provider = await this.web3Modal.connect();
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    } 
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(depositAbi), depositContract);
+
+    return new Promise((resolve, reject) => {
+      
+        contract.methods.withdraw((this.accounts as string[])[0], amount).send({ from: (this.accounts as string[])[0], gas: 3000000},function (err, result) {
         
         if(err != null) {
           reject(err);

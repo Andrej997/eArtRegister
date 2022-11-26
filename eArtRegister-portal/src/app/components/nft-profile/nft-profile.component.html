@@ -1,10 +1,10 @@
 <div *ngIf="nft">
-    <p class="h1">{{nft.nftData?.name}}</p> 
+    <p class="h1">#{{nft.tokenId}} {{nft.nftData?.name}}</p> 
 
     <div class="polaroid">
       <img src="{{ipdsPublicGateway}}{{nft.ipfsImageHash}}" class="img-fluid" style="width:100%">
       <div class="container">
-          <p>#{{nft.tokenId}}</p>
+        <h4 *ngIf="isPriceSet && !isSold">{{amountInETH}} eth</h4>
       </div>
     </div>
 
@@ -21,36 +21,60 @@
           class="btn btn-success">
         SET ON SALE
       </button>
-      <button (click)='editDate(bundle.customRoot, nft.tokenId)' 
-          *ngIf="purchaseContract && isPriceSet"
-          style="float: right;"
-          class="btn btn-warning">
-        EDIT END DATE
-      </button>
-      <button (click)='editPrice(bundle.customRoot, nft.tokenId)' 
-          *ngIf="purchaseContract && isPriceSet"
-          style="float: right;"
-          class="btn btn-warning">
-        EDIT PRICE
-      </button>
+      <div *ngIf='!isSold'>
+        <button (click)='editDate(bundle.customRoot, nft.tokenId)' 
+            *ngIf="purchaseContract && isPriceSet"
+            style="float: right;"
+            class="btn btn-warning">
+          EDIT END DATE
+        </button>
+        <button (click)='editPrice(bundle.customRoot, nft.tokenId)' 
+            *ngIf="purchaseContract && isPriceSet"
+            style="float: right;"
+            class="btn btn-warning">
+          EDIT PRICE
+        </button>
+      </div>
     </div>
 
     <div *ngIf='!isNFTOwner'>
-      <button (click)='buy()' class="btn btn-primary">
-        BUY
-      </button>
-      
-      <button (click)='participate()' class="btn btn-primary">
-        PAY PARTICIPATION
-      </button>
+      <div *ngIf='!isSold'>
+        <button (click)='buy()' class="btn btn-primary">
+          BUY
+        </button>
+        
+        <button (click)='participate()' class="btn btn-primary">
+          PAY PARTICIPATION
+        </button>
+
+        <form [formGroup]="bidForm">
+          <div class="form-outline mb-4">
+              <input type="number" id="value" class="form-control form-control-lg"
+                  placeholder="Enter value" formControlName="value"/>
+              <label class="form-label" for="value">Bid value</label>
+          </div>
   
-      <button (click)='payTheInstallment()' class="btn btn-primary">
-        PAY REPAYMENT
-      </button>
+          <div>
+              <button type="submit" (click)='setOnBid()' class="btn btn-primary">
+                BID
+              </button>
+          </div>
+        </form>
+
+        <form [formGroup]="payTheInstallmentForm">
+          <div class="form-outline mb-4">
+              <input type="number" id="value" class="form-control form-control-lg"
+                  placeholder="Enter value" formControlName="value"/>
+              <label class="form-label" for="value">Installment value</label>
+          </div>
   
-      <button (click)='setOnBid()' class="btn btn-primary">
-        BID
-      </button>
+          <div>
+              <button type="submit" (click)='payTheInstallment()' class="btn btn-primary">
+                PAY REPAYMENT
+              </button>
+          </div>
+        </form>
+      </div>
     </div>
     
     <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -83,8 +107,8 @@
             <div class="accordion-body">
               <p>Address: <a href="https://goerli.etherscan.io/address/{{purchaseContract.address}}">{{purchaseContract.address}}</a></p>
               <p>Contract owner: <a href="https://goerli.etherscan.io/address/{{contractOwner}}">{{contractOwner}}</a></p>
-              <p>Amount: {{amountInETH}}</p>
               <p>Minimum participation: {{minParticipation}}</p>
+              <p>Amount: {{amountInETH}}</p>
               <p>Is sold: {{isSold}}</p>
               <p>Is price set: {{isPriceSet}}</p>
               <p>Is approved: {{isPurchaseApproved}}</p>

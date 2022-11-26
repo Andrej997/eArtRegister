@@ -119,43 +119,6 @@ export class BundleComponent implements OnInit, OnDestroy {
     this.router.navigate([`/bundle/${this.bundleId}/mint`]);
   }
 
-  withdraw(purchaseContract: string, nftId: string) {
-    this.web3.withdraw(purchaseContract).then(response =>{
-      this.web3.getTransactionStatus(response).then(response2 => {
-
-        if ((response2 as boolean) == true) {
-          this.toastr.success("Funds withdrawed");
-          let body = {
-            NFTId: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: true
-          };
-      
-          this.http.post(environment.api + `NFT/withdrawFunds`, body).subscribe(result => {
-            this.getNFTs(this.bundleId);
-          }, error => {
-              console.error(error);
-          });
-        }
-        else {
-          this.toastr.error("Failed to withdrawed funds");
-          let body = {
-            NFTId: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: false
-          };
-      
-          this.http.post(environment.api + `NFT/withdrawFunds`, body).subscribe(result => {
-          }, error => {
-              console.error(error);
-          });
-        }
-      });
-    })
-  }
-
   cancel(purchaseContract: string, buyerAddress: string, currentWallet: string, minParticipation: number, nftId: string) {
     if (this.wallet.toLowerCase() === buyerAddress.toLowerCase()) {
         this.web3.buyerRequestToStopBuy(purchaseContract, buyerAddress).then(response => {
