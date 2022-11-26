@@ -28,12 +28,14 @@ export class NftProfileComponent implements OnInit {
   saleEnds;
   seller;
   biggestBid;
+  installmentUser;
   listedDate;
   isPurchaseApproved: boolean = false;
   nftOwner;
   isNFTOwner: boolean = false;
   isSold;
   isPriceSet;
+  contractOwner;
 
   constructor(private http: HttpClient, 
     private router: Router, 
@@ -159,6 +161,8 @@ export class NftProfileComponent implements OnInit {
     this.getIsPriceSet();
     this.getIsSold();
     this.getMinParticipation();
+    this.getInstallemntUser();
+    this.getContractOwner();
   }
 
   private isApprovedForAll() {
@@ -209,6 +213,14 @@ export class NftProfileComponent implements OnInit {
     });
   }
 
+  private getContractOwner() {
+    if (this.purchaseContract) {
+      this.web3.getContractOwner(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.contractOwner = (response as string).toLowerCase();
+      });
+    }
+  }
+
   private getSeller() {
     if (this.purchaseContract) {
       this.web3.getSeller(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
@@ -243,6 +255,18 @@ export class NftProfileComponent implements OnInit {
         this.biggestBid[1] = this.biggestBid[1] / 1000000000000000000;
         let date = new Date((this.biggestBid[2] as number) * 1000);
         this.biggestBid[2] = date
+      });
+    }
+  }
+
+  private getInstallemntUser() {
+    if (this.purchaseContract) {
+      this.web3.getInstallemntUser(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.installmentUser = response;
+        this.installmentUser[0] = (this.installmentUser[0] as string).toLowerCase();
+        this.installmentUser[1] = this.installmentUser[1] / 1000000000000000000;
+        let date = new Date((this.installmentUser[2] as number) * 1000);
+        this.installmentUser[2] = date
       });
     }
   }

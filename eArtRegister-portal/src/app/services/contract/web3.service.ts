@@ -314,7 +314,7 @@ export class Web3Service {
     let contract = await new this.web3js.eth.Contract(JSON.parse(abiDeposit), addressDeposit);
     
     return new Promise((resolve, reject) => {
-      contract.methods.purchase(addressPurchase, weiValue).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
+      contract.methods.purchaseContract(addressPurchase, weiValue).send({from: (this.accounts as string[])[0], gas: 3000000}, function (err, result) {
         
         if(err != null) {
           reject(err);
@@ -570,6 +570,27 @@ export class Web3Service {
     }) as Promise<any>;
   }
 
+  public async getContractOwner(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getContractOwner().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
   public async getListedDate(abi: string, address: string): Promise<any> {
     this.provider = await this.web3Modal.connect(); 
     if (this.provider) {
@@ -623,6 +644,27 @@ export class Web3Service {
   
     return new Promise((resolve, reject) => {
       contract.methods.getBiggestBid().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
+  public async getInstallemntUser(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getInstallemntUser().call(function (err, result) {
         
         if(err != null) {
           reject(err);

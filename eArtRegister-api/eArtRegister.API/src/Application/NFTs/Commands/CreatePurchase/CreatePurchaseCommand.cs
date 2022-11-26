@@ -68,7 +68,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.CreatePurchase
             var client = new RestClient($"http://localhost:3000/purchase");
             client.Timeout = -1;
             var restRequest = new RestRequest(Method.POST);
-            restRequest.AddJsonBody(new PurchaseBody(nft.Bundle.Address, nft.TokenId, request.EntireAmount, request.RepaymentInInstallments, request.Auction));
+            restRequest.AddJsonBody(new PurchaseBody(nft.Bundle.Address, nft.TokenId, request.EntireAmount, request.RepaymentInInstallments, request.Auction, request.Wallet));
             IRestResponse restResponse = client.Execute(restRequest);
             var response = JsonSerializer.Deserialize<CreateContractResponse>(restResponse.Content);
 
@@ -87,26 +87,20 @@ namespace eArtRegister.API.Application.NFTs.Commands.CreatePurchase
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            //var client2 = new RestClient($"http://localhost:3000/setApprovalForAll");
-            //client2.Timeout = -1;
-            //var restRequest2 = new RestRequest(Method.POST);
-            //restRequest2.AddJsonBody(new SetApprovalForAllBody(bundle.Abi, bundle.Address, response.address));
-            //IRestResponse restResponse2 = client2.Execute(restRequest2);
-            //var response2 = JsonSerializer.Deserialize<ActionResponse>(restResponse2.Content);
-
             return Unit.Value;
         }
     }
 
     public class PurchaseBody
     {
-        public PurchaseBody(string erc721Address, long tokenId, bool entireAmount, bool repaymentInInstallments, bool auction)
+        public PurchaseBody(string erc721Address, long tokenId, bool entireAmount, bool repaymentInInstallments, bool auction, string contractOwner)
         {
             this.erc721Address = erc721Address;
             this.tokenId = tokenId;
             this.entireAmount = entireAmount;
             this.repaymentInInstallments = repaymentInInstallments;
             this.auction = auction;
+            this.contractOwner = contractOwner;
         }
 
         public string erc721Address { get; set; }
@@ -114,6 +108,7 @@ namespace eArtRegister.API.Application.NFTs.Commands.CreatePurchase
         public bool entireAmount { get; set; }
         public bool repaymentInInstallments { get; set; }
         public bool auction { get; set; }
+        public string contractOwner { get; set; }
     }
     public class SetApprovalForAllBody
     {

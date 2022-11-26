@@ -38,9 +38,10 @@ router.post('/purchase', async (req, res, next) => {
     const entireAmount = req.body['entireAmount'];
     const repaymentInInstallments = req.body['repaymentInInstallments'];
     const auction = req.body['auction'];
+    const contractOwner = req.body['contractOwner'];
 
     const [abi, bytecode] = await build(purchaseContract, 'Purchase');
-    const address = await deploy(abi, bytecode, [erc721Address, tokenId, entireAmount, repaymentInInstallments, auction]);
+    const address = await deploy(abi, bytecode, [erc721Address, tokenId, entireAmount, repaymentInInstallments, auction, contractOwner]);
 
     res.send({ abi: JSON.stringify(abi), bytecode: bytecode, address: address, contract: purchaseContract });
 });
@@ -84,7 +85,7 @@ module.exports = router;
 
 const erc721Contract = `
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -128,8 +129,7 @@ interface IPurchase {
 
     function participate(address) payable external;
     function payTheInstallment(address customer) payable external;
-
-    function purchase(address) payable external;
+    function purchaseNFT(address) payable external;
 }
 
 contract Deposit {
@@ -176,9 +176,9 @@ contract Deposit {
         balance += msg.value;
     }
 
-    function purchase(address _purchaseContract, uint256 _amount) external {
+    function purchaseContract(address _purchaseContract, uint256 _amount) external {
         uint256 transferableAmount = address(this).balance -(address(this).balance - _amount);
-        IPurchase(_purchaseContract).purchase{value: transferableAmount}(owner);
+        IPurchase(_purchaseContract).purchaseNFT{value: transferableAmount}(owner);
     }
 
     function participate(address _purchaseContract, uint256 _amount) external {
@@ -211,7 +211,7 @@ abstract contract APurchase {
     function bid() virtual payable external;
     function participate(address) virtual payable public;
     function payTheInstallment(address) virtual payable public;
-    function purchase(address) virtual payable public;
+    function purchaseNFT(address) virtual payable public;
 
     // views
     function getERC721ContractAddress() virtual public view returns(address);
@@ -224,6 +224,8 @@ abstract contract APurchase {
     function getIsPriceSet() virtual public view returns(bool);
     function getIsSold() virtual public view returns(bool);
     function getMinParticipation() virtual public view returns(uint256);
+    function getInstallemntUser() virtual public view returns(address, uint256, uint);
+    function getContractOwner() virtual public view returns(address);
 }
 
 contract Purchase is APurchase {
@@ -240,6 +242,7 @@ contract Purchase is APurchase {
     ERC721 token;
     address private erc721;
     uint256 private tokenId;
+    address private contractOwner;
 
     uint private bidsCount;
     mapping (uint => Bid) private bids;
@@ -271,7 +274,7 @@ contract Purchase is APurchase {
         uint bidTimestamp;
     }
 
-    constructor(address _erc721, uint256 _tokenId, bool _entireAmount, bool _repaymentInInstallments, bool _auction) {
+    constructor(address _erc721, uint256 _tokenId, bool _entireAmount, bool _repaymentInInstallments, bool _auction, address _contractOwner) {
         erc721 = _erc721;
         tokenId = _tokenId;
         isPriceSet = false;
@@ -280,6 +283,7 @@ contract Purchase is APurchase {
         entireAmount = _entireAmount;
         repaymentInInstallments = _repaymentInInstallments;
         auction = _auction;
+        contractOwner = _contractOwner;
     }
 
     function setPrice(uint256 amount, uint daysOnSale, uint256 participation) 
@@ -385,8 +389,6 @@ contract Purchase is APurchase {
 
     function closeBid() 
             private {
-        require(!isSold, "NFT is sold!");
-
         for (uint i = 0; i < bidsCount; i++) {
             address bidderAddress = bids[i].bidder;
             uint256 bidValue = bids[i].amount; 
@@ -417,6 +419,7 @@ contract Purchase is APurchase {
         if (installemntCustomer.amountPayed >= listing.price) {
             token.safeTransferFrom(listing.seller, installemntCustomer.buyer, tokenId);
             payable(listing.seller).transfer(installemntCustomer.amountPayed);
+            isSold = true;
         }
 
         closeBid();
@@ -438,15 +441,16 @@ contract Purchase is APurchase {
         if (installemntCustomer.amountPayed >= listing.price) {
             token.safeTransferFrom(listing.seller, installemntCustomer.buyer, tokenId);
             payable(listing.seller).transfer(installemntCustomer.amountPayed);
+            isSold = true;
         }
     }
 
     // full price methods
-    function purchase(address customer) 
+    function purchaseNFT(address customer) 
             override 
             payable 
             public {
-        // require(!isSold, "NFT is sold!");
+        require(!isSold, "NFT is sold!");
         require(entireAmount, "Action not available");
 
         require(installemntCustomer.amountPayed == 0, "Participation is payed");
@@ -479,6 +483,14 @@ contract Purchase is APurchase {
         return tokenId;
     }
 
+    function getInstallemntUser() 
+            override 
+            public 
+            view 
+            returns(address, uint256, uint) {
+        return(installemntCustomer.buyer, installemntCustomer.amountPayed, installemntCustomer.lastInstallemnt);
+    }
+
     function getPrice() 
             override 
             public 
@@ -509,6 +521,14 @@ contract Purchase is APurchase {
             view 
             returns(address) {
         return listing.seller;
+    }
+
+    function getContractOwner() 
+            override 
+            public
+            view 
+            returns(address) {
+        return contractOwner;
     }
 
     function getMinParticipation() 

@@ -83,12 +83,14 @@ export class MintNftComponent implements OnInit, OnDestroy {
 
       this.http.post(environment.api + `NFT/add`, this.formData, { params: params }).subscribe(result => {
         this.toastr.success("Image minted");
-        this.router.navigate([`/${this.bundleId}`]);
+        this.router.navigate([`/bundle/${this.bundleId}`]);
       }, error => {
           console.error(error);
           this.toastr.error("Failed to mint");
       });
     });
+
+    this.numOfAttributes = 0;
   }
 
 }

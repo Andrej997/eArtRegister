@@ -62,13 +62,13 @@
           </h2>
           <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
             <div class="accordion-body">
-                <p>Owner: {{nftOwner}}</p>
+                <p>Owner: <a href="https://goerli.etherscan.io/address/{{nftOwner}}">{{nftOwner}}</a></p>
                 <p>Description: {{nft.nftData?.description}}</p>
                 <p>Bundle: {{bundle.name}}</p>
                 <p>Status: {{nft.statusId}}</p>
                 <p>External url: {{nft.nftData?.external_url}}</p>
                 <p>Created on: {{nft.createdOn}}</p>
-                <p>Creator: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{nft.creatorWallet}}">{{nft.creatorWallet}}</a></p>
+                <p>Creator: <a href="https://goerli.etherscan.io/address/{{nft.creatorWallet}}">{{nft.creatorWallet}}</a></p>
                 <p>Token standard: {{nft.tokenStandard}}</p>
             </div>
           </div>
@@ -81,13 +81,14 @@
           </h2>
           <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFive">
             <div class="accordion-body">
-              <p>Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{purchaseContract.address}}">{{purchaseContract.address}}</a></p>
+              <p>Address: <a href="https://goerli.etherscan.io/address/{{purchaseContract.address}}">{{purchaseContract.address}}</a></p>
+              <p>Contract owner: <a href="https://goerli.etherscan.io/address/{{contractOwner}}">{{contractOwner}}</a></p>
               <p>Amount: {{amountInETH}}</p>
               <p>Minimum participation: {{minParticipation}}</p>
               <p>Is sold: {{isSold}}</p>
               <p>Is price set: {{isPriceSet}}</p>
               <p>Is approved: {{isPurchaseApproved}}</p>
-              <p>Seller: {{seller}}</p>
+              <p>Seller: <a href="https://goerli.etherscan.io/address/{{seller}}">{{seller}}</a></p>
               <p>Listed date: {{listedDate}}</p>
               <p>Sales end on: {{saleEnds}}</p>
               <p>Entire amount: {{purchaseContract.entireAmount}}</p>
@@ -95,9 +96,15 @@
               <p>Auction: {{purchaseContract.auction}}</p>
               <p *ngIf="biggestBid">Biggest bid: </p>
               <ul *ngIf="biggestBid">
-                <li>{{biggestBid[0]}}</li>
+                <li><a href="https://goerli.etherscan.io/address/{{biggestBid[0]}}">{{biggestBid[0]}}</a></li>
                 <li>{{biggestBid[1]}}</li>
                 <li>{{biggestBid[2]}}</li>
+              </ul>
+              <p *ngIf="installmentUser">Installemt: </p>
+              <ul *ngIf="installmentUser">
+                <li><a href="https://goerli.etherscan.io/address/{{installmentUser[0]}}">{{installmentUser[0]}}</a></li>
+                <li>Amount payed: {{installmentUser[1]}}</li>
+                <li>{{installmentUser[2]}}</li>
               </ul>
             </div>
           </div>
@@ -142,7 +149,7 @@
               </button>
             </h2>
             <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFour">
-              <p>Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{purchaseContract.address}}">{{purchaseContract.address}}</a></p>
+              <p>Address: <a href="https://goerli.etherscan.io/address/{{purchaseContract.address}}">{{purchaseContract.address}}</a></p>
               <p>Created on: {{purchaseContract.createdOn}}</p>
               <app-source-code-contract-view [contract]="purchaseContract.contract"></app-source-code-contract-view>
             </div>
