@@ -221,6 +221,9 @@ abstract contract APurchase {
     function getListedDate() virtual public view returns(uint);
     function getEndSellDate() virtual public view returns(uint);
     function getBiggestBid() virtual public view returns(address, uint256, uint);
+    function getIsPriceSet() virtual public view returns(bool);
+    function getIsSold() virtual public view returns(bool);
+    function getMinParticipation() virtual public view returns(uint256);
 }
 
 contract Purchase is APurchase {
@@ -443,7 +446,7 @@ contract Purchase is APurchase {
             override 
             payable 
             public {
-        require(!isSold, "NFT is sold!");
+        // require(!isSold, "NFT is sold!");
         require(entireAmount, "Action not available");
 
         require(installemntCustomer.amountPayed == 0, "Participation is payed");
@@ -484,12 +487,36 @@ contract Purchase is APurchase {
         return listing.price;
     }
 
+    function getIsPriceSet() 
+            override 
+            public 
+            view 
+            returns(bool) {
+        return isPriceSet;
+    }
+
+    function getIsSold() 
+            override 
+            public 
+            view 
+            returns(bool) {
+        return isSold;
+    }
+
     function getSeller() 
             override 
             public
             view 
             returns(address) {
         return listing.seller;
+    }
+
+    function getMinParticipation() 
+            override 
+            public
+            view 
+            returns(uint256) {
+        return listing.participation;
     }
 
     function getListedDate() 

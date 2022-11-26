@@ -42,7 +42,6 @@ export class WalletComponent implements OnInit {
       this.web3.viewDeposit(this.user.depositAddress, this.user.depositAbi).then(response =>{
         this.depositValue = (response as any) / 1000000000000000000;
       });
-      this.depositValue = 0 / 1000000000000000000;
       this.depositContract = (result as any).depositAddress;
     }, error => {
         console.error(error);

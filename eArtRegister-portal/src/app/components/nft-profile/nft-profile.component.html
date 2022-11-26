@@ -8,49 +8,50 @@
       </div>
     </div>
 
-    <button (click)='createPurchase(bundle.customRoot, nft.tokenId)' 
-        class="btn btn-success">
-      CREATE PURCHASE
-    </button>
+    <div *ngIf='isNFTOwner'>
+      <button (click)='createPurchase(bundle.customRoot, nft.tokenId)' 
+          class="btn btn-success">
+        CREATE PURCHASE
+      </button>
+      <button (click)='appropve()' class="btn btn-success" *ngIf="!isPurchaseApproved">
+        APPROVE
+      </button>
+      <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' 
+          *ngIf="purchaseContract && isPurchaseApproved && !isPriceSet"
+          class="btn btn-success">
+        SET ON SALE
+      </button>
+      <button (click)='editDate(bundle.customRoot, nft.tokenId)' 
+          *ngIf="purchaseContract && isPriceSet"
+          style="float: right;"
+          class="btn btn-warning">
+        EDIT END DATE
+      </button>
+      <button (click)='editPrice(bundle.customRoot, nft.tokenId)' 
+          *ngIf="purchaseContract && isPriceSet"
+          style="float: right;"
+          class="btn btn-warning">
+        EDIT PRICE
+      </button>
+    </div>
 
-    <button (click)='appropve()' class="btn btn-success" *ngIf="!isPurchaseApproved">
-      APPROVE
-    </button>
-
-    <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' 
-        *ngIf="purchaseContract && isPurchaseApproved"
-        class="btn btn-success">
-      SET ON SALE
-    </button>
-
-    <button (click)='editPrice(bundle.customRoot, nft.tokenId)' 
-        *ngIf="purchaseContract"
-        class="btn btn-warning">
-      EDIT PRICE
-    </button>
-
-    <button (click)='editDate(bundle.customRoot, nft.tokenId)' 
-        *ngIf="purchaseContract"
-        class="btn btn-warning">
-      EDIT END DATE
-    </button>
-
-    <button (click)='buy()' class="btn btn-primary">
-      BUY
-    </button>
-    
-    <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' class="btn btn-primary">
-      PAY PARTICIPATION
-    </button>
-
-    <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' class="btn btn-primary">
-      PAY REPAYMENT
-    </button>
-
-    <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' class="btn btn-primary">
-      BID
-    </button>
-
+    <div *ngIf='!isNFTOwner'>
+      <button (click)='buy()' class="btn btn-primary">
+        BUY
+      </button>
+      
+      <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' class="btn btn-primary">
+        PAY PARTICIPATION
+      </button>
+  
+      <button (click)='setOnSale(bundle.customRoot, nft.tokenId)' class="btn btn-primary">
+        PAY REPAYMENT
+      </button>
+  
+      <button (click)='setOnBid()' class="btn btn-primary">
+        BID
+      </button>
+    </div>
     
     <div class="accordion" id="accordionPanelsStayOpenExample">
         <div class="accordion-item">
@@ -61,6 +62,7 @@
           </h2>
           <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
             <div class="accordion-body">
+                <p>Owner: {{nftOwner}}</p>
                 <p>Description: {{nft.nftData?.description}}</p>
                 <p>Bundle: {{bundle.name}}</p>
                 <p>Status: {{nft.statusId}}</p>
@@ -82,13 +84,22 @@
               <p>Address: <a style="color: rgb(35, 113, 187)" href="https://goerli.etherscan.io/address/{{purchaseContract.address}}">{{purchaseContract.address}}</a></p>
               <p>Amount: {{amountInETH}}</p>
               <p>Minimum participation: {{minParticipation}}</p>
+              <p>Is sold: {{isSold}}</p>
+              <p>Is price set: {{isPriceSet}}</p>
+              <p>Is approved: {{isPurchaseApproved}}</p>
+              <p>Seller: {{seller}}</p>
               <p>Seller: {{seller}}</p>
               <p>Listed date: {{listedDate}}</p>
               <p>Sales end on: {{saleEnds}}</p>
               <p>Entire amount: {{purchaseContract.entireAmount}}</p>
               <p>Repayment in installments: {{purchaseContract.repaymentInInstallments}}</p>
               <p>Auction: {{purchaseContract.auction}}</p>
-              <p *ngIf="biggestBid">Biggest bid: {{biggestBid[0]}}, {{biggestBid[1]}}, {{biggestBid[2]}}</p>
+              <p *ngIf="biggestBid">Biggest bid: </p>
+              <ul *ngIf="biggestBid">
+                <li>{{biggestBid[0]}}</li>
+                <li>{{biggestBid[1]}}</li>
+                <li>{{biggestBid[2]}}</li>
+              </ul>
             </div>
           </div>
         </div>

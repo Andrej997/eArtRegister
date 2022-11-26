@@ -115,44 +115,6 @@ export class BundleComponent implements OnInit, OnDestroy {
     });
   }
 
-  buyNFT(purchaseContract: string, nftId: any) {
-    let valueToBuy = this.minParticipation * 1000000000000000000;
-    this.web3.purchaseNft(purchaseContract, valueToBuy).then(response =>{
-      this.web3.getTransactionStatus(response).then(response2 => {
-
-        if ((response2 as boolean) == true) {
-          this.toastr.success("Funds transacted for NFT");
-          let body = {
-            NFTId: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: true
-          };
-      
-          this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
-            this.getNFTs(this.bundleId);
-          }, error => {
-              console.error(error);
-          });
-        }
-        else {
-          this.toastr.error("Failed to transact funds for NFT");
-          let body = {
-            NFTId: nftId,
-            Wallet: this.wallet,
-            TransactionHash: response,
-            IsCompleted: false
-          };
-      
-          this.http.post(environment.api + `NFT/bought`, body).subscribe(result => {
-          }, error => {
-              console.error(error);
-          });
-        }
-      });
-    })
-  }
-
   mintNFT() {
     this.router.navigate([`/bundle/${this.bundleId}/mint`]);
   }

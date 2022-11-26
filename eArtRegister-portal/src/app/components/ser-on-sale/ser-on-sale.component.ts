@@ -81,6 +81,7 @@ export class SerOnSaleComponent implements OnInit {
       this.web3.getTransactionStatus(response).then(response2 => {
         if ((response2 as boolean) == true) {
           this.toastr.success("NFT is successfully set on sale");
+          this.router.navigate([`bundle/${this.bundleId}/${this.tokenId}`]);
         }
         else {
           this.toastr.error("Failed to set NFT on sale");
@@ -94,6 +95,7 @@ export class SerOnSaleComponent implements OnInit {
       this.web3.getTransactionStatus(response).then(response2 => {
         if ((response2 as boolean) == true) {
           this.toastr.success("NFT is successfully set on sale");
+          this.router.navigate([`bundle/${this.bundleId}/${this.tokenId}`]);
         }
         else {
           this.toastr.error("Failed to set NFT on sale");
@@ -107,6 +109,7 @@ export class SerOnSaleComponent implements OnInit {
       this.web3.getTransactionStatus(response).then(response2 => {
         if ((response2 as boolean) == true) {
           this.toastr.success("NFT is successfully set on sale");
+          this.router.navigate([`bundle/${this.bundleId}/${this.tokenId}`]);
         }
         else {
           this.toastr.error("Failed to set NFT on sale");

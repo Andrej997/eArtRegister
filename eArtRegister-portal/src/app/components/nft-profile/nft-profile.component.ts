@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
 export class NftProfileComponent implements OnInit {
 
   ipdsPublicGateway = environment.ipfs;
+  user;
   private bundleId = "";
   private tokenId = -1;
   private routeSub: Subscription;
@@ -29,6 +30,10 @@ export class NftProfileComponent implements OnInit {
   biggestBid;
   listedDate;
   isPurchaseApproved: boolean = false;
+  nftOwner;
+  isNFTOwner: boolean = false;
+  isSold;
+  isPriceSet;
 
   constructor(private http: HttpClient, 
     private router: Router, 
@@ -40,11 +45,35 @@ export class NftProfileComponent implements OnInit {
     this.routeSub = this.route.params.subscribe(params => {
       this.bundleId = params['bundleId'];
       this.tokenId = params['tokenId'];
-      
+
       this.web3.connectAccount().then(response => {
         this.wallet = (response as string[])[0].toLowerCase();
         this.getNFTs(this.bundleId);
         this.getBundle(this.bundleId);
+        this.getUser();
+      });
+    });
+  }
+
+  getUser(){
+    this.http.get(environment.api + `Users/getUser/` + this.wallet).subscribe(result => {
+      this.user = result
+      console.log(result);
+    }, error => {
+        console.error(error);
+    });
+  }
+
+  setOnBid() {
+    this.web3.sendBid(this.user.depositAbi, this.user.depositAddress, this.purchaseContract.address, 0.0001 * 1000000000000000000).then(response => {
+      this.web3.getTransactionStatus(response).then(response2 => {
+        if ((response2 as boolean) == true) {
+          this.toastr.success("Successfully bought NFT");
+          this.callPurchaseContractViews();
+        }
+        else {
+          this.toastr.error("Failed to buy NFT");
+        }
       });
     });
   }
@@ -70,6 +99,7 @@ export class NftProfileComponent implements OnInit {
       this.web3.getTransactionStatus(response).then(response2 => {
         if ((response2 as boolean) == true) {
           this.toastr.success("Purchase is approved successfully");
+          this.isApprovedForAll();
         }
         else {
           this.toastr.error("Failed to approved");
@@ -79,7 +109,16 @@ export class NftProfileComponent implements OnInit {
   }
 
   buy() {
-    
+    this.web3.purchase(this.user.depositAbi, this.user.depositAddress, this.purchaseContract.address, this.amountInETH * 1000000000000000000).then(response => {
+      this.web3.getTransactionStatus(response).then(response2 => {
+        if ((response2 as boolean) == true) {
+          this.toastr.success("Successfully bought NFT");
+        }
+        else {
+          this.toastr.error("Failed to buy NFT");
+        }
+      });
+    });
   }
 
   private callPurchaseContractViews() {
@@ -89,6 +128,9 @@ export class NftProfileComponent implements OnInit {
     this.getListedDate();
     this.getEndSellDate();
     this.getBiggestBid();
+    this.getIsPriceSet();
+    this.getIsSold();
+    this.getMinParticipation();
   }
 
   private isApprovedForAll() {
@@ -107,10 +149,42 @@ export class NftProfileComponent implements OnInit {
     }
   }
 
+  private getIsPriceSet() {
+    if (this.purchaseContract) {
+      this.web3.getIsPriceSet(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.isPriceSet = response;
+      });
+    }
+  }
+
+  private getIsSold() {
+    if (this.purchaseContract) {
+      this.web3.getIsSold(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.isSold = response;
+      });
+    }
+  }
+
+  private getMinParticipation() {
+    if (this.purchaseContract) {
+      this.web3.getMinParticipation(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.minParticipation = response / 1000000000000000000;
+      });
+    }
+  }
+
+  private ownerOf() {
+    this.web3.ownerOf(this.bundle.abi, this.bundle.address, this.tokenId).then(response => {
+      this.nftOwner = (response as string).toLowerCase();
+      if ((this.wallet as string).toLowerCase() == (this.nftOwner as string).toLowerCase()) 
+        this.isNFTOwner = true;
+    });
+  }
+
   private getSeller() {
     if (this.purchaseContract) {
       this.web3.getSeller(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
-        this.seller = response;
+        this.seller = (response as string).toLowerCase();
       });
     }
   }
@@ -118,7 +192,7 @@ export class NftProfileComponent implements OnInit {
   private getListedDate() {
     if (this.purchaseContract) {
       this.web3.getListedDate(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
-        var date = new Date(response * 1000);
+        let date = new Date(response * 1000);
         this.listedDate = date;
       });
     }
@@ -127,7 +201,7 @@ export class NftProfileComponent implements OnInit {
   private getEndSellDate() {
     if (this.purchaseContract) {
       this.web3.getEndSellDate(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
-        var date = new Date(response * 1000);
+        let date = new Date(response * 1000);
         this.saleEnds = date;
       });
     }
@@ -137,6 +211,10 @@ export class NftProfileComponent implements OnInit {
     if (this.purchaseContract) {
       this.web3.getBiggestBid(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
         this.biggestBid = response;
+        this.biggestBid[0] = (this.biggestBid[0] as string).toLowerCase();
+        this.biggestBid[1] = this.biggestBid[1] / 1000000000000000000;
+        let date = new Date((this.biggestBid[2] as number) * 1000);
+        this.biggestBid[2] = date
       });
     }
   }
@@ -145,6 +223,7 @@ export class NftProfileComponent implements OnInit {
     this.http.get(environment.api + `Bundle/` + bundleId).subscribe(result => {
       console.log(result);
       this.bundle = (result as any);
+      this.ownerOf();
     }, error => {
         console.error(error);
     });
