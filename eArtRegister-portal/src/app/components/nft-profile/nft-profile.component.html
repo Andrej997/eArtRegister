@@ -1,3 +1,76 @@
+<div class="container">
+  <h2 style="text-align: center;">CONTRACT</h2>
+  <h3 style="text-align: center;">on the sale and purchase of a Non-Fungible Token</h3>
+  <h3 style="text-align: center;">which conclude in accordance with the applicable law on obligation relations</h3>
+  <h3 style="text-align: center;">on ____________________________ by and between the Parties:</h3>
+  <p>1. <b><u>0xdbAB2059F593D6Aa5c6c50A973ceE919c70A4d91</u>, <u>eArtRegister inc.</u> (hereinafter: Marketplace)</b></p>
+  <p>2. <b><u>{{wallet}}</u> (hereinafter: Seller)</b></p>
+  <p>3. <b><u>__________________________________________</u> (hereinafter: Buyer)</b></p>
+  <h5 style="text-align: center;">Article 1.</h5>
+  <p>
+      The Seller sells to the Buyer a Non-Fungible Token (hereinafter: NFT) with the following features and characteristics:
+  </p>
+  <p>
+    Token ID: <u>#{{nft.tokenId}}</u>
+  </p>
+  <p>
+    NFT name: <u>{{nft.nftData?.name}}</u>
+  </p>
+  <p>
+    Bundle name: <u>{{bundle.name}}</u>
+  </p>
+  <p>
+    Bundle address: <u>{{bundle.address}}</u>
+  </p>
+  <p>
+    The Seller undertakes to deliver the NFT with appropriate documents to the Buyer in the state and transfer it to him
+    the right of disposal on the day of payment of the sale price.
+  </p>
+  <h5 style="text-align: center;">Article 2.</h5>
+  <p>
+    The Buyer buys from the Seller the NFT that is the subject of this contract through the eArt Register portal in the found condition.
+    The Buyer undertakes to pay the Seller the selling price of the NFT in the amount of ETH _________________ on the day of 
+    purchase through the eArt Register portal.
+  </p>
+  <h5 style="text-align: center;">Article 3.</h5>
+  <p>
+    The Buyer buys in installments from the Seller the NFT that is the subject of this contract through the eArt Register portal in the found condition.
+    The Buyer undertakes to pay the Seller the minimum participation of NFT in the amount of _________________ ETH as well as the rest of the amount 
+    in ETH _________________ in the specified repayment period through the eArt Register portal.
+  </p>
+  <h5 style="text-align: center;">Article 4.</h5>
+  <p>
+
+  </p>
+  <h5 style="text-align: center;">Article 5.</h5>
+  <p>
+    All costs, fees and tax on the transfer of absolute rights in connection with the conclusion of this Agreement shall be borne by Buyer.
+  </p>
+  <h5 style="text-align: center;">Article 6.</h5>
+  <p>
+    The provisions of the Law on Obligations shall apply to everything that is not provided for in this Agreement.
+  </p>
+  <h5 style="text-align: center;">Article 7.</h5>
+  <p>
+    Any disputes arising from this Agreement will be resolved by agreement, and in the event that this is not possible, 
+    they will be resolved by the court competent according to the place of residence - seat of the Seller.
+  </p>
+  <h5 style="text-align: center;">Article 8.</h5>
+  <p>
+      The contract comes into force when it is signed by Seller and created by Marketplace.
+      With the creating of this agreement, the Framework Agreement enters into force.
+      The contract was concluded in 3 (three) identical copies, one for
+      Marketplace, one for the Seller and one for the Buyer.
+  </p>
+
+  <span><b><u>{{wallet}}</u></b><b style="float: right;">__________________________________________</b></span>
+  <p><b>Seller</b><b style="float: right;">Buyer</b></p>
+
+  <button class="btn btn-success">
+    CREATE
+  </button>
+</div>
+
 <div *ngIf="nft">
     <p class="h1">#{{nft.tokenId}} {{nft.nftData?.name}}</p> 
 

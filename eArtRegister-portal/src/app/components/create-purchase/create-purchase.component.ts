@@ -16,7 +16,9 @@ export class CreatePurchaseComponent implements OnInit {
 
   bundleForm: FormGroup;
   wallet: any;
-  showRepaymentInInstallments: boolean = false;
+  repaymentInInstallments: boolean = false;
+  entireAmount: boolean = false;
+  auction: boolean = false;
   bundleId: any;
   tokenId: any;
   private routeSub: Subscription;
@@ -30,6 +32,9 @@ export class CreatePurchaseComponent implements OnInit {
     private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.web3.connectAccount().then(response => {
+      this.wallet = (response as string[])[0]
+    });
     this.routeSub = this.route.params.subscribe(params => {
       this.bundleId = params['bundleId'];
       this.tokenId = params['tokenId'];
@@ -43,16 +48,18 @@ export class CreatePurchaseComponent implements OnInit {
   }
 
   repaymentInInstallmentsChange(event: any){
-    this.showRepaymentInInstallments = (event.currentTarget.checked as boolean);
+    this.repaymentInInstallments = (event.currentTarget.checked as boolean);
     (event.currentTarget.checked as boolean) ? this.toastr.info("Repayment in installments activated") : this.toastr.info("Repayment in installments deactivated");
   }
 
   entireAmountChange(event: any){
     (event.currentTarget.checked as boolean) ? this.toastr.info("Entire amount activated") : this.toastr.info("Entire amount deactivated");
+    this.entireAmount = (event.currentTarget.checked as boolean);
   }
 
   auctionChange(event: any){
     (event.currentTarget.checked as boolean) ? this.toastr.info("Auction activated") : this.toastr.info("Auction deactivated");
+    this.auction = (event.currentTarget.checked as boolean);
   }
 
   onFirstSubmit() {

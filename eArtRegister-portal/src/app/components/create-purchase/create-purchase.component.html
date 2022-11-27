@@ -1,6 +1,6 @@
 <div class='container'>
     <form [formGroup]="bundleForm" (ngSubmit)="onFirstSubmit()">
-        <h1>Purchase contract</h1>
+        <h1>Create purchase contract</h1>
 
         <div class="divider d-flex align-items-center my-4">
         </div>
@@ -20,10 +20,111 @@
             <label class="form-check-label" for="auction">Auction?</label>
         </div>
 
-        <div>
-            <button type="submit" class="btn btn-primary btn-lg">
-                Create
-            </button>
-        </div>
+    <div class="container">
+        <h2 style="text-align: center;">CONTRACT</h2>
+        <h3 style="text-align: center;">on the sale and purchase of a Non-Fungible Token</h3>
+        <h3 style="text-align: center;">which conclude in accordance with the applicable law on obligation relations</h3>
+        <h3 style="text-align: center;">on ____________________________ by and between the Parties:</h3>
+        <p>1. <b><u>0xdbAB2059F593D6Aa5c6c50A973ceE919c70A4d91</u>, <u>eArtRegister inc.</u> (hereinafter: Marketplace)</b></p>
+        <p>2. <b>__________________________________________ (hereinafter: Seller)</b></p>
+        <p>3. <b><u>__________________________________________</u> (hereinafter: Buyer)</b></p>
+        <h5 style="text-align: center;">Article 1.</h5>
+        <p>
+            The Seller sells to the Buyer a Non-Fungible Token (hereinafter: NFT) with the following features and characteristics:
+        </p>
+        <p>
+            Token ID: ____________________________
+        </p>
+        <p>
+            NFT name: ____________________________
+        </p>
+        <p>
+            Bundle name: ____________________________
+        </p>
+        <p>
+            Bundle address: ____________________________
+        </p>
+        <p>
+            The Seller undertakes to deliver the NFT with appropriate documents to the Buyer in the state and transfer it to him
+            the right of disposal on the day of payment of the sale price.
+        </p>
+        <h5 style="text-align: center;" *ngIf="entireAmount">Article 2.</h5>
+        <p *ngIf="entireAmount">
+            The Buyer buys from the Seller the NFT that is the subject of this contract through the eArt Register portal in the found condition.
+            The Buyer undertakes to pay the Seller the selling price of the NFT in the amount of ETH _________________ on the day of 
+            purchase through the eArt Register portal.
+        </p>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments">Article 2.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments">Article 3.</h5>
+        <p *ngIf="repaymentInInstallments">
+            The Buyer buys in installments from the Seller the NFT that is the subject of this contract through the eArt Register portal in the found condition.
+            The Buyer undertakes to pay the Seller the minimum participation of NFT in the amount of _________________ ETH as well as the rest of the amount 
+            in ETH _________________ in the specified repayment period through the eArt Register portal.
+        </p>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && auction">Article 2.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && auction">Article 3.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 3.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 4.</h5>
+        <p *ngIf="auction">
+            The Buyer buys through an auction from the Seller NFT which is the subject of this contract through the portal eArt Register in the found condition.
+            The buyer with the highest bid wins the auction and buys the NFT.
+        </p>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && !auction">Article 2.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && !auction">Article 3.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && !auction">Article 3.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && auction">Article 3.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && !auction">Article 4.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && auction">Article 4.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 4.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 5.</h5>
+        <p>
+            All costs, fees and tax on the transfer of absolute rights in connection with the conclusion of this Agreement shall be borne by Buyer.
+        </p>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && !auction">Article 3.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && !auction">Article 4.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && !auction">Article 4.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && auction">Article 4.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && !auction">Article 5.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && auction">Article 5.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 5.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 6.</h5>
+        <p>
+            The provisions of the Law on Obligations shall apply to everything that is not provided for in this Agreement.
+        </p>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && !auction">Article 4.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && !auction">Article 5.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && !auction">Article 5.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && auction">Article 5.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && !auction">Article 6.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && auction">Article 6.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 6.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 7.</h5>
+        <p>
+            Any disputes arising from this Agreement will be resolved by agreement, and in the event that this is not possible, 
+            they will be resolved by the court competent according to the place of residence - seat of the Seller.
+        </p>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && !auction">Article 5.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && !auction">Article 6.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && !auction">Article 6.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && auction">Article 6.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && !auction">Article 7.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && auction">Article 7.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 7.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 8.</h5>
+        <p>
+            The contract comes into force when it is signed by Seller and created by Marketplace.
+            With the creating of this agreement, the Framework Agreement enters into force.
+            The contract was concluded in 3 (three) identical copies, one for
+            Marketplace, one for the Seller and one for the Buyer.
+        </p>
+    
+        <span><b>__________________________________________</b><b style="float: right;">__________________________________________</b></span>
+        <p><b>Seller</b><b style="float: right;">Buyer</b></p>
+    
+        <button type="submit" *ngIf="entireAmount || repaymentInInstallments || auction" class="btn btn-primary btn-lg">
+            CREATE
+        </button>
+    </div>
+
     </form>
 </div>
