@@ -53,6 +53,19 @@ export class DepositComponent implements OnInit {
     });
   }
 
+  createDeposit() {
+    let body = {
+      Wallet: this.wallet[0],
+    };
+
+    this.http.post(environment.api + `Users/createDeposit`, body).subscribe(result => {
+      this.toastr.success("Deposit created");
+      this.signInWithMetaMask();
+    }, error => {
+        console.error(error);
+    });
+  }
+
   viewDeposit() {
     this.web3.viewDeposit(this.user.depositAddress, this.user.depositAbi).then(response =>{
       this.balance = (response as any) / 1000000000000000000;

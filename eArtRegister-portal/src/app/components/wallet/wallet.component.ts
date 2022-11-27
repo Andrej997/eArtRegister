@@ -47,20 +47,7 @@ export class WalletComponent implements OnInit {
         console.error(error);
     });
   }
-
-  createDeposit() {
-    let body = {
-      Wallet: this.wallet[0],
-    };
-
-    this.http.post(environment.api + `Users/createDeposit`, body).subscribe(result => {
-      this.toastr.success("Deposit created");
-      this.signInWithMetaMask();
-    }, error => {
-        console.error(error);
-    });
-  }
-
+  
   openDeposit() {
     this.router.navigate([`/deposit`]);
   }
