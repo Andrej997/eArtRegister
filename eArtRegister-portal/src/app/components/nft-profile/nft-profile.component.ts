@@ -39,6 +39,8 @@ export class NftProfileComponent implements OnInit {
   isSold;
   isPriceSet;
   contractOwner;
+  buyer;
+  isParticipationPayed;
 
   constructor(private http: HttpClient, 
     private fb: FormBuilder,
@@ -155,6 +157,7 @@ export class NftProfileComponent implements OnInit {
       this.web3.getTransactionStatus(response).then(response2 => {
         if ((response2 as boolean) == true) {
           this.toastr.success("Successfully bought NFT");
+          this.callPurchaseContractViews();
         }
         else {
           this.toastr.error("Failed to buy NFT");
@@ -175,6 +178,8 @@ export class NftProfileComponent implements OnInit {
     this.getMinParticipation();
     this.getInstallemntUser();
     this.getContractOwner();
+    this.getParticipationPayed();
+    this.getBuyer();
   }
 
   private isApprovedForAll() {
@@ -197,6 +202,22 @@ export class NftProfileComponent implements OnInit {
     if (this.purchaseContract) {
       this.web3.getIsPriceSet(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
         this.isPriceSet = response;
+      });
+    }
+  }
+
+  private getBuyer() {
+    if (this.purchaseContract) {
+      this.web3.getBuyer(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.buyer = response;
+      });
+    }
+  }
+
+  private getParticipationPayed() {
+    if (this.purchaseContract) {
+      this.web3.getParticipationPayed(this.purchaseContract.abi, this.purchaseContract.address).then(response => {
+        this.isParticipationPayed = response;
       });
     }
   }
@@ -300,23 +321,6 @@ export class NftProfileComponent implements OnInit {
         this.http.get(this.ipdsPublicGateway + element.ipfsnftHash).subscribe(resultData => {
           element.nftData = resultData;
         });
-        if (element.purchaseContract != null) {
-          if (element.statusId == "ON_SALE" || element.statusId == "CANCELED") {
-            this.web3.getUserBalance(element.purchaseContract, element.currentWallet).then(response =>{
-              element.balance = (response as number);
-            });
-
-            this.web3.getBuyer(element.purchaseContract).then(buyerres =>{
-              if ((buyerres as any).participation != '0')
-                element.buyer = (buyerres as any).buyer.toLowerCase();;
-            });
-          }
-          else if (element.statusId == "SOLD") {
-            this.web3.getUserBalance(element.purchaseContract, this.wallet).then(response =>{
-              element.balance = (response as number);
-            });
-          }
-        }
       });
       
       if (this.nfts.length > 0) {

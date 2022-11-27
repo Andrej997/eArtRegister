@@ -70,23 +70,6 @@ export class BundleComponent implements OnInit, OnDestroy {
         this.http.get(this.ipdsPublicGateway + element.ipfsnftHash).subscribe(resultData => {
           element.nftData = resultData;
         });
-        if (element.purchaseContract != null) {
-          if (element.statusId == "ON_SALE" || element.statusId == "CANCELED") {
-            this.web3.getUserBalance(element.purchaseContract, element.currentWallet).then(response =>{
-              element.balance = (response as number);
-            });
-
-            this.web3.getBuyer(element.purchaseContract).then(buyerres =>{
-              if ((buyerres as any).participation != '0')
-                element.buyer = (buyerres as any).buyer.toLowerCase();;
-            });
-          }
-          else if (element.statusId == "SOLD") {
-            this.web3.getUserBalance(element.purchaseContract, this.wallet).then(response =>{
-              element.balance = (response as number);
-            });
-          }
-        }
       });
     }, error => {
         console.error(error);

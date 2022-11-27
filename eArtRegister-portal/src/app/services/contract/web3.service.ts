@@ -376,27 +376,6 @@ export class Web3Service {
     }) as Promise<string>;
   }
 
-  public async getBuyer(purchaseContract: string): Promise<any> {
-    this.provider = await this.web3Modal.connect(); 
-    if (this.provider) {
-      this.web3js = new Web3(this.provider);
-    }
-
-    this.accounts = await this.web3js.eth.getAccounts();
-    this._traderContract = await new this.web3js.eth.Contract(tokenAbi, purchaseContract);
-  
-    return new Promise((resolve, reject) => {
-      this._traderContract.methods.buyer().call(function (err, result) {
-        
-        if(err != null) {
-          reject(err);
-        }
-  
-        resolve(result);
-      });
-    }) as Promise<any>;
-  }
-
   async sellerStop(purchaseContract: string, buyerAddr: string, minParticipation: number): Promise<string> {
     minParticipation = minParticipation / 2;
     const etherValue = Web3.utils.fromWei(minParticipation.toString(), 'ether');
@@ -476,6 +455,48 @@ export class Web3Service {
   
     return new Promise((resolve, reject) => {
       contract.methods.getIsPriceSet().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
+  public async getBuyer(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getBuyer().call(function (err, result) {
+        
+        if(err != null) {
+          reject(err);
+        }
+  
+        resolve(result);
+      });
+    }) as Promise<any>;
+  }
+
+  public async getParticipationPayed(abi: string, address: string): Promise<any> {
+    this.provider = await this.web3Modal.connect(); 
+    if (this.provider) {
+      this.web3js = new Web3(this.provider);
+    }
+
+    this.accounts = await this.web3js.eth.getAccounts();
+    let contract = await new this.web3js.eth.Contract(JSON.parse(abi), address);
+  
+    return new Promise((resolve, reject) => {
+      contract.methods.getParticipationPayed().call(function (err, result) {
         
         if(err != null) {
           reject(err);

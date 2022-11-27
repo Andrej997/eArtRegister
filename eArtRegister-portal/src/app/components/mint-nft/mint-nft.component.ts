@@ -65,6 +65,7 @@ export class MintNftComponent implements OnInit, OnDestroy {
     for (let index = 0; index < this.numOfAttributes; index++) {
       let key = (document.querySelector("#key_" +  index) as any).value;
       this.attributeKeys.push(key);
+      
       let value = (document.querySelector("#value_" + index) as any).value;
       this.attributeValues.push(value);
     }
@@ -76,7 +77,7 @@ export class MintNftComponent implements OnInit, OnDestroy {
       params.customRouth = this.bundleId;
       params.externalUrl = this.mintForm.value.external_url;
       params.wallet = (response as string[])[0];
-      if (this.attributeKeys.length > 1) {
+      if (this.attributeKeys.length > 0) {
         params.attributeKeys = this.attributeKeys;
         params.attributeValues = this.attributeValues;
       }
@@ -87,10 +88,12 @@ export class MintNftComponent implements OnInit, OnDestroy {
       }, error => {
           console.error(error);
           this.toastr.error("Failed to mint");
+          this.attributeKeys = [];
+          this.attributeValues = [];
       });
     });
-
-    this.numOfAttributes = 0;
+    
+    
   }
 
 }

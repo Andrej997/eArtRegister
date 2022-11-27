@@ -226,6 +226,8 @@ abstract contract APurchase {
     function getMinParticipation() virtual public view returns(uint256);
     function getInstallemntUser() virtual public view returns(address, uint256, uint);
     function getContractOwner() virtual public view returns(address);
+    function getParticipationPayed() virtual public view returns(bool);
+    function getBuyer() virtual public view returns(address);
 }
 
 contract Purchase is APurchase {
@@ -243,6 +245,7 @@ contract Purchase is APurchase {
     address private erc721;
     uint256 private tokenId;
     address private contractOwner;
+    address private buyer;
 
     uint private bidsCount;
     mapping (uint => Bid) private bids;
@@ -459,6 +462,8 @@ contract Purchase is APurchase {
         token.safeTransferFrom(listing.seller, customer, tokenId);
         payable(listing.seller).transfer(msg.value);
 
+        buyer = customer;
+
         isSold = true;
 
         emit TokenPurhchased(customer, block.timestamp);
@@ -489,6 +494,17 @@ contract Purchase is APurchase {
             view 
             returns(address, uint256, uint) {
         return(installemntCustomer.buyer, installemntCustomer.amountPayed, installemntCustomer.lastInstallemnt);
+    }
+
+    function getParticipationPayed() 
+            override 
+            public 
+            view 
+            returns(bool) {
+        if (installemntCustomer.buyer == address(0))
+            return false;
+        else 
+            return true;
     }
 
     function getPrice() 
@@ -529,6 +545,14 @@ contract Purchase is APurchase {
             view 
             returns(address) {
         return contractOwner;
+    }
+
+    function getBuyer() 
+            override 
+            public
+            view 
+            returns(address) {
+        return buyer;
     }
 
     function getMinParticipation() 
