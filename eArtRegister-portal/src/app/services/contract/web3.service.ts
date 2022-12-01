@@ -712,7 +712,7 @@ export class Web3Service {
 
     return new Promise((resolve, reject) => {
       
-        contract.methods.withdraw((this.accounts as string[])[0], amount).send({ from: (this.accounts as string[])[0], gas: 3000000},function (err, result) {
+        contract.methods.withdraw((this.accounts as string[])[0], weiValue).send({ from: (this.accounts as string[])[0], gas: 3000000},function (err, result) {
         
         if(err != null) {
           reject(err);

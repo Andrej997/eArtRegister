@@ -38,7 +38,6 @@ export class DepositComponent implements OnInit {
 
   signInWithMetaMask(){
     this.web3.connectAccount().then(response => {
-      console.log(response);
       this.wallet = response;
       this.getUser();
     });
@@ -46,8 +45,9 @@ export class DepositComponent implements OnInit {
 
   getUser(){
     this.http.get(environment.api + `Users/getUser/` + this.wallet[0]).subscribe(result => {
-      this.user = result
-      this.viewDeposit();
+      this.user = result;
+      if (this.user.depositAddress)
+        this.viewDeposit();
     }, error => {
         console.error(error);
     });
@@ -97,6 +97,15 @@ export class DepositComponent implements OnInit {
           this.toastr.error("Failed to withdraw");
         }
       });
+    });
+  }
+
+  delete() {
+    this.http.delete(environment.api + `Users/deposit/` + this.wallet[0]).subscribe(result => {
+      this.toastr.success("Deposit deleted");
+      this.signInWithMetaMask();
+    }, error => {
+        console.error(error);
     });
   }
 }

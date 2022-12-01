@@ -1,4 +1,4 @@
-<div class="container" *ngIf="!user.depositAddress">
+<div class="container" *ngIf="user && !user.depositAddress">
     <h1 style="text-align: center;">CONTRACT</h1>
     <h2 style="text-align: center;">on opening and maintaining a crypto currency current account</h2>
     <p><b>concluded on <u>__________________________________________</u> by and between the Parties:</b></p>
@@ -130,8 +130,10 @@
     </button>
 </div>
 
-<div *ngIf="user.depositAddress">
-    <h1>Balance: {{balance}} ETH</h1>
+<div *ngIf="user && user.depositAddress" class="container">
+    <button style="float: right;" class="btn btn-danger" (click)="delete();">DELETE</button>
+    <h2>Balance: {{balance}} ETH</h2>
+    <h2>Address: {{user.depositAddress}}</h2>
     <form [formGroup]="depositForm">
         <div class="form-outline mb-4">
             <input type="number" id="value" class="form-control form-control-lg"
@@ -140,8 +142,8 @@
         </div>
 
         <div>
-            <button type="submit" (click)='addDeposit()' class="btn btn-success">
-                Deposit
+            <button type="submit" (click)='addDeposit();' class="btn btn-success">
+                DEPOSIT
             </button>
         </div>
       </form>
@@ -154,8 +156,8 @@
         </div>
 
         <div>
-            <button type="submit" (click)='withdraw()' class="btn btn-primary">
-                Withdraw
+            <button type="submit" (click)='withdraw();' class="btn btn-primary">
+                WITHDRAW
             </button>
         </div>
     </form>

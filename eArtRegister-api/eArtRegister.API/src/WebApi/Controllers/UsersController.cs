@@ -1,5 +1,6 @@
 ﻿using eArtRegister.API.Application.Users.Commands.CheckWallet;
 using eArtRegister.API.Application.Users.Commands.CreateDeposit;
+using eArtRegister.API.Application.Users.Commands.DeleteDeposit;
 using eArtRegister.API.Application.Users.Commands.Deposit;
 using eArtRegister.API.Application.Users.Commands.RequestRolePermission;
 using eArtRegister.API.Application.Users.Queries.GetUser;
@@ -93,6 +94,21 @@ namespace eArtRegister.API.WebApi.Controllers
             try
             {
                 await Mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("deposit/{wallet}")]
+        [ApiExplorerSettings(GroupName = "v1")]
+        public async Task<IActionResult> DeleteDeposit(string wallet)
+        {
+            try
+            {
+                await Mediator.Send(new DeleteDepositCommand(wallet));
                 return Ok();
             }
             catch (Exception ex)

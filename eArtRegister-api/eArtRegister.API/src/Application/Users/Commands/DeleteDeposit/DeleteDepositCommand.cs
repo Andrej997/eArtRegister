@@ -6,41 +6,40 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eArtRegister.API.Application.Users.Commands.CheckWallet
+namespace eArtRegister.API.Application.Users.Commands.DeleteDeposit
 {
-    public class CheckWalletCommand : IRequest
+    public class DeleteDepositCommand : IRequest
     {
         public string Wallet { get; set; }
+
+        public DeleteDepositCommand(string wallet)
+        {
+            Wallet = wallet;
+        }
     }
-    public class CheckWalletCommandHandler : IRequestHandler<CheckWalletCommand>
+    public class DeleteDepositCommandHandler : IRequestHandler<DeleteDepositCommand>
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
 
-        public CheckWalletCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IDateTime dateTime)
+        public DeleteDepositCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService, IDateTime dateTime)
         {
             _context = context;
             _currentUserService = currentUserService;
             _dateTime = dateTime;
         }
 
-        public async Task<Unit> Handle(CheckWalletCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteDepositCommand request, CancellationToken cancellationToken)
         {
             var user = _context.SystemUsers.Where(u => u.Wallet.ToLower() == request.Wallet.ToLower()).FirstOrDefault();
-            if (user == null)
+            if (user != null)
             {
-                _context.SystemUsers.Add(new User
-                {
-                    Wallet = request.Wallet.ToLower(),
-                    Roles = new List<UserRole>
-                    {
-                        new UserRole
-                        {
-                            RoleId = (long)Domain.Enums.Role.Observer
-                        }
-                    }
-                });
+                user.DepositAbi = null;
+                user.DepositAddress = null;
+                user.DepositBytecode = null;
+                user.DepositCreated = null;
+                user.DepositContract = null;
 
                 await _context.SaveChangesAsync(cancellationToken);
             }

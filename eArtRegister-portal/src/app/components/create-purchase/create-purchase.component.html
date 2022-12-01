@@ -65,8 +65,8 @@
         <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 3.</h5>
         <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 4.</h5>
         <p *ngIf="auction">
-            The Buyer buys through an auction from the Seller NFT which is the subject of this contract through the portal eArt Register in the found condition.
-            The buyer with the highest bid wins the auction and buys the NFT.
+            The Bidder with the highest bid becomes the Buyer and buys from the Seller NFT which is the subject of this contract through 
+            the portal eArt Register in the found condition.
         </p>
         <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && !auction">Article 2.</h5>
         <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && !auction">Article 3.</h5>
@@ -111,12 +111,22 @@
         <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 7.</h5>
         <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 8.</h5>
         <p>
-            The contract comes into force when it is signed by Seller and created by Marketplace.
-            With the creating of this agreement, the Framework Agreement enters into force.
-            The contract was concluded in 3 (three) identical copies, one for
-            Marketplace, one for the Seller and one for the Buyer.
+            If the buyer cancels the NFT purchase during the installment payment process, 25% of the total 
+            payment will be returned to him.
         </p>
-    <!-- ODNOSNO (pravno ili) -->
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && !auction">Article 6.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && !auction">Article 7.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && !auction">Article 7.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && !repaymentInInstallments && auction">Article 7.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && !auction">Article 8.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && !repaymentInInstallments && auction">Article 8.</h5>
+        <h5 style="text-align: center;" *ngIf="!entireAmount && repaymentInInstallments && auction">Article 8.</h5>
+        <h5 style="text-align: center;" *ngIf="entireAmount && repaymentInInstallments && auction">Article 9.</h5>
+        <p>
+            The contract comes into force when the Buyer has paid the full amount or when the Buyer has paid the 
+            installment or when the bidder has offered the highest amount and thus became a buyer.
+            The contract was concluded in 2 (two) identical copies, one for the Seller and one for the Buyer.
+        </p>
         <span><b><u>__________________________________________</u></b><b style="float: right;"><u>__________________________________________</u></b></span>
         <p><b>Seller</b><b style="float: right;">Buyer</b></p>
     
